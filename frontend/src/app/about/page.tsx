@@ -1,0 +1,179 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import Link from "next/link";
+
+export default function AboutHero() {
+  return (
+    <section className="relative w-full space-y-20 overflow-hidden">
+      {/* ================= HERO ================= */}
+      <div className="relative h-[70vh] w-full">
+        <Image
+          src="/images/iphone15.png"
+          alt="Background"
+          fill
+          className="object-cover"
+          priority
+        />
+
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/90" />
+
+        {/* Content */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+          {/* ICON ROW */}
+          <div className="flex items-center gap-6 mb-6">
+            <Image src="/icons/laptop.svg" alt="" width={60} height={60} />
+            <Image src="/icons/phone.svg" alt="" width={60} height={60} />
+            <Image src="/icons/camera.svg" alt="" width={60} height={60} />
+          </div>
+
+          {/* TITLE */}
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            About Us
+          </h1>
+
+          {/* BADGE */}
+          <span className="px-6 py-2 rounded-full border border-primary text-primary text-sm font-semibold mb-6">
+            Who We Are
+          </span>
+
+          {/* BREADCRUMB */}
+          <div className="flex items-center gap-3">
+            <span className="bg-primary text-white px-4 py-1 text-sm font-semibold">
+              HOME
+            </span>
+            <span className="text-white/70 text-sm font-semibold">
+              ABOUT US
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* ================= ABOUT CONTENT ================= */}
+      <div className="relative pb-12 max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* LEFT IMAGE */}
+          <div className="relative w-full h-[500px]">
+            <Image
+              src="/images/s23.png"
+              alt="Abdi Electronics Store"
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          {/* RIGHT CONTENT */}
+          <div className="flex flex-col space-y-8">
+            {/* SMALL TITLE */}
+            <span className="text-primary font-semibold uppercase tracking-wider text-sm">
+              About Abdi Electronics
+            </span>
+
+            {/* BIG TITLE */}
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+              Your Trusted Electronics Marketplace
+              <br /> Buy & Sell Easily in Ethiopia
+            </h2>
+
+            {/* DECOR */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <div className="w-10 h-[2px] bg-primary" />
+                <div className="w-5 h-[2px] bg-primary" />
+              </div>
+              <div className="w-10 h-[2px] bg-primary" />
+            </div>
+
+            {/* TEXT */}
+            <p className="text-gray-700 leading-relaxed">
+              At Abdi Electronics, we provide a reliable platform to buy, sell,
+              and rent electronics across Ethiopia. From laptops and phones to
+              cameras, we make technology accessible, affordable, and
+              trustworthy.
+            </p>
+
+            {/* FEATURES */}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* FEATURE 1 */}
+              <div className="flex gap-4">
+                <div className="p-3 rounded-lg">
+                  <Image
+                    src="/icons/dollar.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                  />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Affordable Prices</h3>
+                  <p className="text-sm text-gray-600">
+                    Competitive rates for buying, selling, or renting
+                    electronics.
+                  </p>
+                </div>
+              </div>
+
+              {/* FEATURE 2 */}
+              <div className="flex gap-4">
+                <div className="p-3 rounded-lg">
+                  <Image
+                    src="/icons/laptop.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                  />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Wide Selection</h3>
+                  <p className="text-sm text-gray-600">
+                    From laptops and phones to cameras and accessories.
+                  </p>
+                </div>
+              </div>
+
+              {/* FEATURE 3 */}
+              <div className="flex gap-4">
+                <div className="p-3 rounded-lg">
+                  <Image
+                    src="/icons/shield.svg"
+                    alt=""
+                    width={32}
+                    height={32}
+                  />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Trusted Service</h3>
+                  <p className="text-sm text-gray-600">
+                    Secure transactions with verified sellers and buyers.
+                  </p>
+                </div>
+              </div>
+
+              {/* FEATURE 4 */}
+              <div className="flex gap-4">
+                <div className="p-3 rounded-lg">
+                  <Image src="/icons/truck.svg" alt="" width={32} height={32} />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Fast Delivery</h3>
+                  <p className="text-sm text-gray-600">
+                    Quick shipping across Addis Ababa and beyond.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div>
+              <Button className="px-7 rounded-none" asChild>
+                <Link href="/equipments"> Explore Products</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
