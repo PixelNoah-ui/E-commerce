@@ -16,7 +16,7 @@ export default function BuyContactModule() {
       </DialogTrigger>
 
       {/* MODAL */}
-      <DialogContent className="max-w-sm p-6">
+      <DialogContent className=" p-6">
         <DialogTitle className="text-lg font-semibold mb-2">
           Contact to Buy
         </DialogTitle>

@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   createProduct,
   deleteProduct,
+  getNewArrivals,
   getProduct,
   getProducts,
   updateProduct,
@@ -11,14 +12,11 @@ import { restrictTo } from "../middleware/auth.js";
 const router = Router();
 
 router.post("/", createProduct);
-
+router.get("/new-arrivals", getNewArrivals);
 router.get("/", getProducts);
-
 router.get("/:id", getProduct);
 router.use(restrictTo("ADMIN"));
-
 router.patch("/:id", updateProduct);
-
 router.delete("/:id", deleteProduct);
 
 export default router;

@@ -5,6 +5,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { sortType } from "@/types/Types";
 import { Metadata } from "next";
 import { Suspense } from "react";
+import getProducts from "../(api)/getProducts";
 
 interface PageProps {
   searchParams: {
@@ -77,82 +78,19 @@ async function ProductResults({
   priceMax,
   sort,
 }: ProductResultsProps) {
-  const Products = [
-    {
-      id: "1",
-      name: "Samsung Galaxy S23",
-      description: "Powerful smartphone with stunning display and camera.",
-      price: 799.99,
-      imageUrl: "/images/s23.png",
-      categoryType: "smartphone",
-    },
-    {
-      id: "2",
-      name: "iPhone 15 Pro",
-      description:
-        "Sleek design, exceptional camera system, smooth performance.",
-      price: 999.99,
-      imageUrl: "/images/iphone15.png",
-      categoryType: "smartphone",
-    },
-    {
-      id: "3",
-      name: "Smart Watch Pro",
-      description:
-        "Track your fitness and stay connected with this smartwatch.",
-      price: 299.99,
-      imageUrl: "/images/smartwatch.png",
-      categoryType: "smartwatch",
-    },
-    {
-      id: "4",
-      name: "Wireless Headphones",
-      description:
-        "Immersive sound with noise cancellation and long battery life.",
-      price: 199.99,
-      imageUrl: "/images/headphones.png",
-      categoryType: "accessories",
-    },
-    {
-      id: "5",
-      name: "Samsung Galaxy S23",
-      description: "Powerful smartphone with stunning display and camera.",
-      price: 799.99,
-      imageUrl: "/images/s23.png",
-      categoryType: "smartphone",
-    },
-    {
-      id: "6",
-      name: "iPhone 15 Pro",
-      description:
-        "Sleek design, exceptional camera system, smooth performance.",
-      price: 999.99,
-      imageUrl: "/images/iphone15.png",
-      categoryType: "smartphone",
-    },
-    {
-      id: "7",
-      name: "Smart Watch Pro",
-      description:
-        "Track your fitness and stay connected with this smartwatch.",
-      price: 299.99,
-      imageUrl: "/images/smartwatch.png",
-      categoryType: "smartwatch",
-    },
-    {
-      id: "8",
-      name: "Wireless Headphones",
-      description:
-        "Immersive sound with noise cancellation and long battery life.",
-      price: 199.99,
-      imageUrl: "/images/headphones.png",
-      categoryType: "accessories",
-    },
-  ];
+  const data = await getProducts({
+    q,
+    collection: collections,
+    price_min: priceMin,
+    price_max: priceMax,
+    sort,
+    page,
+  });
 
-  if (Products.length === 0) {
+  if (!data?.products?.length) {
     return <NoProductsFound />;
   }
+  const Products = data.products;
 
   return (
     <div className="space-y-10 group-has-[[data-pending]]:animate-pulse">

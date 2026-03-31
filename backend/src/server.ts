@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
 import app from "./index.js";
 import { prisma } from "./lib/Prisma.js";
+import morgan from "morgan";
 dotenv.config();
 
 const PORT = process.env.PORT || 8000;
-
+app.use(morgan("dev"));
 await prisma.$connect();
 
 const server = app.listen(PORT, () => {

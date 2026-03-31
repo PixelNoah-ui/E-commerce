@@ -81,7 +81,7 @@ export default function Footer() {
               ].map((label) => (
                 <li key={label}>
                   <Link
-                    href="/equipments"
+                    href={`/electronics/${label.toLowerCase().replace(/\s+/g, "-")}`}
                     className="transition hover:text-white"
                   >
                     {label}

@@ -24,16 +24,76 @@ export const createProduct = catchAsync(async (req, res) => {
 });
 
 // GET ALL PRODUCTS
-export const getProducts = catchAsync(async (_req, res) => {
-  const products = await prisma.product.findMany();
+export const getProducts = catchAsync(async (req, res) => {
+  const { q, collection, price_min, price_max, sort, page = "1" } = req.query;
+
+  const where: Record<string, any> = {
+    isActive: true,
+  };
+  const limit = 10;
+
+  if (q) {
+    const query = String(q);
+    where.OR = [
+      {
+        name: { contains: query, mode: "insensitive" },
+      },
+      {
+        description: { contains: query, mode: "insensitive" },
+      },
+    ];
+  }
+
+  if (collection) {
+    const categories = Array.isArray(collection)
+      ? collection.map(String)
+      : [String(collection)];
+    if (categories.length > 0) {
+      where.categoryType = { in: categories };
+    }
+  }
+
+  if (price_min || price_max) {
+    where.price = {};
+    if (price_min) {
+      const minValue = Number(price_min);
+      if (!Number.isNaN(minValue)) where.price.gte = minValue;
+    }
+    if (price_max) {
+      const maxValue = Number(price_max);
+      if (!Number.isNaN(maxValue)) where.price.lte = maxValue;
+    }
+  }
+
+  const orderBy =
+    sort === "price_asc"
+      ? ({ price: "asc" } as const)
+      : sort === "price_desc"
+        ? ({ price: "desc" } as const)
+        : ({ createdAt: "desc" } as const);
+
+  const pageNumber = Number(page) >= 1 ? Number(page) : 1;
+  const pageSize = Number(limit) >= 1 ? Number(limit) : 10;
+  const skip = (pageNumber - 1) * pageSize;
+
+  const totalProducts = await prisma.product.count({ where });
+  const totalPages = Math.ceil(totalProducts / pageSize);
+
+  const products = await prisma.product.findMany({
+    where,
+    orderBy,
+    skip,
+    take: pageSize,
+  });
 
   res.status(200).json({
     status: "success",
-    results: products.length,
-    data: { products },
+    data: {
+      products,
+      totalPages,
+    },
   });
 });
-
 // GET SINGLE PRODUCT
 export const getProduct = catchAsync(async (req, res) => {
   const id = req.params.id; // string
@@ -91,5 +151,19 @@ export const deleteProduct = catchAsync(async (req, res) => {
   res.status(200).json({
     status: "success",
     message: "Product deleted successfully",
+  });
+});
+
+// GET NEW ARRIVAL PRODUCTS
+export const getNewArrivals = catchAsync(async (_req, res) => {
+  const products = await prisma.product.findMany({
+    where: { isActive: true },
+    orderBy: { createdAt: "desc" },
+    take: 4,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: { products },
   });
 });

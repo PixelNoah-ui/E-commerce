@@ -15,6 +15,7 @@ import ownerRouter from "./router/ownerAddressRouter.js";
 import authRouter from "./router/authRouter.js";
 
 const app = express();
+app.use(morgan("dev"));
 
 app.use(helmet());
 app.use(cookieParser());
@@ -36,8 +37,6 @@ app.use(
 
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
-
-app.use(morgan("dev"));
 
 const publicDir = path.join(process.cwd(), "src", "public");
 app.use(express.static(publicDir));

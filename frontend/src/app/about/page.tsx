@@ -88,8 +88,8 @@ export default function AboutHero() {
 
             {/* TEXT */}
             <p className="text-gray-700 leading-relaxed">
-              At Abdi Electronics, we provide a reliable platform to buy, sell,
-              and rent electronics across Ethiopia. From laptops and phones to
+              At Abdi Electronics, we provide a reliable platform to buy and
+              sellelectronics across Ethiopia. From laptops and phones to
               cameras, we make technology accessible, affordable, and
               trustworthy.
             </p>
