@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 
 export default function AboutHero() {
   return (
@@ -89,7 +90,7 @@ export default function AboutHero() {
             {/* TEXT */}
             <p className="text-gray-700 leading-relaxed">
               At Abdi Electronics, we provide a reliable platform to buy and
-              sellelectronics across Ethiopia. From laptops and phones to
+              sell electronics across Ethiopia. From laptops and phones to
               cameras, we make technology accessible, affordable, and
               trustworthy.
             </p>
@@ -172,6 +173,47 @@ export default function AboutHero() {
               </Button>
             </div>
           </div>
+        </div>
+      </div>
+      <div className="pb-16">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 px-6 text-center">
+          {[
+            { value: "500+", label: "Customers", icon: "/icons/user.svg" },
+            { value: "1000+", label: "Products", icon: "/icons/laptop.svg" },
+            { value: "50+", label: "Sellers", icon: "/icons/store.svg" },
+            { value: "4.8★", label: "Rating", icon: "/icons/star.svg" },
+          ].map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -60 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{
+                duration: 0.6,
+                delay: i * 0.2, // stagger effect
+                ease: "easeOut",
+              }}
+              viewport={{ once: true }}
+              className="flex flex-col items-center space-y-3"
+            >
+              {/* BIG ICON */}
+              <motion.div
+                whileHover={{ scale: 1.1 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              >
+                <Image src={stat.icon} alt="" width={94} height={94} />
+              </motion.div>
+
+              {/* SMALL TEXT */}
+              <p className="text-sm text-gray-500 uppercase tracking-wide">
+                {stat.label}
+              </p>
+
+              {/* VALUE */}
+              <span className="text-xl font-semibold text-primary">
+                {stat.value}
+              </span>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>

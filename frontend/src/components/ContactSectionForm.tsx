@@ -1,28 +1,46 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { Mail, MapPin, Phone, Globe, ArrowRight } from "lucide-react";
+import { useForm, Controller } from "react-hook-form";
+import { MapPin, Phone, Globe, ArrowRight, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import useSendMessage from "@/hooks/useUser";
+
 type FormData = {
   name: string;
-  email: string;
+  phone: string;
   subject: string;
   message: string;
 };
 
 export default function ContactSectionForm() {
+  const { isPending, mutate: sendMessages } = useSendMessage();
+
   const {
     register,
     handleSubmit,
+    control,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
 
   const onSubmit = (data: FormData) => {
-    console.log("FORM DATA:", data);
+    sendMessages(data, {
+      onSuccess: () => {
+        reset();
+      },
+    });
   };
 
   return (
@@ -48,7 +66,7 @@ export default function ContactSectionForm() {
               <div className="flex gap-4">
                 <MapPin className="text-white" />
                 <div className="text-white">
-                  <p className="text-sm ">Head Office</p>
+                  <p className="text-sm">Head Office</p>
                   <p className="font-semibold">Jimma, Ethiopia</p>
                 </div>
               </div>
@@ -59,30 +77,19 @@ export default function ContactSectionForm() {
               <div className="flex gap-4">
                 <Phone className="text-white" />
                 <div className="text-white">
-                  <p className="text-sm ">For Support</p>
+                  <p className="text-sm">For Support</p>
                   <p className="font-semibold">+251 911 234 567</p>
                 </div>
               </div>
 
               <div className="h-px bg-white/30" />
 
-              {/* Hours */}
+              {/* Work Hours */}
               <div className="flex gap-4">
                 <Globe className="text-white" />
                 <div className="text-white">
-                  <p className="text-sm ">Work Hours</p>
+                  <p className="text-sm">Work Hours</p>
                   <p className="font-semibold">Mon - Sat 8am to 6pm</p>
-                </div>
-              </div>
-
-              <div className="h-px bg-white/30" />
-
-              {/* Email */}
-              <div className="flex gap-4">
-                <Mail className="text-white" />
-                <div className="text-white">
-                  <p className="text-sm ">Email Us</p>
-                  <p className="font-semibold">support@abdielectronics.com</p>
                 </div>
               </div>
             </div>
@@ -94,25 +101,22 @@ export default function ContactSectionForm() {
 
         {/* ================= RIGHT FORM ================= */}
         <div className="bg-background p-10">
-          {/* Title */}
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Send a Message
           </h2>
 
-          {/* small lines */}
           <div className="flex gap-2 mb-6">
-            <div className="w-10 h-[2px] bg-primary" />
-            <div className="w-5 h-[2px] bg-primary" />
+            <div className="w-10 h-0.5 bg-primary" />
+            <div className="w-5 h-0.5 bg-primary" />
           </div>
 
           <p className="text-muted-foreground mb-8">
-            Your email address will not be published. Required fields are marked
-            with *
+            Required fields are marked with *
           </p>
 
           {/* FORM */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Row */}
+            {/* Row: Name + Phone */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <Input
@@ -129,30 +133,48 @@ export default function ContactSectionForm() {
 
               <div>
                 <Input
-                  placeholder="Email"
+                  placeholder="Phone Number"
                   className="rounded-none"
-                  {...register("email", {
-                    required: "Email is required",
+                  {...register("phone", {
+                    required: "Phone is required",
                     pattern: {
-                      value: /^\S+@\S+$/i,
-                      message: "Invalid email",
+                      value: /^(09\d{8}|\+2519\d{8})$/,
+                      message:
+                        "Enter valid Ethiopian phone (09XXXXXXXX or +2519XXXXXXXX)",
                     },
                   })}
                 />
-                {errors.email && (
+                {errors.phone && (
                   <p className="text-sm text-destructive mt-1">
-                    {errors.email.message}
+                    {errors.phone.message}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* Subject */}
+            {/* Subject Select */}
             <div>
-              <Input
-                className="rounded-none"
-                placeholder="Subject"
-                {...register("subject", { required: "Subject is required" })}
+              <Controller
+                control={control}
+                name="subject"
+                rules={{ required: "Subject is required" }}
+                render={({ field }) => (
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value || ""}
+                  >
+                    <SelectTrigger className="rounded-none">
+                      <SelectValue placeholder="Select Subject" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded-none">
+                      <SelectItem value="Bulk Buy">Bulk Buy</SelectItem>
+                      <SelectItem value="Sell to Owners">
+                        Sell to Owners
+                      </SelectItem>
+                      <SelectItem value="Support">General Support</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               />
               {errors.subject && (
                 <p className="text-sm text-destructive mt-1">
@@ -176,13 +198,22 @@ export default function ContactSectionForm() {
               )}
             </div>
 
-            {/* Button */}
             <Button
               type="submit"
-              className="rounded-none px-8 py-6 text-base font-semibold bg-primary hover:bg-primary/90"
+              disabled={isPending}
+              className="rounded-none px-8 py-6 text-base font-semibold bg-primary hover:bg-primary/90 flex items-center justify-center gap-2"
             >
-              SEND MESSAGE
-              <ArrowRight className="ml-2" size={18} />
+              {isPending ? (
+                <>
+                  <Loader2 className="animate-spin w-5 h-5" />
+                  <span>Sending...</span>
+                </>
+              ) : (
+                <>
+                  SEND MESSAGE
+                  <ArrowRight className="ml-2" size={18} />
+                </>
+              )}
             </Button>
           </form>
         </div>

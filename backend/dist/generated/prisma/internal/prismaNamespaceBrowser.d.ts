@@ -29,6 +29,7 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Product: "Product";
     readonly OwnerAddress: "OwnerAddress";
+    readonly Message: "Message";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -77,6 +78,15 @@ export declare const OwnerAddressScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[keyof typeof OwnerAddressScalarFieldEnum];
+export declare const MessageScalarFieldEnum: {
+    readonly id: "id";
+    readonly name: "name";
+    readonly phone: "phone";
+    readonly subject: "subject";
+    readonly message: "message";
+    readonly createdAt: "createdAt";
+};
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

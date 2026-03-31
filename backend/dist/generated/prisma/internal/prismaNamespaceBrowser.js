@@ -41,7 +41,8 @@ export const AnyNull = runtime.AnyNull;
 export const ModelName = {
     User: 'User',
     Product: 'Product',
-    OwnerAddress: 'OwnerAddress'
+    OwnerAddress: 'OwnerAddress',
+    Message: 'Message'
 };
 /*
  * Enums
@@ -87,6 +88,14 @@ export const OwnerAddressScalarFieldEnum = {
     location: 'location',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+export const MessageScalarFieldEnum = {
+    id: 'id',
+    name: 'name',
+    phone: 'phone',
+    subject: 'subject',
+    message: 'message',
+    createdAt: 'createdAt'
 };
 export const SortOrder = {
     asc: 'asc',

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function HeroSection() {
   const heroSlides = [
@@ -119,8 +120,8 @@ export default function HeroSection() {
               </p>
 
               <div className="mt-8">
-                <Button className="px-12 py-4 lg:py-5 rounded-none">
-                  {slide.buttonText}
+                <Button className="px-12 py-4 lg:py-5 rounded-none" asChild>
+                  <Link href="/equipments">{slide.buttonText}</Link>
                 </Button>
               </div>
             </motion.div>

@@ -17,4 +17,9 @@ export type Product = Prisma.ProductModel;
  *
  */
 export type OwnerAddress = Prisma.OwnerAddressModel;
+/**
+ * Model Message
+ *
+ */
+export type Message = Prisma.MessageModel;
 //# sourceMappingURL=browser.d.ts.map
