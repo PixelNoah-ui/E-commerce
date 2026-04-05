@@ -2,6 +2,7 @@ import CategoryProducts from "@/components/feature/CategoriesProduct";
 import HeroSection from "@/components/feature/Hero";
 import NewArriveProducts from "@/components/feature/NewArrive";
 import OurProcess from "@/components/feature/OurProcess";
+import WhyChooseUs from "@/components/whyChooseUs";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <OurProcess />
       <CategoryProducts />
       <NewArriveProducts />
+      <WhyChooseUs />
     </div>
   );
 }

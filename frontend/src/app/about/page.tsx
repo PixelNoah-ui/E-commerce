@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import WhyChooseUs from "@/components/whyChooseUs";
 
 export default function AboutHero() {
   return (
@@ -175,7 +176,7 @@ export default function AboutHero() {
           </div>
         </div>
       </div>
-      <div className="pb-16">
+      <div className="">
         <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 px-6 text-center">
           {[
             { value: "500+", label: "Customers", icon: "/icons/user.svg" },
@@ -216,6 +217,7 @@ export default function AboutHero() {
           ))}
         </div>
       </div>
+      <WhyChooseUs />
     </section>
   );
 }

@@ -31,15 +31,41 @@ export const createMessage = catchAsync(async (req, res, next) => {
 });
 
 // ================= GET ALL MESSAGES =================
-export const getMessages = catchAsync(async (_req, res) => {
-  const messages = await prisma.message.findMany({
-    orderBy: { createdAt: "desc" },
-  });
+export const getMessages = catchAsync(async (req, res) => {
+  const { q, page = "1" } = req.query;
+
+  const limit = 10;
+  const pageNumber = parseInt(page as string) || 1;
+  const skip = (pageNumber - 1) * limit;
+
+  const where: any = {};
+
+  if (q) {
+    where.OR = [
+      { name: { contains: q as string, mode: "insensitive" } },
+      { phone: { contains: q as string, mode: "insensitive" } },
+      { subject: { contains: q as string, mode: "insensitive" } },
+      { message: { contains: q as string, mode: "insensitive" } },
+    ];
+  }
+
+  const [messages, total] = await Promise.all([
+    prisma.message.findMany({
+      where,
+      skip,
+      take: limit,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.message.count({ where }),
+  ]);
 
   res.status(200).json({
-    status: "success",
-    results: messages.length,
-    data: { messages },
+    success: true,
+    data: messages,
+    pagination: {
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
   });
 });
 

@@ -3,8 +3,8 @@ import { createMessage, deleteMessage, getMessage, getMessages, } from "../contr
 import { restrictTo } from "../middleware/auth.js";
 const router = express.Router();
 router.post("/", createMessage);
-router.use(restrictTo("ADMIN"));
 router.get("/", getMessages);
+router.use(restrictTo("ADMIN"));
 router.get("/:id", getMessage);
 router.delete("/:id", deleteMessage);
 export default router;

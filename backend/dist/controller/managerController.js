@@ -23,19 +23,44 @@ export const createManager = catchAsync(async (req, res, next) => {
         data: { manager },
     });
 });
-export const getManagers = catchAsync(async (_req, res) => {
-    const managers = await prisma.user.findMany({
-        where: {
-            role: "MANAGER",
-        },
-        orderBy: {
-            createdAt: "desc",
-        },
-    });
+export const getManagers = catchAsync(async (req, res) => {
+    const { q, status = "all", page = "1" } = req.query;
+    const limit = 10;
+    const pageNumber = parseInt(page) || 1;
+    const skip = (pageNumber - 1) * limit;
+    const where = { role: "MANAGER" };
+    if (q) {
+        where.OR = [
+            { fullName: { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+        ];
+    }
+    if (status === "active") {
+        where.isActive = true;
+    }
+    else if (status === "inactive") {
+        where.isActive = false;
+    }
+    const [managers, total] = await Promise.all([
+        prisma.user.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: { createdAt: "desc" },
+            select: {
+                id: true,
+                fullName: true,
+                email: true,
+                role: true,
+                createdAt: true,
+            },
+        }),
+        prisma.user.count({ where }),
+    ]);
     res.status(200).json({
-        status: "success",
-        results: managers.length,
-        data: { managers },
+        success: true,
+        data: managers,
+        totalPages: Math.ceil(total / limit),
     });
 });
 export const getManager = catchAsync(async (req, res, next) => {

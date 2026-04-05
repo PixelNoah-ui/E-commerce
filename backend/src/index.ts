@@ -14,6 +14,7 @@ import managerRouter from "./router/managerRouter.js";
 import ownerRouter from "./router/ownerAddressRouter.js";
 import authRouter from "./router/authRouter.js";
 import messageRouter from "./router/messageRouter.js";
+import dashboardRouter from "./router/dashboardRouter.js";
 const app = express();
 app.use(morgan("dev"));
 
@@ -42,6 +43,7 @@ const publicDir = path.join(process.cwd(), "src", "public");
 app.use(express.static(publicDir));
 
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/contact/messages", messageRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/managers", managerRouter);

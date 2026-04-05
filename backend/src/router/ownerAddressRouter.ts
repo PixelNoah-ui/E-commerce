@@ -4,7 +4,6 @@ import { restrictTo } from "../middleware/auth.js";
 import {
   createOwnerAddress,
   deleteOwnerAddress,
-  getOwnerAddress,
   getOwnerAddresses,
   updateOwnerAddress,
 } from "../controller/ownerController.js";
@@ -16,8 +15,7 @@ router.use(restrictTo("ADMIN"));
 
 router.post("/", createOwnerAddress);
 router.get("/", getOwnerAddresses);
-router.get("/:id", getOwnerAddress);
-router.patch("/:id", updateOwnerAddress);
-router.delete("/:id", deleteOwnerAddress);
+router.patch("/", updateOwnerAddress);
+router.delete("/", deleteOwnerAddress);
 
 export default router;

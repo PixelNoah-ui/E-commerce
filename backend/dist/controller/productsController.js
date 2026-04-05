@@ -1,22 +1,35 @@
 import { prisma } from "../lib/Prisma.js";
+import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
 // Create Product
-export const createProduct = catchAsync(async (req, res) => {
+export const createProduct = catchAsync(async (req, res, next) => {
+    console.log("Creating product with data:", req.body);
     const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
-    const product = await prisma.product.create({
-        data: {
-            name,
-            description,
-            price: Number(price),
-            imageUrl,
-            categoryType,
-            isFeatured: isFeatured ?? false,
-        },
-    });
-    res.status(201).json({
-        status: "success",
-        data: { product },
-    });
+    if (!name || !description || !price || !imageUrl || !categoryType) {
+        console.log("❌ Missing required fields:", req.body);
+        return next(new AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
+    }
+    try {
+        const product = await prisma.product.create({
+            data: {
+                name,
+                description,
+                price: price, // if using Decimal
+                imageUrl,
+                categoryType,
+                isFeatured: isFeatured === "true" || isFeatured === true,
+            },
+        });
+        console.log("✅ Product created successfully:", product);
+        res.status(201).json({
+            status: "success",
+            data: { product },
+        });
+    }
+    catch (err) {
+        console.error("🔥 REAL BACKEND ERROR:", err); // <- see the real error here
+        next(new AppError(err.message || "Failed to create product", 500));
+    }
 });
 // GET ALL PRODUCTS
 export const getProducts = catchAsync(async (req, res) => {
@@ -98,6 +111,48 @@ export const getProduct = catchAsync(async (req, res) => {
         data: { product },
     });
 });
+export const getAdminProducts = catchAsync(async (req, res) => {
+    const { q, status = "all", page = "1" } = req.query;
+    const limit = 10;
+    const pageNumber = parseInt(page) || 1;
+    const skip = (pageNumber - 1) * limit;
+    const where = {};
+    if (q) {
+        where.OR = [
+            { name: { contains: q, mode: "insensitive" } },
+            { description: { contains: q, mode: "insensitive" } },
+            { categoryType: { contains: q, mode: "insensitive" } },
+        ];
+    }
+    if (status === "active") {
+        where.isActive = true;
+    }
+    else if (status === "inactive") {
+        where.isActive = false;
+    }
+    else if (status === "featured") {
+        where.isFeatured = true;
+    }
+    const [products, total] = await Promise.all([
+        prisma.product.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                createdAt: "desc",
+            },
+        }),
+        prisma.product.count({ where }),
+    ]);
+    res.status(200).json({
+        success: true,
+        data: products,
+        pagination: {
+            total,
+            totalPages: Math.ceil(total / limit),
+        },
+    });
+});
 // UPDATE PRODUCT
 export const updateProduct = catchAsync(async (req, res) => {
     const id = req.params.id;
@@ -110,7 +165,7 @@ export const updateProduct = catchAsync(async (req, res) => {
     if (description !== undefined)
         data.description = String(description);
     if (price !== undefined)
-        data.price = Number(price);
+        data.price = price;
     if (imageUrl !== undefined)
         data.imageUrl = String(imageUrl);
     if (categoryType !== undefined)
