@@ -1,6 +1,7 @@
 export declare const Role: {
     readonly ADMIN: "ADMIN";
     readonly MANAGER: "MANAGER";
+    readonly USER: "USER";
 };
 export type Role = (typeof Role)[keyof typeof Role];
 //# sourceMappingURL=enums.d.ts.map

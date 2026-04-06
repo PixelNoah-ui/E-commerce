@@ -48,6 +48,7 @@ export const signup = catchAsync(async (req, res, next) => {
             fullName,
             email: email.toLowerCase(),
             password: hashedPassword,
+            role: "USER",
         },
     });
     res.status(201).json({
@@ -61,15 +62,36 @@ export const login = catchAsync(async (req, res, next) => {
     if (!email || !password) {
         return next(new AppError("Email & password required", 400));
     }
-    const user = await prisma.user.findUnique({ where: { email } });
-    if (!user || !(await bcrypt.compare(password, user.password))) {
+    const user = await prisma.user.findUnique({
+        where: { email: email.toLowerCase() },
+    });
+    // ❌ If user not found
+    if (!user) {
         return next(new AppError("Invalid credentials", 401));
     }
-    // 🔒 Check if account locked
-    if (user.lockUntil && user.lockUntil > new Date()) {
-        return next(new AppError("Account locked. Try again later.", 403));
+    if (user.role === "USER") {
+        return next(new AppError("You should expect approval by the super admin", 403));
     }
-    // reset failed attempts
+    // 🔒 Check if account is locked
+    if (user.lockUntil && user.lockUntil > new Date()) {
+        const remainingTime = Math.ceil((user.lockUntil.getTime() - Date.now()) / 1000 / 60);
+        return next(new AppError(`Account locked. Try again in ${remainingTime} minutes.`, 403));
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        const attempts = user.failedLoginAttempts + 1;
+        const updateData = {
+            failedLoginAttempts: attempts,
+        };
+        if (attempts >= 5) {
+            updateData.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+        }
+        await prisma.user.update({
+            where: { id: user.id },
+            data: updateData,
+        });
+        return next(new AppError("Invalid credentials", 401));
+    }
     await prisma.user.update({
         where: { id: user.id },
         data: {

@@ -46,7 +46,7 @@ const categories = [
     name: "Refrigerators",
     description: "Energy-efficient cooling solutions",
     imageUrl: "/images/refrigerators.png",
-    category: "appliances",
+    category: "electronics",
     slug: "refrigerators",
   },
   {
@@ -54,7 +54,7 @@ const categories = [
     name: "Air Conditioners",
     description: "Stay cool with modern AC units",
     imageUrl: "/images/ac.png",
-    category: "appliances",
+    category: "electronics",
     slug: "air-conditioners",
   },
   {
@@ -62,7 +62,7 @@ const categories = [
     name: "Washing Machines",
     description: "Automatic & semi-automatic washers",
     imageUrl: "/images/washing-machines.png",
-    category: "appliances",
+    category: "electronics",
     slug: "washing-machines",
   },
 ];

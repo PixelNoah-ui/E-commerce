@@ -7,15 +7,21 @@ import {
   getManagers,
   updateManager,
 } from "../controller/managerController.js";
+import { processProductImage, upload } from "../middleware/uploadImages.js";
 
 const router = Router();
 
-router.use(restrictTo("ADMIN"));
+// router.use(restrictTo("ADMIN"));
 
-router.post("/", createManager);
+router.post("/", upload.single("image"), processProductImage, createManager);
 router.get("/", getManagers);
 router.get("/:id", getManager);
-router.patch("/:id", updateManager);
+router.patch(
+  "/:id",
+  upload.single("image"),
+  processProductImage,
+  updateManager,
+);
 router.delete("/:id", deleteManager);
 
 export default router;

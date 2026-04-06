@@ -9,6 +9,7 @@
 */
 export const Role = {
     ADMIN: 'ADMIN',
-    MANAGER: 'MANAGER'
+    MANAGER: 'MANAGER',
+    USER: 'USER'
 };
 //# sourceMappingURL=enums.js.map

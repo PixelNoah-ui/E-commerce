@@ -18,8 +18,13 @@ router.get("/new-arrivals", getNewArrivals);
 router.get("/", getProducts).get("/admin-products", getAdminProducts);
 
 router.get("/:id", getProduct);
-router.use(restrictTo("ADMIN"));
-router.patch("/:id", updateProduct);
+// router.use(restrictTo("ADMIN"));
+router.patch(
+  "/:id",
+  upload.single("image"),
+  processProductImage,
+  updateProduct,
+);
 router.delete("/:id", deleteProduct);
 
 export default router;

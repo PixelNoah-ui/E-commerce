@@ -3,9 +3,10 @@ import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
 
 // Create Product
+function normalizeCategory(value: string | string[]) {
+  return String(value).trim().toUpperCase();
+}
 export const createProduct = catchAsync(async (req, res, next) => {
-  console.log("Creating product with data:", req.body);
-
   const { name, description, price, imageUrl, categoryType, isFeatured } =
     req.body;
 
@@ -26,7 +27,7 @@ export const createProduct = catchAsync(async (req, res, next) => {
         description,
         price: price, // if using Decimal
         imageUrl,
-        categoryType,
+        categoryType: normalizeCategory(categoryType),
         isFeatured: isFeatured === "true" || isFeatured === true,
       },
     });
@@ -45,7 +46,21 @@ export const createProduct = catchAsync(async (req, res, next) => {
 
 // GET ALL PRODUCTS
 export const getProducts = catchAsync(async (req, res) => {
-  const { q, collection, price_min, price_max, sort, page = "1" } = req.query;
+  const {
+    q,
+    collection,
+    price_min,
+    price_max,
+    sort,
+    page = "1",
+  } = req.query as {
+    q?: string;
+    collection?: string | string[];
+    price_min?: string;
+    price_max?: string;
+    sort?: string;
+    page?: string;
+  };
 
   const where: Record<string, any> = {
     isActive: true,
@@ -66,8 +81,8 @@ export const getProducts = catchAsync(async (req, res) => {
 
   if (collection) {
     const categories = Array.isArray(collection)
-      ? collection.map(String)
-      : [String(collection)];
+      ? collection.map(normalizeCategory)
+      : [normalizeCategory(collection)];
     if (categories.length > 0) {
       where.categoryType = { in: categories };
     }
@@ -191,14 +206,14 @@ export const updateProduct = catchAsync(async (req, res) => {
   const { name, description, price, imageUrl, categoryType, isFeatured } =
     req.body;
 
-  // ✅ Build Prisma-compatible update object
   const data: Parameters<typeof prisma.product.update>[0]["data"] = {};
 
   if (name !== undefined) data.name = String(name);
   if (description !== undefined) data.description = String(description);
   if (price !== undefined) data.price = price;
   if (imageUrl !== undefined) data.imageUrl = String(imageUrl);
-  if (categoryType !== undefined) data.categoryType = String(categoryType);
+  if (categoryType !== undefined)
+    data.categoryType = normalizeCategory(categoryType);
   if (isFeatured !== undefined) data.isFeatured = Boolean(isFeatured);
 
   const product = await prisma.product.update({

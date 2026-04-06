@@ -50,10 +50,11 @@ export default async function getProducts(
     return { products: [], totalPages: 0 };
   }
 
-  const data: { products: ProductType[]; totalPages: number } =
-    await response.json();
+  const result = await response.json();
+
+  console.log("Fetched products:", result.data.products);
   return {
-    products: data.products,
-    totalPages: data.totalPages,
+    products: result.data.products,
+    totalPages: result.data.totalPages,
   };
 }

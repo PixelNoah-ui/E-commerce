@@ -10,8 +10,8 @@ import {
 
 const router = Router();
 
-router.use(protect);
-router.use(restrictTo("ADMIN"));
+// router.use(protect);
+// router.use(restrictTo("ADMIN"));
 
 router.post("/", createOwnerAddress);
 router.get("/", getOwnerAddresses);

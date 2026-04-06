@@ -16,24 +16,27 @@ export interface ApiResponse<T> {
 }
 
 export async function getAddress(): Promise<OwnerAddress> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/address`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/v1/ownerAddress`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      cache: "no-store",
     },
-    credentials: "include",
-    cache: "no-store",
-  });
+  );
 
   if (!response.ok) {
     throw new Error("Failed to fetch address");
   }
 
-  const result: ApiResponse<OwnerAddress> = await response.json();
+  const result = await response.json();
 
-  if (!result.success) {
+  if (result.status !== "success") {
     throw new Error(result.message || "Failed to fetch address");
   }
 
-  return result.data;
+  return result.data.owner;
 }

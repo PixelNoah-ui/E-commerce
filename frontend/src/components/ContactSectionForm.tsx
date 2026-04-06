@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 
 import useSendMessage from "@/hooks/useUser";
+import { useAddress } from "@/hooks/useAddress";
 
 type FormData = {
   name: string;
@@ -26,6 +27,7 @@ type FormData = {
 
 export default function ContactSectionForm() {
   const { isPending, mutate: sendMessages } = useSendMessage();
+  const { data: address, isLoading, isError } = useAddress();
 
   const {
     register,
@@ -48,26 +50,34 @@ export default function ContactSectionForm() {
       <div className="max-w-7xl mx-auto grid lg:grid-cols-2">
         {/* ================= LEFT PANEL ================= */}
         <div className="bg-primary text-primary-foreground p-10 flex flex-col justify-between relative">
-          {/* Title */}
           <div>
+            {/* Title */}
             <div className="flex items-center gap-3 mb-8">
               <div className="flex gap-1">
                 <div className="w-6 h-[2px] bg-white" />
                 <div className="w-3 h-[2px] bg-white" />
               </div>
-              <h3 className="text-xl text-white font-semibold">
-                Contact Details
-              </h3>
+              <h3 className="text-xl font-semibold">Contact Details</h3>
             </div>
 
             {/* Items */}
             <div className="space-y-8">
               {/* Address */}
               <div className="flex gap-4">
-                <MapPin className="text-white" />
-                <div className="text-white">
+                <MapPin />
+                <div>
                   <p className="text-sm">Head Office</p>
-                  <p className="font-semibold">Jimma, Ethiopia</p>
+                  <div className="font-semibold">
+                    {isLoading ? (
+                      <div className="h-4 w-40 bg-white/30 animate-pulse rounded" />
+                    ) : isError ? (
+                      <span className="text-red-300">
+                        Failed to load address
+                      </span>
+                    ) : (
+                      address?.location || "Jimma, Ethiopia"
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -75,10 +85,18 @@ export default function ContactSectionForm() {
 
               {/* Phone */}
               <div className="flex gap-4">
-                <Phone className="text-white" />
-                <div className="text-white">
+                <Phone />
+                <div>
                   <p className="text-sm">For Support</p>
-                  <p className="font-semibold">+251 911 234 567</p>
+                  <div className="font-semibold">
+                    {isLoading ? (
+                      <div className="h-4 w-32 bg-white/30 animate-pulse rounded" />
+                    ) : isError ? (
+                      <span className="text-red-300">Failed to load phone</span>
+                    ) : (
+                      address?.phone || "+251 911477218"
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -86,8 +104,8 @@ export default function ContactSectionForm() {
 
               {/* Work Hours */}
               <div className="flex gap-4">
-                <Globe className="text-white" />
-                <div className="text-white">
+                <Globe />
+                <div>
                   <p className="text-sm">Work Hours</p>
                   <p className="font-semibold">Mon - Sat 8am to 6pm</p>
                 </div>
@@ -114,9 +132,8 @@ export default function ContactSectionForm() {
             Required fields are marked with *
           </p>
 
-          {/* FORM */}
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Row: Name + Phone */}
+            {/* Name + Phone */}
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <Input
@@ -152,7 +169,7 @@ export default function ContactSectionForm() {
               </div>
             </div>
 
-            {/* Subject Select */}
+            {/* Subject */}
             <div>
               <Controller
                 control={control}
@@ -189,7 +206,9 @@ export default function ContactSectionForm() {
                 className="rounded-none"
                 placeholder="Message"
                 rows={5}
-                {...register("message", { required: "Message is required" })}
+                {...register("message", {
+                  required: "Message is required",
+                })}
               />
               {errors.message && (
                 <p className="text-sm text-destructive mt-1">
@@ -198,9 +217,10 @@ export default function ContactSectionForm() {
               )}
             </div>
 
+            {/* Submit */}
             <Button
               type="submit"
-              disabled={isPending}
+              disabled={isPending || isError}
               className="rounded-none px-8 py-6 text-base font-semibold bg-primary hover:bg-primary/90 flex items-center justify-center gap-2"
             >
               {isPending ? (

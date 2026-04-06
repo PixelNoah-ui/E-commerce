@@ -76,6 +76,7 @@ export const signup = catchAsync(async (req, res, next) => {
       fullName,
       email: email.toLowerCase(),
       password: hashedPassword,
+      role: "USER",
     },
   });
 
@@ -93,18 +94,56 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError("Email & password required", 400));
   }
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({
+    where: { email: email.toLowerCase() },
+  });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
+  // ❌ If user not found
+  if (!user) {
     return next(new AppError("Invalid credentials", 401));
   }
 
-  // 🔒 Check if account locked
-  if (user.lockUntil && user.lockUntil > new Date()) {
-    return next(new AppError("Account locked. Try again later.", 403));
+  if (user.role === "USER") {
+    return next(
+      new AppError("You should expect approval by the super admin", 403),
+    );
   }
 
-  // reset failed attempts
+  // 🔒 Check if account is locked
+  if (user.lockUntil && user.lockUntil > new Date()) {
+    const remainingTime = Math.ceil(
+      (user.lockUntil.getTime() - Date.now()) / 1000 / 60,
+    );
+
+    return next(
+      new AppError(
+        `Account locked. Try again in ${remainingTime} minutes.`,
+        403,
+      ),
+    );
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch) {
+    const attempts = user.failedLoginAttempts + 1;
+
+    const updateData: any = {
+      failedLoginAttempts: attempts,
+    };
+
+    if (attempts >= 5) {
+      updateData.lockUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: updateData,
+    });
+
+    return next(new AppError("Invalid credentials", 401));
+  }
+
   await prisma.user.update({
     where: { id: user.id },
     data: {
@@ -244,7 +283,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 /* ================= UPDATE PASSWORD ================= */
-export const updatePassword = catchAsync(async (req: any, res, next) => {
+export const updatePassword = catchAsync(async (req, res, next) => {
   const { currentPassword, newPassword, confirmPassword } = req.body;
 
   if (!currentPassword || !newPassword || !confirmPassword) {

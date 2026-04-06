@@ -3,7 +3,7 @@ import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
 
 export const createManager = catchAsync(async (req, res, next) => {
-  const { email, password, fullName } = req.body;
+  const { email, password, fullName, imageUrl } = req.body;
 
   if (!email || !password || !fullName) {
     return next(
@@ -20,6 +20,7 @@ export const createManager = catchAsync(async (req, res, next) => {
     data: {
       email,
       password,
+      imageUrl,
       fullName,
       role: "MANAGER",
     },
@@ -30,16 +31,23 @@ export const createManager = catchAsync(async (req, res, next) => {
     data: { manager },
   });
 });
-
 export const getManagers = catchAsync(async (req, res) => {
-  const { q, status = "all", page = "1" } = req.query;
+  const { q, role = "all", page = "1" } = req.query;
 
   const limit = 10;
   const pageNumber = parseInt(page as string) || 1;
   const skip = (pageNumber - 1) * limit;
 
-  const where: any = { role: "MANAGER" };
+  const where: any = {};
 
+  // ✅ Role filter
+  if (role === "manager") {
+    where.role = "MANAGER";
+  } else if (role === "admin") {
+    where.role = "ADMIN";
+  }
+
+  // ✅ Search
   if (q) {
     where.OR = [
       { fullName: { contains: q as string, mode: "insensitive" } },
@@ -47,13 +55,7 @@ export const getManagers = catchAsync(async (req, res) => {
     ];
   }
 
-  if (status === "active") {
-    where.isActive = true;
-  } else if (status === "inactive") {
-    where.isActive = false;
-  }
-
-  const [managers, total] = await Promise.all([
+  const [staff, total] = await Promise.all([
     prisma.user.findMany({
       where,
       skip,
@@ -63,6 +65,7 @@ export const getManagers = catchAsync(async (req, res) => {
         id: true,
         fullName: true,
         email: true,
+        imageUrl: true,
         role: true,
         createdAt: true,
       },
@@ -72,7 +75,7 @@ export const getManagers = catchAsync(async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: managers,
+    data: staff,
     totalPages: Math.ceil(total / limit),
   });
 });
@@ -99,11 +102,13 @@ export const updateManager = catchAsync(async (req, res, next) => {
     return next(new AppError("Manager not found", 404));
   }
 
-  const { email, password } = req.body;
+  console.log("Request body:", req.body);
+  const { email, imageUrl, fullName } = req.body;
   const data: Record<string, unknown> = {};
 
   if (email !== undefined) data.email = String(email);
-  if (password !== undefined) data.password = String(password);
+  if (fullName !== undefined) data.fullName = String(fullName);
+  if (imageUrl !== undefined) data.imageUrl = String(imageUrl);
 
   const updatedManager = await prisma.user.update({
     where: { id: id as string },

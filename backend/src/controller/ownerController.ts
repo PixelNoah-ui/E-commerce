@@ -70,8 +70,8 @@ export const getOwnerAddress = catchAsync(async (req, res, next) => {
 });
 
 export const updateOwnerAddress = catchAsync(async (req, res, next) => {
+  console.log("Request body:", req.body);
   const { fullName, email, phone, address, location } = req.body;
-
   const data: Record<string, unknown> = {};
 
   if (fullName !== undefined) data.fullName = String(fullName);

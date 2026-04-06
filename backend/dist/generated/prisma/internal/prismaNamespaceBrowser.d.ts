@@ -44,6 +44,7 @@ export declare const UserScalarFieldEnum: {
     readonly fullName: "fullName";
     readonly email: "email";
     readonly password: "password";
+    readonly imageUrl: "imageUrl";
     readonly role: "role";
     readonly resetToken: "resetToken";
     readonly resetTokenExpiry: "resetTokenExpiry";
