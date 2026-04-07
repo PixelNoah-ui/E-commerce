@@ -154,30 +154,25 @@ export const getProduct = catchAsync(async (req, res) => {
 });
 
 export const getAdminProducts = catchAsync(async (req, res) => {
-  const { q, status = "all", page = "1" } = req.query;
+  const { q, categoryType, page = "1" } = req.query;
 
   const limit = 10;
-
-  const pageNumber = parseInt(page as string) || 1;
-
+  const pageNumber = Math.max(parseInt(page as string) || 1, 1);
   const skip = (pageNumber - 1) * limit;
 
   const where: any = {};
 
-  if (q) {
+  // 🔍 Search
+  if (q && typeof q === "string" && q.trim() !== "") {
     where.OR = [
-      { name: { contains: q as string, mode: "insensitive" } },
-      { description: { contains: q as string, mode: "insensitive" } },
-      { categoryType: { contains: q as string, mode: "insensitive" } },
+      { name: { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+      { categoryType: { contains: q, mode: "insensitive" } },
     ];
   }
 
-  if (status === "active") {
-    where.isActive = true;
-  } else if (status === "inactive") {
-    where.isActive = false;
-  } else if (status === "featured") {
-    where.isFeatured = true;
+  if (categoryType && typeof categoryType === "string") {
+    where.categoryType = normalizeCategory(categoryType);
   }
 
   const [products, total] = await Promise.all([

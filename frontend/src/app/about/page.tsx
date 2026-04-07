@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useAddress } from "@/hooks/useAddress";
 import WhyChooseUs from "@/components/whyChooseUs";
 
 export default function AboutHero() {
+  const { data: address, isLoading } = useAddress();
+
   return (
     <section className="relative w-full space-y-20 overflow-hidden">
       {/* ================= HERO ================= */}
@@ -52,7 +55,78 @@ export default function AboutHero() {
           </div>
         </div>
       </div>
+      {/* ================= SHOP LOCATION SECTION ================= */}
+      <div className="relative pb-12 max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* LEFT IMAGE - Shop Location */}
+          <div className="relative w-full h-[500px]">
+            <Image
+              src="/images/electronics-seller.png" // Replace with actual shop location images
+              alt="Abdi Electronics Shop Location"
+              fill
+              className="object-contain rounded-lg"
+            />
+          </div>
 
+          <div className="flex flex-col space-y-8">
+            {/* SMALL TITLE */}
+            <span className="text-primary font-semibold uppercase tracking-wider text-sm">
+              Visit Our Store
+            </span>
+
+            {/* BIG TITLE */}
+            <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+              Find Us in Jimma
+              <br /> Your Local Electronics Hub
+            </h2>
+
+            {/* DECOR */}
+            <div className="flex flex-col gap-2">
+              <div className="flex gap-2">
+                <div className="w-10 h-[2px] bg-primary" />
+                <div className="w-5 h-[2px] bg-primary" />
+              </div>
+              <div className="w-10 h-[2px] bg-primary" />
+            </div>
+
+            {/* TEXT */}
+            <p className="text-gray-700 leading-relaxed">
+              Located in the heart of Jimma, our physical store offers a
+              hands-on experience where you can see, test, and purchase the
+              latest electronics. Visit us to explore our wide range of products
+              and get expert advice from our knowledgeable staff.
+            </p>
+
+            {/* LOCATION DETAILS */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Image src="/icons/globe.svg" alt="" width={24} height={24} />
+                <div className="text-gray-700 flex items-center gap-3">
+                  {address?.address},
+                  <span>{address?.location || "Jimma, Ethiopia"}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <Image src="/icons/phone.svg" alt="" width={24} height={24} />
+                <span className="text-gray-700">
+                  {address?.phone || "+251 911 123 456"}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Image src="/icons/time.svg" alt="" width={24} height={24} />
+                <span className="text-gray-700">Mon - Sat: 9AM - 7PM</span>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div>
+              <Button className="px-7 rounded-none" asChild>
+                <Link href="/contact"> Get Directions</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
       {/* ================= ABOUT CONTENT ================= */}
       <div className="relative pb-12 max-w-7xl mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">

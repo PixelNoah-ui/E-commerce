@@ -91,6 +91,8 @@ async function ProductResults({
     return <NoProductsFound />;
   }
   const Products = data.products;
+  const totalPages = data.totalPages;
+  const currentPage = page;
 
   return (
     <div className="space-y-10 group-has-[[data-pending]]:animate-pulse">
@@ -99,7 +101,7 @@ async function ProductResults({
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-      <PaginationBar currentPage={2} totalPage={4} />
+      <PaginationBar currentPage={currentPage} totalPage={totalPages} />
     </div>
   );
 }

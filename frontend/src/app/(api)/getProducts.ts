@@ -54,7 +54,6 @@ export default async function getProducts(
 
   const result = await response.json();
 
-  console.log("Fetched products:", result.data.products);
   return {
     products: result.data.products,
     totalPages: result.data.totalPages,

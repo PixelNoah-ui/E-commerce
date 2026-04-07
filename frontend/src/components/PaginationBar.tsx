@@ -18,7 +18,7 @@ interface paginatiotProps {
 
 export default function PaginationBar({
   totalPage,
-  currentPage,
+  currentPage = 1,
 }: paginatiotProps) {
   const searchParams = useSearchParams();
 
@@ -55,12 +55,12 @@ export default function PaginationBar({
           return (
             <PaginationItem
               key={page}
-              className={`hidden md:block ${currentPage === page ? "pointer-events-none" : ""}`}
+              className={`hidden${currentPage === page ? "pointer-events-none" : ""} md:block`}
             >
               <PaginationLink
                 isActive={page === currentPage}
                 href={getLink(page)}
-                className={`transition-colors ${page === currentPage ? "text-white" : "text-slate-700 hover:text-slate-900"}`}
+                className={`${page === currentPage ? "pointer-events-none" : ""}`}
               >
                 {page}
               </PaginationLink>
@@ -70,7 +70,7 @@ export default function PaginationBar({
         <PaginationItem>
           <PaginationNext
             href={getLink(currentPage + 1)}
-            className={`text-muted-foreground ${currentPage === totalPage ? "pointer-events-none" : ""}`}
+            className={`text-muted-foreground ${currentPage === totalPage && "pointer-events-none"}`}
           />
         </PaginationItem>
       </PaginationContent>

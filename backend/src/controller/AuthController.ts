@@ -228,7 +228,7 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
     },
   });
 
-  const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+  const resetURL = `${process.env.CLIENT_URL}/resetPassword/${resetToken}`;
 
   await sendEmail({
     email: user.email,
@@ -245,7 +245,13 @@ export const forgotPassword = catchAsync(async (req, res, next) => {
 /* ================= RESET PASSWORD ================= */
 export const resetPassword = catchAsync(async (req, res, next) => {
   const { token } = req.params;
-  const { password } = req.body;
+  const { newPassword, confirmPassword } = req.body;
+  if (!newPassword || !confirmPassword) {
+    return next(new AppError("All fields required", 400));
+  }
+  if (newPassword !== confirmPassword) {
+    return next(new AppError("Passwords do not match", 400));
+  }
 
   if (!token) {
     return next(new AppError("Token missing", 400));
@@ -267,7 +273,7 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     return next(new AppError("Invalid or expired token", 400));
   }
 
-  const hashedPassword = await bcrypt.hash(password, 12);
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
 
   await prisma.user.update({
     where: { id: user.id },
@@ -279,7 +285,10 @@ export const resetPassword = catchAsync(async (req, res, next) => {
     },
   });
 
-  createSendToken(user, 200, res, "Password reset successful");
+  res.status(200).json({
+    status: "success",
+    message: "Password reset successful",
+  });
 });
 
 /* ================= UPDATE PASSWORD ================= */

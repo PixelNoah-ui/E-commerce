@@ -5,7 +5,7 @@ const router = Router();
 router.post("/signup", signup);
 router.post("/login", login);
 router.post("/forgot-password", forgotPassword);
-router.patch("/reset-password/:token", resetPassword);
+router.post("/reset-password/:token", resetPassword);
 router.use(protect);
 router.post("/logout", logout);
 router.get("/me", getMe);
