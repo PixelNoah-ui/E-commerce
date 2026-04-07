@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { sortType } from "@/types/Types";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useOptimistic, useState, useTransition } from "react";
 
 interface RentalsFiltersLayoutProps {
@@ -23,6 +23,7 @@ export default function RentalsFiltersLayout({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const pathname = usePathname();
   const [optimisticFilters, setOptimisticFilters] = useOptimistic({
     price_min: searchParams.get("price_min") || undefined,
     price_max: searchParams.get("price_max") || undefined,
@@ -49,7 +50,7 @@ export default function RentalsFiltersLayout({
 
     startTransition(() => {
       setOptimisticFilters(newState);
-      router.replace(`?${newSearchParams.toString()}`, { scroll: false });
+      router.push(`${pathname}?${newSearchParams.toString()}`);
     });
   }
 

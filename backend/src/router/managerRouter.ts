@@ -8,13 +8,13 @@ import {
   updateManager,
 } from "../controller/managerController.js";
 import { processProductImage, upload } from "../middleware/uploadImages.js";
+import { protect } from "../controller/AuthController.js";
 
 const router = Router();
-
-// router.use(restrictTo("ADMIN"));
-
-router.post("/", upload.single("image"), processProductImage, createManager);
+router.use(protect);
+router.use(restrictTo("ADMIN"));
 router.get("/", getManagers);
+router.post("/", upload.single("image"), processProductImage, createManager);
 router.get("/:id", getManager);
 router.patch(
   "/:id",

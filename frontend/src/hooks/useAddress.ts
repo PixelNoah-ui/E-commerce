@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAddress, OwnerAddress } from "@/app/(api)/getAddress";
+import getAddress, { Address } from "@/app/(api)/getAddress";
 
 export function useAddress() {
-  return useQuery<OwnerAddress>({
+  return useQuery<Address>({
     queryKey: ["address"],
     queryFn: getAddress,
     staleTime: 5 * 60 * 1000, // 5 minutes

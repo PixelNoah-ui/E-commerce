@@ -46,6 +46,8 @@ export default async function getProducts(
   );
 
   if (!response.ok) {
+    const errorData = await response.json();
+    console.error("Failed to fetch products:", errorData);
     console.error("Failed to fetch products");
     return { products: [], totalPages: 0 };
   }

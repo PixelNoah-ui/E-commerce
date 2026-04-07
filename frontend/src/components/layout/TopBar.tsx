@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useAddress } from "@/hooks/useAddress";
 
 export default function TopBar() {
-  const { data: address, isLoading, isError } = useAddress();
+  const { data: address, isLoading } = useAddress();
+
+  const phone = address?.phone ?? "+251 911477215";
+  const email = address?.email ?? "noreply@company.com";
+  const location = address?.location ?? "Jimma, Ethiopia";
 
   return (
     <div className="w-full bg-muted/40 border-b text-sm py-3">
@@ -29,10 +33,8 @@ export default function TopBar() {
 
             {isLoading ? (
               <span className="animate-pulse">Loading...</span>
-            ) : isError ? (
-              <span className="text-red-500">Error</span>
             ) : (
-              <span>{address?.phone || "+251 911477218"}</span>
+              <span>{phone}</span>
             )}
           </div>
 
@@ -42,12 +44,8 @@ export default function TopBar() {
 
             {isLoading ? (
               <span className="animate-pulse">Loading...</span>
-            ) : isError ? (
-              <span className="text-red-500">Error</span>
             ) : (
-              <span className="hover:text-primary transition">
-                {address?.email || "noreply@company.com"}
-              </span>
+              <span className="hover:text-primary transition">{email}</span>
             )}
           </div>
         </div>
@@ -58,11 +56,9 @@ export default function TopBar() {
 
           {isLoading ? (
             <span className="animate-pulse">Loading...</span>
-          ) : isError ? (
-            <span className="text-red-500">Error</span>
           ) : (
             <span className="hover:text-primary transition cursor-pointer">
-              {address?.location || "Jimma, Ethiopia"}
+              {location}
             </span>
           )}
         </div>

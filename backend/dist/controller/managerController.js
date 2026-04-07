@@ -1,6 +1,7 @@
 import { prisma } from "../lib/Prisma.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
+import bcrypt from "bcryptjs";
 export const createManager = catchAsync(async (req, res, next) => {
     const { email, password, fullName, imageUrl } = req.body;
     if (!email || !password || !fullName) {
@@ -10,10 +11,11 @@ export const createManager = catchAsync(async (req, res, next) => {
     if (existingManager) {
         return next(new AppError("A user with this email already exists", 409));
     }
+    const hashedPassword = await bcrypt.hash(password, 12);
     const manager = await prisma.user.create({
         data: {
             email,
-            password,
+            password: hashedPassword,
             imageUrl,
             fullName,
             role: "MANAGER",

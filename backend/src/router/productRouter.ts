@@ -10,15 +10,17 @@ import {
 } from "../controller/productsController.js";
 import { restrictTo } from "../middleware/auth.js";
 import { processProductImage, upload } from "../middleware/uploadImages.js";
+import { protect } from "../controller/AuthController.js";
 
 const router = Router();
-
-router.post("/", upload.single("image"), processProductImage, createProduct);
 router.get("/new-arrivals", getNewArrivals);
-router.get("/", getProducts).get("/admin-products", getAdminProducts);
+router.get("/", getProducts);
+router.use(protect);
+router.post("/", upload.single("image"), processProductImage, createProduct);
+router.get("/admin-products", getAdminProducts);
 
 router.get("/:id", getProduct);
-// router.use(restrictTo("ADMIN"));
+router.use(restrictTo("ADMIN"));
 router.patch(
   "/:id",
   upload.single("image"),

@@ -8,7 +8,7 @@ export default function NewArriveProducts() {
   const { isLoading, data: newProducts } = useGetNewProducts();
 
   return (
-    <div className="bg-slate-50 pt-2">
+    <div className="bg-slate-50 pt-2 pb-5">
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-10 my-16">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold">
           New Products

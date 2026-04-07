@@ -89,14 +89,18 @@ export const getProducts = catchAsync(async (req, res) => {
   }
 
   if (price_min || price_max) {
-    where.price = {};
+    const priceFilter: Record<string, string> = {};
     if (price_min) {
       const minValue = Number(price_min);
-      if (!Number.isNaN(minValue)) where.price.gte = minValue;
+      if (!Number.isNaN(minValue)) priceFilter.gte = String(minValue);
     }
     if (price_max) {
       const maxValue = Number(price_max);
-      if (!Number.isNaN(maxValue)) where.price.lte = maxValue;
+      if (!Number.isNaN(maxValue)) priceFilter.lte = String(maxValue);
+    }
+
+    if (Object.keys(priceFilter).length > 0) {
+      where.price = priceFilter;
     }
   }
 

@@ -33,10 +33,8 @@ export default async function CategoryPage({
     price_min,
     price_max,
     sort = "last_updated",
-  } = searchParams;
+  } = await searchParams;
   const currentPage = Number(page) >= 1 ? Number(page) : 1;
-  const minPrice = price_min ? parseFloat(price_min) : undefined;
-  const maxPrice = price_max ? parseFloat(price_max) : undefined;
 
   return (
     <section className="w-full">
@@ -47,13 +45,13 @@ export default async function CategoryPage({
 
         <Suspense
           fallback={<LoadingSkeleton />}
-          key={`${slug}-${currentPage}-${sort}`}
+          key={`${slug}-${currentPage}-${sort}-${price_min || ""}-${price_max || ""}`}
         >
           <ProductResults
             slug={slug}
             page={currentPage}
-            priceMin={minPrice}
-            priceMax={maxPrice}
+            priceMin={price_min ? parseInt(price_min) : undefined}
+            priceMax={price_max ? parseInt(price_max) : undefined}
             sort={sort as sortType}
           />
         </Suspense>

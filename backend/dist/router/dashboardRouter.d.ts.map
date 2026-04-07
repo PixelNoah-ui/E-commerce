@@ -1,1 +1,1 @@
-{"version":3,"file":"dashboardRouter.d.ts","sourceRoot":"","sources":["../../src/router/dashboardRouter.ts"],"names":[],"mappings":"AAGA,QAAA,MAAM,MAAM,4CAAW,CAAC;AAGxB,eAAe,MAAM,CAAC"}
+{"version":3,"file":"dashboardRouter.d.ts","sourceRoot":"","sources":["../../src/router/dashboardRouter.ts"],"names":[],"mappings":"AAIA,QAAA,MAAM,MAAM,4CAAW,CAAC;AAIxB,eAAe,MAAM,CAAC"}

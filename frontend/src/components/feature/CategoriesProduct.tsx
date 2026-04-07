@@ -19,7 +19,7 @@ const categories = [
     id: "2",
     name: "Laptops",
     description: "Powerful laptops for work & gaming",
-    imageUrl: "/images/laptop.jpg",
+    imageUrl: "/images/laptop.png",
     category: "electronics",
     slug: "laptops",
   },

@@ -1,8 +1,16 @@
+"use client";
+
 import Link from "next/link";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import Image from "next/image";
+import { useAddress } from "@/hooks/useAddress";
 
 export default function Footer() {
+  const { data: address, isLoading } = useAddress();
+  const phone = address?.phone ?? "+251 911 123 456";
+  const email = address?.email ?? "support@abdielectronics.com";
+  const location = address?.location ?? "Jimma, Ethiopia";
+
   return (
     <footer className="bg-[#0c0c0c] text-slate-300 pt-20">
       <div className="max-w-7xl mx-auto px-6 md:px-8 lg:px-10">
@@ -37,11 +45,15 @@ export default function Footer() {
             <div className="space-y-3 text-sm text-slate-400">
               <p className="flex items-center gap-3">
                 <Phone className="h-4 w-4 text-primary" />
-                <span>+251 911 123 456</span>
+                <span>{isLoading ? "Loading..." : phone}</span>
               </p>
               <p className="flex items-center gap-3">
                 <Mail className="h-4 w-4 text-primary" />
-                <span>support@abdielectronics.com</span>
+                <span>{isLoading ? "Loading..." : email}</span>
+              </p>
+              <p className="flex items-center gap-3">
+                <MapPin className="h-4 w-4 text-primary" />
+                <span>{isLoading ? "Loading..." : location}</span>
               </p>
             </div>
           </div>

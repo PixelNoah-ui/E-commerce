@@ -60,16 +60,19 @@ export const getProducts = catchAsync(async (req, res) => {
         }
     }
     if (price_min || price_max) {
-        where.price = {};
+        const priceFilter = {};
         if (price_min) {
             const minValue = Number(price_min);
             if (!Number.isNaN(minValue))
-                where.price.gte = minValue;
+                priceFilter.gte = String(minValue);
         }
         if (price_max) {
             const maxValue = Number(price_max);
             if (!Number.isNaN(maxValue))
-                where.price.lte = maxValue;
+                priceFilter.lte = String(maxValue);
+        }
+        if (Object.keys(priceFilter).length > 0) {
+            where.price = priceFilter;
         }
     }
     const orderBy = sort === "price_asc"
