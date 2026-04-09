@@ -66,9 +66,8 @@ export const login = catchAsync(async (req, res, next) => {
     const user = await prisma.user.findUnique({
         where: { email: email.toLowerCase() },
     });
-    // ❌ If user not found
     if (!user) {
-        return next(new AppError("Invalid credentials", 401));
+        return next(new AppError("Invalid email or password", 401));
     }
     if (user.role === "USER") {
         return next(new AppError("You should expect approval by the super admin", 403));

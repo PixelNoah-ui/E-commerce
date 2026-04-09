@@ -98,9 +98,8 @@ export const login = catchAsync(async (req, res, next) => {
     where: { email: email.toLowerCase() },
   });
 
-  // ❌ If user not found
   if (!user) {
-    return next(new AppError("Invalid credentials", 401));
+    return next(new AppError("Invalid email or password", 401));
   }
 
   if (user.role === "USER") {

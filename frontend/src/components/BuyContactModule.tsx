@@ -12,6 +12,7 @@ export default function BuyContactModule() {
 
   const phone = address?.phone || "+251 911 234 567";
   const location = address?.address || "Jimma, Ethiopia";
+  const subLocation = address?.location || "imma, Ethiopia";
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -35,7 +36,8 @@ export default function BuyContactModule() {
           {/* ADDRESS */}
           <div className="flex items-start gap-3 text-sm">
             <MapPin className="h-4 w-4 text-primary mt-0.5" />
-            <span className="font-medium leading-relaxed">{location}</span>
+            <span className="font-medium leading-relaxed">{location} </span>
+            <span className="font-medium leading-relaxed">{subLocation}</span>
           </div>
 
           {/* PHONE */}

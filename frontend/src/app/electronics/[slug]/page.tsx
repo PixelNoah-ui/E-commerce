@@ -98,7 +98,7 @@ async function ProductResults({
           <ProductCard key={product.id} product={product} />
         ))}
       </div>
-      <PaginationBar totalPage={data.totalPages} />
+      <PaginationBar currentPage={page} totalPage={data.totalPages} />
     </div>
   );
 }

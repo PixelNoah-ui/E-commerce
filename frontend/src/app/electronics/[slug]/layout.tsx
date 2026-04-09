@@ -5,8 +5,11 @@ import { Metadata } from "next";
 const categoryBgImages: Record<string, string> = {
   smartphones: "/images/s23.png",
   laptops: "/images/laptop.jpg",
+  refrigerators: "/images/refrigerator.png",
+  "washing-machines": "/images/washing-machines.png",
   smartwatches: "/images/smartwatch.png",
   "audio-speakers": "/images/headphones.png",
+  "air-conditioners": "/images/ac.png",
   accessories: "/images/headphones.png",
   headphones: "/images/headphones.png",
 };

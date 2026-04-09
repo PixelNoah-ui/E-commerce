@@ -1,6 +1,8 @@
 "use client";
 
+import { Suspense } from "react";
 import SearchFilterLayout from "./SearchFilter";
+import LoadingSkeleton from "./laodingSkeleton";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const uniqueCategories = [
@@ -15,8 +17,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   ];
 
   return (
-    <SearchFilterLayout collections={uniqueCategories}>
-      {children}
-    </SearchFilterLayout>
+    <Suspense fallback={<LoadingSkeleton />}>
+      <SearchFilterLayout collections={uniqueCategories}>
+        {children}
+      </SearchFilterLayout>
+    </Suspense>
   );
 }

@@ -39,7 +39,7 @@ export const getProducts = catchAsync(async (req, res) => {
     const where = {
         isActive: true,
     };
-    const limit = 10;
+    const limit = 9;
     if (q) {
         const query = String(q);
         where.OR = [

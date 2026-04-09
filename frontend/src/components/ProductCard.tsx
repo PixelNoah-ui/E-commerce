@@ -36,8 +36,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       <div className="border-b border-gray-300 mb-4"></div>
 
       {/* PRODUCT DETAILS */}
-      <h2 className="text-base font-semibold">{product.name}</h2>
-      <p className="text-gray-800 font-bold mt-2">${product.price}</p>
+      <h2 className="text-base text-muted-foreground font-semibold">
+        {product.name}
+      </h2>
+      <p className="text-gray-800 font-bold mt-2">
+        {product?.price ? Number(product.price).toLocaleString() : "0"}{" "}
+        <span className="text-green-500">ETB</span>
+      </p>
       <BuyContactModule />
     </div>
   );
