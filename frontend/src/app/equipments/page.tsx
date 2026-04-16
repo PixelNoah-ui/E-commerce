@@ -21,6 +21,15 @@ interface PageProps {
 export function generateMetadata({ searchParams: { q } }: PageProps): Metadata {
   return {
     title: q ? `Results for "${q}"` : "Products",
+    openGraph: {
+      title: q ? `Results for "${q}"` : "Products",
+      url: q
+        ? `https://abduelectronics.com/equipments?q=${encodeURIComponent(q)}`
+        : "https://abduelectronics.com/equipments",
+      siteName: "AbdulJelil Electronics",
+      locale: "en_ET",
+      type: "website",
+    },
   };
 }
 
@@ -95,7 +104,7 @@ async function ProductResults({
   const currentPage = page;
 
   return (
-    <div className="space-y-10 group-has-[[data-pending]]:animate-pulse">
+    <div className="space-y-10 group-has-data-pending:animate-pulse">
       <div className="flex grid-cols-2 flex-col gap-5 sm:grid xl:grid-cols-3 2xl:grid-cols-4">
         {Products.map((product) => (
           <ProductCard key={product.id} product={product} />

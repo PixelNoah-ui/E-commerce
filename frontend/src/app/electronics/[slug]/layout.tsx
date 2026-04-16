@@ -38,12 +38,16 @@ export async function generateMetadata({
   const formatted = formatSlug(slug);
 
   return {
-    title: `${formatted} | Abdi Electronics`,
-    description: `Shop ${formatted} at Abdi Electronics. Best prices in Ethiopia.`,
+    title: `${formatted} | AbdulJelil Electronics`,
+    description: `Shop ${formatted} at AbdulJelil Electronics. Best prices in Ethiopia.`,
     openGraph: {
-      title: `${formatted} | Abdi Electronics`,
+      title: `${formatted} | AbdulJelil Electronics`,
       description: `Browse ${formatted} with great deals.`,
+      url: `https://abduelectronics.com/electronics/${slug}`,
       images: ["/images/bg.png"],
+      siteName: "AbdulJelil Electronics",
+      locale: "en_ET",
+      type: "website",
     },
   };
 }

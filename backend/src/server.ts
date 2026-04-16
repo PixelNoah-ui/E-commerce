@@ -6,15 +6,21 @@ dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 app.use(morgan("dev"));
-await prisma.$connect();
+let server: ReturnType<typeof app.listen>;
 
-const server = app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+async function start() {
+  await prisma.$connect();
+
+  server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+  });
+}
+
+start();
 
 process.on("unhandledRejection", (err: any) => {
   console.error("UNHANDLED REJECTION 💥", err);
-  server.close(async () => {
+  server?.close(async () => {
     await prisma.$disconnect();
     process.exit(1);
   });
@@ -27,7 +33,7 @@ process.on("uncaughtException", (err) => {
 
 process.on("SIGTERM", async () => {
   console.log("👋 SIGTERM received. Shutting down...");
-  server.close(async () => {
+  server?.close(async () => {
     await prisma.$disconnect();
   });
 });

@@ -1,18 +1,24 @@
-import { prisma } from "../lib/Prisma.js";
-import { AppError } from "../utils/AppError.js";
-import { catchAsync } from "../utils/catchAsync .js";
-import bcrypt from "bcryptjs";
-export const createManager = catchAsync(async (req, res, next) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteManager = exports.updateManager = exports.getManager = exports.getManagers = exports.createManager = void 0;
+const Prisma_js_1 = require("../lib/Prisma.js");
+const AppError_js_1 = require("../utils/AppError.js");
+const catchAsync__js_1 = require("../utils/catchAsync .js");
+const bcryptjs_1 = __importDefault(require("bcryptjs"));
+exports.createManager = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { email, password, fullName, imageUrl } = req.body;
     if (!email || !password || !fullName) {
-        return next(new AppError("Email, password, and full name are required", 400));
+        return next(new AppError_js_1.AppError("Email, password, and full name are required", 400));
     }
-    const existingManager = await prisma.user.findUnique({ where: { email } });
+    const existingManager = await Prisma_js_1.prisma.user.findUnique({ where: { email } });
     if (existingManager) {
-        return next(new AppError("A user with this email already exists", 409));
+        return next(new AppError_js_1.AppError("A user with this email already exists", 409));
     }
-    const hashedPassword = await bcrypt.hash(password, 12);
-    const manager = await prisma.user.create({
+    const hashedPassword = await bcryptjs_1.default.hash(password, 12);
+    const manager = await Prisma_js_1.prisma.user.create({
         data: {
             email,
             password: hashedPassword,
@@ -26,7 +32,7 @@ export const createManager = catchAsync(async (req, res, next) => {
         data: { manager },
     });
 });
-export const getManagers = catchAsync(async (req, res) => {
+exports.getManagers = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const { q, role = "all", page = "1" } = req.query;
     const limit = 10;
     const pageNumber = parseInt(page) || 1;
@@ -47,7 +53,7 @@ export const getManagers = catchAsync(async (req, res) => {
         ];
     }
     const [staff, total] = await Promise.all([
-        prisma.user.findMany({
+        Prisma_js_1.prisma.user.findMany({
             where,
             skip,
             take: limit,
@@ -61,7 +67,7 @@ export const getManagers = catchAsync(async (req, res) => {
                 createdAt: true,
             },
         }),
-        prisma.user.count({ where }),
+        Prisma_js_1.prisma.user.count({ where }),
     ]);
     res.status(200).json({
         success: true,
@@ -69,22 +75,22 @@ export const getManagers = catchAsync(async (req, res) => {
         totalPages: Math.ceil(total / limit),
     });
 });
-export const getManager = catchAsync(async (req, res, next) => {
+exports.getManager = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const id = req.params.id;
-    const manager = await prisma.user.findUnique({ where: { id: id } });
+    const manager = await Prisma_js_1.prisma.user.findUnique({ where: { id: id } });
     if (!manager || manager.role !== "MANAGER") {
-        return next(new AppError("Manager not found", 404));
+        return next(new AppError_js_1.AppError("Manager not found", 404));
     }
     res.status(200).json({
         status: "success",
         data: { manager },
     });
 });
-export const updateManager = catchAsync(async (req, res, next) => {
+exports.updateManager = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const id = req.params.id;
-    const manager = await prisma.user.findUnique({ where: { id: id } });
+    const manager = await Prisma_js_1.prisma.user.findUnique({ where: { id: id } });
     if (!manager || manager.role !== "MANAGER") {
-        return next(new AppError("Manager not found", 404));
+        return next(new AppError_js_1.AppError("Manager not found", 404));
     }
     console.log("Request body:", req.body);
     const { email, imageUrl, fullName } = req.body;
@@ -95,7 +101,7 @@ export const updateManager = catchAsync(async (req, res, next) => {
         data.fullName = String(fullName);
     if (imageUrl !== undefined)
         data.imageUrl = String(imageUrl);
-    const updatedManager = await prisma.user.update({
+    const updatedManager = await Prisma_js_1.prisma.user.update({
         where: { id: id },
         data,
     });
@@ -104,13 +110,13 @@ export const updateManager = catchAsync(async (req, res, next) => {
         data: { manager: updatedManager },
     });
 });
-export const deleteManager = catchAsync(async (req, res, next) => {
+exports.deleteManager = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const id = req.params.id;
-    const manager = await prisma.user.findUnique({ where: { id: id } });
+    const manager = await Prisma_js_1.prisma.user.findUnique({ where: { id: id } });
     if (!manager || manager.role !== "MANAGER") {
-        return next(new AppError("Manager not found", 404));
+        return next(new AppError_js_1.AppError("Manager not found", 404));
     }
-    await prisma.user.delete({ where: { id: id } });
+    await Prisma_js_1.prisma.user.delete({ where: { id: id } });
     res.status(200).json({
         status: "success",
         message: "Manager deleted successfully",

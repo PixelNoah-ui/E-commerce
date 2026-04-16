@@ -45,7 +45,7 @@ const categories = [
     id: "5",
     name: "Refrigerators",
     description: "Energy-efficient cooling solutions",
-    imageUrl: "/images/refrigerators.png",
+    imageUrl: "/images/refrigerator.png",
     category: "electronics",
     slug: "refrigerators",
   },

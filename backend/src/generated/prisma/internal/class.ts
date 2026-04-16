@@ -12,7 +12,7 @@
  */
 
 import * as runtime from "@prisma/client/runtime/client"
-import type * as Prisma from "./prismaNamespace.js"
+import type * as Prisma from "./prismaNamespace"
 
 
 const config: runtime.GetPrismaClientConfig = {
@@ -20,7 +20,7 @@ const config: runtime.GetPrismaClientConfig = {
   "clientVersion": "7.6.0",
   "engineVersion": "75cbdc1eb7150937890ad5465d861175c6624711",
   "activeProvider": "postgresql",
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum Role {\n  ADMIN\n  MANAGER\n  USER\n}\n\nmodel User {\n  id                  String    @id @default(uuid())\n  fullName            String\n  email               String    @unique\n  password            String\n  imageUrl            String?\n  role                Role      @default(USER)\n  resetToken          String?\n  resetTokenExpiry    DateTime?\n  passwordChangedAt   DateTime?\n  failedLoginAttempts Int       @default(0)\n  lockUntil           DateTime?\n  createdAt           DateTime  @default(now())\n  updatedAt           DateTime  @updatedAt\n}\n\nmodel Product {\n  id           String  @id @default(uuid())\n  name         String\n  description  String\n  price        String\n  imageUrl     String\n  categoryType String\n  isFeatured   Boolean @default(false)\n  isActive     Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel OwnerAddress {\n  id        String   @id @default(uuid())\n  fullName  String\n  email     String   @unique\n  phone     String?\n  address   String?\n  location  String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Message {\n  id        String   @id @default(uuid())\n  name      String\n  phone     String\n  subject   String\n  message   String\n  createdAt DateTime @default(now())\n}\n",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider   = \"prisma-client\"\n  output     = \"../src/generated/prisma\"\n  moduleType = \"commonjs\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nenum Role {\n  ADMIN\n  MANAGER\n  USER\n}\n\nmodel User {\n  id                  String    @id @default(uuid())\n  fullName            String\n  email               String    @unique\n  password            String\n  imageUrl            String?\n  role                Role      @default(USER)\n  resetToken          String?\n  resetTokenExpiry    DateTime?\n  passwordChangedAt   DateTime?\n  failedLoginAttempts Int       @default(0)\n  lockUntil           DateTime?\n  createdAt           DateTime  @default(now())\n  updatedAt           DateTime  @updatedAt\n}\n\nmodel Product {\n  id           String  @id @default(uuid())\n  name         String\n  description  String\n  price        String\n  imageUrl     String\n  categoryType String\n  isFeatured   Boolean @default(false)\n  isActive     Boolean @default(true)\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel OwnerAddress {\n  id        String   @id @default(uuid())\n  fullName  String\n  email     String   @unique\n  phone     String?\n  address   String?\n  location  String?\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Message {\n  id        String   @id @default(uuid())\n  name      String\n  phone     String\n  subject   String\n  message   String\n  createdAt DateTime @default(now())\n}\n",
   "runtimeDataModel": {
     "models": {},
     "enums": {},
@@ -45,10 +45,10 @@ async function decodeBase64AsWasm(wasmBase64: string): Promise<WebAssembly.Modul
 }
 
 config.compilerWasm = {
-  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.mjs"),
+  getRuntime: async () => await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.js"),
 
   getQueryCompilerWasmModule: async () => {
-    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.mjs")
+    const { wasm } = await import("@prisma/client/runtime/query_compiler_fast_bg.postgresql.wasm-base64.js")
     return await decodeBase64AsWasm(wasm)
   },
 

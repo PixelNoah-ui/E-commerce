@@ -1,13 +1,16 @@
-import { prisma } from "../lib/Prisma.js";
-import { AppError } from "../utils/AppError.js";
-import { catchAsync } from "../utils/catchAsync .js";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteOwnerAddress = exports.updateOwnerAddress = exports.getOwnerAddress = exports.getOwnerAddresses = exports.createOwnerAddress = void 0;
+const Prisma_js_1 = require("../lib/Prisma.js");
+const AppError_js_1 = require("../utils/AppError.js");
+const catchAsync__js_1 = require("../utils/catchAsync .js");
 const OWNER_ADDRESS_ID = "fixed-owner-address-id";
-export const createOwnerAddress = catchAsync(async (req, res, next) => {
+exports.createOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { fullName, email, phone, address, location } = req.body;
     if (!fullName || !email) {
-        return next(new AppError("Full name and email are required", 400));
+        return next(new AppError_js_1.AppError("Full name and email are required", 400));
     }
-    const owner = await prisma.ownerAddress.upsert({
+    const owner = await Prisma_js_1.prisma.ownerAddress.upsert({
         where: { id: OWNER_ADDRESS_ID },
         update: {
             fullName,
@@ -30,8 +33,8 @@ export const createOwnerAddress = catchAsync(async (req, res, next) => {
         data: { owner },
     });
 });
-export const getOwnerAddresses = catchAsync(async (_req, res) => {
-    const owner = await prisma.ownerAddress.findUnique({
+exports.getOwnerAddresses = (0, catchAsync__js_1.catchAsync)(async (_req, res) => {
+    const owner = await Prisma_js_1.prisma.ownerAddress.findUnique({
         where: { id: OWNER_ADDRESS_ID },
     });
     if (!owner) {
@@ -45,19 +48,19 @@ export const getOwnerAddresses = catchAsync(async (_req, res) => {
         data: { owner },
     });
 });
-export const getOwnerAddress = catchAsync(async (req, res, next) => {
-    const owner = await prisma.ownerAddress.findUnique({
+exports.getOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
+    const owner = await Prisma_js_1.prisma.ownerAddress.findUnique({
         where: { id: OWNER_ADDRESS_ID },
     });
     if (!owner) {
-        return next(new AppError("Owner not found", 404));
+        return next(new AppError_js_1.AppError("Owner not found", 404));
     }
     res.status(200).json({
         status: "success",
         data: { owner },
     });
 });
-export const updateOwnerAddress = catchAsync(async (req, res, next) => {
+exports.updateOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     console.log("Request body:", req.body);
     const { fullName, email, phone, address, location } = req.body;
     const data = {};
@@ -71,7 +74,7 @@ export const updateOwnerAddress = catchAsync(async (req, res, next) => {
         data.address = String(address);
     if (location !== undefined)
         data.location = String(location);
-    const updatedOwner = await prisma.ownerAddress.upsert({
+    const updatedOwner = await Prisma_js_1.prisma.ownerAddress.upsert({
         where: { id: OWNER_ADDRESS_ID },
         update: data,
         create: {
@@ -88,14 +91,14 @@ export const updateOwnerAddress = catchAsync(async (req, res, next) => {
         data: { owner: updatedOwner },
     });
 });
-export const deleteOwnerAddress = catchAsync(async (req, res, next) => {
-    const ownerAddress = await prisma.ownerAddress.findUnique({
+exports.deleteOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
+    const ownerAddress = await Prisma_js_1.prisma.ownerAddress.findUnique({
         where: { id: OWNER_ADDRESS_ID },
     });
     if (!ownerAddress) {
-        return next(new AppError("OwnerAddress not found", 404));
+        return next(new AppError_js_1.AppError("OwnerAddress not found", 404));
     }
-    await prisma.ownerAddress.delete({ where: { id: OWNER_ADDRESS_ID } });
+    await Prisma_js_1.prisma.ownerAddress.delete({ where: { id: OWNER_ADDRESS_ID } });
     res.status(200).json({
         status: "success",
         message: "Owner deleted successfully",

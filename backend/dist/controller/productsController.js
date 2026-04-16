@@ -1,18 +1,25 @@
-import { prisma } from "../lib/Prisma.js";
-import { AppError } from "../utils/AppError.js";
-import { catchAsync } from "../utils/catchAsync .js";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getNewArrivals = exports.deleteProduct = exports.updateProduct = exports.getAdminProducts = exports.getProduct = exports.getProducts = exports.createProduct = void 0;
+const cloudinary_js_1 = __importDefault(require("../lib/cloudinary.js"));
+const Prisma_js_1 = require("../lib/Prisma.js");
+const AppError_js_1 = require("../utils/AppError.js");
+const catchAsync__js_1 = require("../utils/catchAsync .js");
 // Create Product
 function normalizeCategory(value) {
     return String(value).trim().toUpperCase();
 }
-export const createProduct = catchAsync(async (req, res, next) => {
+exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
     if (!name || !description || !price || !imageUrl || !categoryType) {
         console.log("❌ Missing required fields:", req.body);
-        return next(new AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
+        return next(new AppError_js_1.AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
     }
     try {
-        const product = await prisma.product.create({
+        const product = await Prisma_js_1.prisma.product.create({
             data: {
                 name,
                 description,
@@ -30,11 +37,11 @@ export const createProduct = catchAsync(async (req, res, next) => {
     }
     catch (err) {
         console.error("🔥 REAL BACKEND ERROR:", err); // <- see the real error here
-        next(new AppError(err.message || "Failed to create product", 500));
+        next(new AppError_js_1.AppError(err.message || "Failed to create product", 500));
     }
 });
 // GET ALL PRODUCTS
-export const getProducts = catchAsync(async (req, res) => {
+exports.getProducts = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const { q, collection, price_min, price_max, sort, page = "1", } = req.query;
     const where = {
         isActive: true,
@@ -83,9 +90,9 @@ export const getProducts = catchAsync(async (req, res) => {
     const pageNumber = Number(page) >= 1 ? Number(page) : 1;
     const pageSize = Number(limit) >= 1 ? Number(limit) : 10;
     const skip = (pageNumber - 1) * pageSize;
-    const totalProducts = await prisma.product.count({ where });
+    const totalProducts = await Prisma_js_1.prisma.product.count({ where });
     const totalPages = Math.ceil(totalProducts / pageSize);
-    const products = await prisma.product.findMany({
+    const products = await Prisma_js_1.prisma.product.findMany({
         where,
         orderBy,
         skip,
@@ -100,9 +107,9 @@ export const getProducts = catchAsync(async (req, res) => {
     });
 });
 // GET SINGLE PRODUCT
-export const getProduct = catchAsync(async (req, res) => {
+exports.getProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const id = req.params.id; // string
-    const product = await prisma.product.findUnique({
+    const product = await Prisma_js_1.prisma.product.findUnique({
         where: { id: id },
     });
     if (!product) {
@@ -116,7 +123,7 @@ export const getProduct = catchAsync(async (req, res) => {
         data: { product },
     });
 });
-export const getAdminProducts = catchAsync(async (req, res) => {
+exports.getAdminProducts = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const { q, categoryType, page = "1" } = req.query;
     const limit = 10;
     const pageNumber = Math.max(parseInt(page) || 1, 1);
@@ -134,7 +141,7 @@ export const getAdminProducts = catchAsync(async (req, res) => {
         where.categoryType = normalizeCategory(categoryType);
     }
     const [products, total] = await Promise.all([
-        prisma.product.findMany({
+        Prisma_js_1.prisma.product.findMany({
             where,
             skip,
             take: limit,
@@ -142,7 +149,7 @@ export const getAdminProducts = catchAsync(async (req, res) => {
                 createdAt: "desc",
             },
         }),
-        prisma.product.count({ where }),
+        Prisma_js_1.prisma.product.count({ where }),
     ]);
     res.status(200).json({
         success: true,
@@ -154,10 +161,10 @@ export const getAdminProducts = catchAsync(async (req, res) => {
     });
 });
 // UPDATE PRODUCT
-export const updateProduct = catchAsync(async (req, res) => {
+exports.updateProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const id = req.params.id;
     // Destructure fields from request body
-    const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
+    const { name, description, price, imageUrl, imagePublicId, categoryType, isFeatured, } = req.body;
     const data = {};
     if (name !== undefined)
         data.name = String(name);
@@ -165,13 +172,17 @@ export const updateProduct = catchAsync(async (req, res) => {
         data.description = String(description);
     if (price !== undefined)
         data.price = price;
-    if (imageUrl !== undefined)
-        data.imageUrl = String(imageUrl);
     if (categoryType !== undefined)
         data.categoryType = normalizeCategory(categoryType);
     if (isFeatured !== undefined)
         data.isFeatured = Boolean(isFeatured);
-    const product = await prisma.product.update({
+    if (imageUrl !== undefined) {
+        await cloudinary_js_1.default.uploader.destroy(imagePublicId, {
+            resource_type: "image",
+        });
+        data.imageUrl = String(imageUrl);
+    }
+    const product = await Prisma_js_1.prisma.product.update({
         where: { id: id },
         data,
     });
@@ -181,17 +192,17 @@ export const updateProduct = catchAsync(async (req, res) => {
     });
 });
 // DELETE PRODUCT
-export const deleteProduct = catchAsync(async (req, res) => {
+exports.deleteProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const id = req.params.id;
-    await prisma.product.delete({ where: { id: id } });
+    await Prisma_js_1.prisma.product.delete({ where: { id: id } });
     res.status(200).json({
         status: "success",
         message: "Product deleted successfully",
     });
 });
 // GET NEW ARRIVAL PRODUCTS
-export const getNewArrivals = catchAsync(async (_req, res) => {
-    const products = await prisma.product.findMany({
+exports.getNewArrivals = (0, catchAsync__js_1.catchAsync)(async (_req, res) => {
+    const products = await Prisma_js_1.prisma.product.findMany({
         where: { isActive: true },
         orderBy: { createdAt: "desc" },
         take: 4,

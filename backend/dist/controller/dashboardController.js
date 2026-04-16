@@ -1,5 +1,8 @@
-import { prisma } from "../lib/Prisma.js";
-import { catchAsync } from "../utils/catchAsync .js";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDashboardStats = void 0;
+const Prisma_js_1 = require("../lib/Prisma.js");
+const catchAsync__js_1 = require("../utils/catchAsync .js");
 const formatLabel = (date, period) => {
     if (period === "year") {
         return date.toLocaleDateString(undefined, { month: "short" }); // Jan
@@ -44,6 +47,7 @@ const getDateRange = (period) => {
 const groupByPeriod = (data, period) => {
     const map = new Map();
     data.forEach((item) => {
+        var _a;
         const d = new Date(item.createdAt);
         let key = "";
         if (period === "year") {
@@ -52,11 +56,12 @@ const groupByPeriod = (data, period) => {
         else {
             key = d.toISOString().slice(0, 10);
         }
-        map.set(key, (map.get(key) ?? 0) + 1);
+        map.set(key, ((_a = map.get(key)) !== null && _a !== void 0 ? _a : 0) + 1);
     });
     return map;
 };
 const fillData = (map, period) => {
+    var _a, _b, _c;
     const today = new Date();
     const result = [];
     if (period === "year") {
@@ -66,7 +71,7 @@ const fillData = (map, period) => {
             const key = `${d.getFullYear()}-${d.getMonth()}`;
             result.push({
                 day: formatLabel(d, period),
-                count: map.get(key) ?? 0,
+                count: (_a = map.get(key)) !== null && _a !== void 0 ? _a : 0,
             });
         }
     }
@@ -77,7 +82,7 @@ const fillData = (map, period) => {
             const key = d.toISOString().slice(0, 10);
             result.push({
                 day: formatLabel(d, period),
-                count: map.get(key) ?? 0,
+                count: (_b = map.get(key)) !== null && _b !== void 0 ? _b : 0,
             });
         }
     }
@@ -88,7 +93,7 @@ const fillData = (map, period) => {
             const key = d.toISOString().slice(0, 10);
             result.push({
                 day: formatLabel(d, period),
-                count: map.get(key) ?? 0,
+                count: (_c = map.get(key)) !== null && _c !== void 0 ? _c : 0,
             });
         }
     }
@@ -104,7 +109,7 @@ const calculateTrend = (current, previous) => {
         change: `${Math.abs(percent).toFixed(1)}%`,
     };
 };
-export const getDashboardStats = catchAsync(async (req, res) => {
+exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     // ✅ GET PERIOD
     const period = req.query.period === "week" ||
         req.query.period === "year" ||
@@ -113,37 +118,37 @@ export const getDashboardStats = catchAsync(async (req, res) => {
         : "month";
     const { start, prevStart, prevEnd } = getDateRange(period);
     // 🔥 TOTAL COUNTS
-    const [totalUsers, totalProducts, totalMessages, adminUsers, managerUsers, availableProducts,] = await prisma.$transaction([
-        prisma.user.count(),
-        prisma.product.count(),
-        prisma.message.count(),
-        prisma.user.count({ where: { role: "ADMIN" } }),
-        prisma.user.count({ where: { role: "MANAGER" } }),
-        prisma.product.count({ where: { isActive: true } }),
+    const [totalUsers, totalProducts, totalMessages, adminUsers, managerUsers, availableProducts,] = await Prisma_js_1.prisma.$transaction([
+        Prisma_js_1.prisma.user.count(),
+        Prisma_js_1.prisma.product.count(),
+        Prisma_js_1.prisma.message.count(),
+        Prisma_js_1.prisma.user.count({ where: { role: "ADMIN" } }),
+        Prisma_js_1.prisma.user.count({ where: { role: "MANAGER" } }),
+        Prisma_js_1.prisma.product.count({ where: { isActive: true } }),
     ]);
-    const [currentUsers, prevUsers, currentProducts, prevProducts, currentMessages, prevMessages,] = await prisma.$transaction([
-        prisma.user.count({ where: { createdAt: { gte: start } } }),
-        prisma.user.count({
+    const [currentUsers, prevUsers, currentProducts, prevProducts, currentMessages, prevMessages,] = await Prisma_js_1.prisma.$transaction([
+        Prisma_js_1.prisma.user.count({ where: { createdAt: { gte: start } } }),
+        Prisma_js_1.prisma.user.count({
             where: { createdAt: { gte: prevStart, lt: prevEnd } },
         }),
-        prisma.product.count({ where: { createdAt: { gte: start } } }),
-        prisma.product.count({
+        Prisma_js_1.prisma.product.count({ where: { createdAt: { gte: start } } }),
+        Prisma_js_1.prisma.product.count({
             where: { createdAt: { gte: prevStart, lt: prevEnd } },
         }),
-        prisma.message.count({ where: { createdAt: { gte: start } } }),
-        prisma.message.count({
+        Prisma_js_1.prisma.message.count({ where: { createdAt: { gte: start } } }),
+        Prisma_js_1.prisma.message.count({
             where: { createdAt: { gte: prevStart, lt: prevEnd } },
         }),
     ]);
     const userTrend = calculateTrend(currentUsers, prevUsers);
     const productTrend = calculateTrend(currentProducts, prevProducts);
     const messageTrend = calculateTrend(currentMessages, prevMessages);
-    const [productsRaw, messagesRaw] = await prisma.$transaction([
-        prisma.product.findMany({
+    const [productsRaw, messagesRaw] = await Prisma_js_1.prisma.$transaction([
+        Prisma_js_1.prisma.product.findMany({
             where: { createdAt: { gte: start } },
             select: { createdAt: true },
         }),
-        prisma.message.findMany({
+        Prisma_js_1.prisma.message.findMany({
             where: { createdAt: { gte: start } },
             select: { createdAt: true },
         }),
@@ -152,7 +157,7 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     const messageMap = groupByPeriod(messagesRaw, period);
     const productData = fillData(productMap, period);
     const messageData = fillData(messageMap, period);
-    const recentMessages = await prisma.message.findMany({
+    const recentMessages = await Prisma_js_1.prisma.message.findMany({
         orderBy: { createdAt: "desc" },
         take: 5,
     });

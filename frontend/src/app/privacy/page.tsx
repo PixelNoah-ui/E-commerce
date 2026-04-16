@@ -10,7 +10,7 @@ export default function PrivacyPage() {
             Data Privacy for Owners
           </h1>
           <p className="text-lg text-slate-600 leading-8">
-            Abdi Electronics is committed to safeguarding owner data, using it
+            Abdu Electronics is committed to safeguarding owner data, using it
             responsibly, and empowering owners with transparency over how their
             information is handled.
           </p>

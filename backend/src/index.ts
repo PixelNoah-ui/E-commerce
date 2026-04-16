@@ -16,6 +16,7 @@ import authRouter from "./router/authRouter.js";
 import messageRouter from "./router/messageRouter.js";
 import dashboardRouter from "./router/dashboardRouter.js";
 const app = express();
+
 app.use(morgan("dev"));
 
 app.use(helmet());
@@ -31,7 +32,12 @@ app.use("/api", limiter);
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://abduelectronics.com",
+      "https://admin.abduelectronics.com",
+    ],
     credentials: true,
   }),
 );
@@ -41,7 +47,9 @@ app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 
 const publicDir = path.join(process.cwd(), "src", "public");
 app.use(express.static(publicDir));
-
+app.use("/api/v1/test", (req, res) => {
+  res.json({ message: "API is working!" });
+});
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 app.use("/api/v1/contact/messages", messageRouter);

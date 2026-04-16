@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { prisma } from "../lib/Prisma.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
@@ -202,19 +203,31 @@ export const updateProduct = catchAsync(async (req, res) => {
   const id = req.params.id;
 
   // Destructure fields from request body
-  const { name, description, price, imageUrl, categoryType, isFeatured } =
-    req.body;
+  const {
+    name,
+    description,
+    price,
+    imageUrl,
+    imagePublicId,
+    categoryType,
+    isFeatured,
+  } = req.body;
 
   const data: Parameters<typeof prisma.product.update>[0]["data"] = {};
 
   if (name !== undefined) data.name = String(name);
   if (description !== undefined) data.description = String(description);
   if (price !== undefined) data.price = price;
-  if (imageUrl !== undefined) data.imageUrl = String(imageUrl);
+
   if (categoryType !== undefined)
     data.categoryType = normalizeCategory(categoryType);
   if (isFeatured !== undefined) data.isFeatured = Boolean(isFeatured);
-
+  if (imageUrl !== undefined) {
+    await cloudinary.uploader.destroy(imagePublicId, {
+      resource_type: "image",
+    });
+    data.imageUrl = String(imageUrl);
+  }
   const product = await prisma.product.update({
     where: { id: id as string },
     data,

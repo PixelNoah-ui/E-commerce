@@ -23,7 +23,7 @@ export default function WhyChooseUs() {
           </p>
 
           <h2 className="text-4xl font-bold mt-2 mb-10">
-            Why Choose Abdi Electronics
+            Why Choose Abdu Electronics
           </h2>
 
           <div className="grid sm:grid-cols-2 gap-8">
@@ -69,7 +69,7 @@ function FeatureCard({
   desc: string;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 items-center sm:items-start text-center sm:text-left">
       {/* BIG ICON */}
       <div className="w-16 h-16">
         <Image

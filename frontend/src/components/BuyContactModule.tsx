@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Phone, MapPin } from "lucide-react";
+import { Phone, MapPin, MapMinus } from "lucide-react";
 import { useAddress } from "@/hooks/useAddress";
 
 export default function BuyContactModule() {
@@ -37,7 +37,10 @@ export default function BuyContactModule() {
           <div className="flex items-start gap-3 text-sm">
             <MapPin className="h-4 w-4 text-primary mt-0.5" />
             <span className="font-medium leading-relaxed">{location} </span>
-            <span className="font-medium leading-relaxed">{subLocation}</span>
+          </div>
+          <div className="flex items-start gap-3 text-sm">
+            <MapMinus className="h-4 w-4 text-primary mt-0.5" />
+            <span className="font-medium leading-relaxed">{subLocation} </span>
           </div>
 
           {/* PHONE */}

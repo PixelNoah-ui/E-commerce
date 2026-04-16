@@ -107,7 +107,7 @@ export default function ContactSectionForm() {
                 <Globe />
                 <div>
                   <p className="text-sm">Work Hours</p>
-                  <p className="font-semibold">Mon - Sat 8am to 6pm</p>
+                  <p className="font-semibold">Mon - Sat 8:00 AM - 9:00 PM</p>
                 </div>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function ContactSectionForm() {
           </div>
 
           <p className="text-muted-foreground mb-8">
-            Required fields are marked with *
+            Have questions or want to discuss a bulk order? Send us a message
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

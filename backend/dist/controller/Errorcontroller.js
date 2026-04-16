@@ -1,14 +1,21 @@
-import multer from "multer";
-import { Prisma } from "../generated/prisma/client.js";
-export const globalErrorHandler = (err, req, res, next) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.globalErrorHandler = void 0;
+const multer_1 = __importDefault(require("multer"));
+const client_js_1 = require("../generated/prisma/client.js");
+const globalErrorHandler = (err, req, res, next) => {
+    var _a;
     let error = {
         name: err.name,
         message: err.message,
         statusCode: err.statusCode || 500,
         status: err.status || "error",
-        isOperational: err.isOperational ?? false,
+        isOperational: (_a = err.isOperational) !== null && _a !== void 0 ? _a : false,
     };
-    if (err instanceof multer.MulterError) {
+    if (err instanceof multer_1.default.MulterError) {
         error.statusCode = 400;
         error.status = "fail";
         error.isOperational = true;
@@ -18,11 +25,11 @@ export const globalErrorHandler = (err, req, res, next) => {
                 : err.message;
     }
     // Prisma known errors
-    if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    if (err instanceof client_js_1.Prisma.PrismaClientKnownRequestError) {
         error = handlePrismaKnownErrors(err);
     }
     // Prisma validation
-    if (err instanceof Prisma.PrismaClientValidationError) {
+    if (err instanceof client_js_1.Prisma.PrismaClientValidationError) {
         error = {
             ...err,
             message: "Invalid database input.",
@@ -32,7 +39,7 @@ export const globalErrorHandler = (err, req, res, next) => {
         };
     }
     // Prisma initialization
-    if (err instanceof Prisma.PrismaClientInitializationError) {
+    if (err instanceof client_js_1.Prisma.PrismaClientInitializationError) {
         error = {
             ...err,
             message: "Database connection failed.",
@@ -78,6 +85,7 @@ export const globalErrorHandler = (err, req, res, next) => {
         sendDevelopmentError(error, res);
     }
 };
+exports.globalErrorHandler = globalErrorHandler;
 // Prisma known errors mapper
 const handlePrismaKnownErrors = (err) => {
     switch (err.code) {

@@ -1,16 +1,19 @@
-import { prisma } from "../lib/Prisma.js";
-import { AppError } from "../utils/AppError.js";
-import { catchAsync } from "../utils/catchAsync .js";
-export const createMessage = catchAsync(async (req, res, next) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteMessage = exports.getMessage = exports.getMessages = exports.createMessage = void 0;
+const Prisma_js_1 = require("../lib/Prisma.js");
+const AppError_js_1 = require("../utils/AppError.js");
+const catchAsync__js_1 = require("../utils/catchAsync .js");
+exports.createMessage = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { name, phone, subject, message } = req.body;
     if (!name || !phone || !subject || !message) {
-        return next(new AppError("All fields are required", 400));
+        return next(new AppError_js_1.AppError("All fields are required", 400));
     }
     const phonePattern = /^(09\d{8}|\+2519\d{8})$/;
     if (!phonePattern.test(phone)) {
-        return next(new AppError("Invalid Ethiopian phone number", 400));
+        return next(new AppError_js_1.AppError("Invalid Ethiopian phone number", 400));
     }
-    const newMessage = await prisma.message.create({
+    const newMessage = await Prisma_js_1.prisma.message.create({
         data: {
             name,
             phone,
@@ -25,7 +28,7 @@ export const createMessage = catchAsync(async (req, res, next) => {
     });
 });
 // ================= GET ALL MESSAGES =================
-export const getMessages = catchAsync(async (req, res) => {
+exports.getMessages = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const { q, page = "1" } = req.query;
     const limit = 10;
     const pageNumber = parseInt(page) || 1;
@@ -40,13 +43,13 @@ export const getMessages = catchAsync(async (req, res) => {
         ];
     }
     const [messages, total] = await Promise.all([
-        prisma.message.findMany({
+        Prisma_js_1.prisma.message.findMany({
             where,
             skip,
             take: limit,
             orderBy: { createdAt: "desc" },
         }),
-        prisma.message.count({ where }),
+        Prisma_js_1.prisma.message.count({ where }),
     ]);
     res.status(200).json({
         success: true,
@@ -58,13 +61,13 @@ export const getMessages = catchAsync(async (req, res) => {
     });
 });
 // ================= GET SINGLE MESSAGE =================
-export const getMessage = catchAsync(async (req, res, next) => {
+exports.getMessage = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const id = req.params.id;
-    const message = await prisma.message.findUnique({
+    const message = await Prisma_js_1.prisma.message.findUnique({
         where: { id: id },
     });
     if (!message) {
-        return next(new AppError("Message not found", 404));
+        return next(new AppError_js_1.AppError("Message not found", 404));
     }
     res.status(200).json({
         status: "success",
@@ -72,15 +75,15 @@ export const getMessage = catchAsync(async (req, res, next) => {
     });
 });
 // ================= DELETE MESSAGE =================
-export const deleteMessage = catchAsync(async (req, res, next) => {
+exports.deleteMessage = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const id = req.params.id;
-    const message = await prisma.message.findUnique({
+    const message = await Prisma_js_1.prisma.message.findUnique({
         where: { id: id },
     });
     if (!message) {
-        return next(new AppError("Message not found", 404));
+        return next(new AppError_js_1.AppError("Message not found", 404));
     }
-    await prisma.message.delete({ where: { id: id } });
+    await Prisma_js_1.prisma.message.delete({ where: { id: id } });
     res.status(200).json({
         status: "success",
         message: "Message deleted successfully",

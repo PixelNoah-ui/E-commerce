@@ -1,4 +1,7 @@
-export const resetPasswordTemplate = (resetURL) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetPasswordTemplate = void 0;
+const resetPasswordTemplate = (resetURL) => {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -109,4 +112,5 @@ export const resetPasswordTemplate = (resetURL) => {
 </html>
 `;
 };
+exports.resetPasswordTemplate = resetPasswordTemplate;
 //# sourceMappingURL=resetPasswordTemplate.js.map

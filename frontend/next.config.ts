@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["res.cloudinary.com"], // ✅ add Cloudinary domain here
   },
+  output: "standalone",
 };
 
 export default nextConfig;

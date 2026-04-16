@@ -62,7 +62,7 @@ export default function AboutHero() {
           <div className="relative w-full h-[500px]">
             <Image
               src="/images/electronics-seller.png" // Replace with actual shop location images
-              alt="Abdi Electronics Shop Location"
+              alt="Abdu Electronics Shop Location"
               fill
               className="object-contain rounded-lg"
             />
@@ -134,7 +134,7 @@ export default function AboutHero() {
           <div className="relative w-full h-[500px]">
             <Image
               src="/images/s23.png"
-              alt="Abdi Electronics Store"
+              alt="Abdu Electronics Store"
               fill
               className="object-contain"
             />
@@ -144,7 +144,7 @@ export default function AboutHero() {
           <div className="flex flex-col space-y-8">
             {/* SMALL TITLE */}
             <span className="text-primary font-semibold uppercase tracking-wider text-sm">
-              About Abdi Electronics
+              About Abdu Electronics
             </span>
 
             {/* BIG TITLE */}
@@ -164,7 +164,7 @@ export default function AboutHero() {
 
             {/* TEXT */}
             <p className="text-gray-700 leading-relaxed">
-              At Abdi Electronics, we provide a reliable platform to buy and
+              At Abdu Electronics, we provide a reliable platform to buy and
               sell electronics across Ethiopia. From laptops and phones to
               cameras, we make technology accessible, affordable, and
               trustworthy.

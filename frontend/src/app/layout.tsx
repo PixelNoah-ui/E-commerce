@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Abdi Electronics | Buy & Rent Electronics in Ethiopia",
+  title: "AbdulJelil Electronics | Buy & Rent Electronics in Ethiopia",
   description:
-    "Abdi Electronics is your trusted platform to buy, sell, and rent electronics in Ethiopia. Discover laptops, phones, cameras, and more at affordable prices.",
+    "AbdulJelil Electronics is your trusted platform to buy, sell, and rent electronics in Ethiopia. Discover laptops, phones, cameras, and more at affordable prices.",
   keywords: [
-    "Abdi Electronics",
+    "AbdulJelil Electronics",
     "electronics Ethiopia",
     "buy electronics Addis Ababa",
     "rent electronics Ethiopia",
@@ -29,14 +29,17 @@ export const metadata: Metadata = {
     "phones Ethiopia",
     "camera rental Addis Ababa",
   ],
-  authors: [{ name: "Abdi Electronics" }],
-  creator: "Abdi Electronics",
+  icons: {
+    icon: "/icons/logo.svg",
+  },
+  authors: [{ name: "AbdulJelil Electronics" }],
+  creator: "AbdulJelil Electronics",
   openGraph: {
-    title: "Abdi Electronics",
+    title: "AbdulJelil Electronics",
     description:
       "Buy, sell, and rent electronics easily in Ethiopia. Affordable, reliable, and fast.",
-    url: "https://abdielectronics.com",
-    siteName: "Abdi Electronics",
+    url: "https://abduelectronics.com",
+    siteName: "AbdulJelil Electronics",
     locale: "en_ET",
     type: "website",
   },

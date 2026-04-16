@@ -8,7 +8,7 @@ import { useAddress } from "@/hooks/useAddress";
 export default function Footer() {
   const { data: address, isLoading } = useAddress();
   const phone = address?.phone ?? "+251 911 123 456";
-  const email = address?.email ?? "support@abdielectronics.com";
+  const email = address?.email ?? "support@abduelectronics.com";
   const location = address?.location ?? "Jimma, Ethiopia";
 
   return (
@@ -29,7 +29,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <p className="text-2xl font-semibold text-white">
-                    Abdi Electronics
+                    Abdu Electronics
                   </p>
                   <p className="text-sm text-slate-500">
                     Buy, sell & rent electronics in Ethiopia.
@@ -38,7 +38,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="max-w-sm leading-7 text-slate-400">
-              Abdi Electronics connects businesses and consumers with premium
+              Abdu Electronics connects businesses and consumers with premium
               electronics and equipment across Ethiopia. Discover laptops,
               phones, cameras, and smart accessories with fast support.
             </p>
@@ -126,7 +126,7 @@ export default function Footer() {
 
         <div className="mt-12 flex flex-col gap-4 border-t border-slate-800 pt-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {new Date().getFullYear()} Abdi Electronics. All rights reserved.
+            © {new Date().getFullYear()} Abdu Electronics. All rights reserved.
           </p>
           <p>Designed for modern electronics buyers and sellers in Ethiopia.</p>
         </div>
