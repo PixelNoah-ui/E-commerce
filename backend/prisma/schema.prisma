@@ -1,11 +1,6 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider   = "prisma-client"
+  output     = "../src/generated/prisma"
   moduleType = "commonjs"
 }
 
@@ -13,18 +8,10 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  ADMIN
-  MANAGER
-  USER
-}
-
 model User {
   id                  String    @id @default(uuid())
-  fullName            String
   email               String    @unique
   password            String
-    imageUrl  String?
   role                Role      @default(USER)
   resetToken          String?
   resetTokenExpiry    DateTime?
@@ -33,38 +20,54 @@ model User {
   lockUntil           DateTime?
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
+  fullName            String
+  imageUrl            String?
 }
 
 model Product {
-  id           String    @id @default(uuid())
+  id           String   @id @default(uuid())
   name         String
   description  String
   price        String
   imageUrl     String
   categoryType String
-  isFeatured   Boolean @default(false)
-  isActive     Boolean @default(true)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isFeatured   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model OwnerAddress {
-  id         String   @id @default(uuid())
-  fullName   String
-  email      String   @unique
-  phone      String?
-  address    String?
-  location   String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id        String   @id @default(uuid())
+  fullName  String
+  email     String   @unique
+  phone     String?
+  secondPhone String?
+  address   String?
+  location  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Message {
   id        String   @id @default(uuid())
   name      String
-  phone     String
   subject   String
   message   String
+  createdAt DateTime @default(now())
+  phone     String
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  USER
+}
+model Coupon {
+  id        String   @id @default(uuid())
+  code      String   @unique
+ 
+  isActive  Boolean  @default(true)
+  
   createdAt DateTime @default(now())
 }

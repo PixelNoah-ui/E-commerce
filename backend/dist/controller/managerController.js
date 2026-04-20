@@ -92,7 +92,6 @@ exports.updateManager = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
     if (!manager || manager.role !== "MANAGER") {
         return next(new AppError_js_1.AppError("Manager not found", 404));
     }
-    console.log("Request body:", req.body);
     const { email, imageUrl, fullName } = req.body;
     const data = {};
     if (email !== undefined)

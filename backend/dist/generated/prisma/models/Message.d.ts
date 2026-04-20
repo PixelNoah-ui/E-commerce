@@ -13,51 +13,51 @@ export type AggregateMessage = {
 export type MessageMinAggregateOutputType = {
     id: string | null;
     name: string | null;
-    phone: string | null;
     subject: string | null;
     message: string | null;
     createdAt: Date | null;
+    phone: string | null;
 };
 export type MessageMaxAggregateOutputType = {
     id: string | null;
     name: string | null;
-    phone: string | null;
     subject: string | null;
     message: string | null;
     createdAt: Date | null;
+    phone: string | null;
 };
 export type MessageCountAggregateOutputType = {
     id: number;
     name: number;
-    phone: number;
     subject: number;
     message: number;
     createdAt: number;
+    phone: number;
     _all: number;
 };
 export type MessageMinAggregateInputType = {
     id?: true;
     name?: true;
-    phone?: true;
     subject?: true;
     message?: true;
     createdAt?: true;
+    phone?: true;
 };
 export type MessageMaxAggregateInputType = {
     id?: true;
     name?: true;
-    phone?: true;
     subject?: true;
     message?: true;
     createdAt?: true;
+    phone?: true;
 };
 export type MessageCountAggregateInputType = {
     id?: true;
     name?: true;
-    phone?: true;
     subject?: true;
     message?: true;
     createdAt?: true;
+    phone?: true;
     _all?: true;
 };
 export type MessageAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -125,10 +125,10 @@ export type MessageGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type MessageGroupByOutputType = {
     id: string;
     name: string;
-    phone: string;
     subject: string;
     message: string;
     createdAt: Date;
+    phone: string;
     _count: MessageCountAggregateOutputType | null;
     _min: MessageMinAggregateOutputType | null;
     _max: MessageMaxAggregateOutputType | null;
@@ -142,18 +142,18 @@ export type MessageWhereInput = {
     NOT?: Prisma.MessageWhereInput | Prisma.MessageWhereInput[];
     id?: Prisma.StringFilter<"Message"> | string;
     name?: Prisma.StringFilter<"Message"> | string;
-    phone?: Prisma.StringFilter<"Message"> | string;
     subject?: Prisma.StringFilter<"Message"> | string;
     message?: Prisma.StringFilter<"Message"> | string;
     createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string;
+    phone?: Prisma.StringFilter<"Message"> | string;
 };
 export type MessageOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
-    phone?: Prisma.SortOrder;
     subject?: Prisma.SortOrder;
     message?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
+    phone?: Prisma.SortOrder;
 };
 export type MessageWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -161,18 +161,18 @@ export type MessageWhereUniqueInput = Prisma.AtLeast<{
     OR?: Prisma.MessageWhereInput[];
     NOT?: Prisma.MessageWhereInput | Prisma.MessageWhereInput[];
     name?: Prisma.StringFilter<"Message"> | string;
-    phone?: Prisma.StringFilter<"Message"> | string;
     subject?: Prisma.StringFilter<"Message"> | string;
     message?: Prisma.StringFilter<"Message"> | string;
     createdAt?: Prisma.DateTimeFilter<"Message"> | Date | string;
+    phone?: Prisma.StringFilter<"Message"> | string;
 }, "id">;
 export type MessageOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
-    phone?: Prisma.SortOrder;
     subject?: Prisma.SortOrder;
     message?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
+    phone?: Prisma.SortOrder;
     _count?: Prisma.MessageCountOrderByAggregateInput;
     _max?: Prisma.MessageMaxOrderByAggregateInput;
     _min?: Prisma.MessageMinOrderByAggregateInput;
@@ -183,134 +183,134 @@ export type MessageScalarWhereWithAggregatesInput = {
     NOT?: Prisma.MessageScalarWhereWithAggregatesInput | Prisma.MessageScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"Message"> | string;
     name?: Prisma.StringWithAggregatesFilter<"Message"> | string;
-    phone?: Prisma.StringWithAggregatesFilter<"Message"> | string;
     subject?: Prisma.StringWithAggregatesFilter<"Message"> | string;
     message?: Prisma.StringWithAggregatesFilter<"Message"> | string;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Message"> | Date | string;
+    phone?: Prisma.StringWithAggregatesFilter<"Message"> | string;
 };
 export type MessageCreateInput = {
     id?: string;
     name: string;
-    phone: string;
     subject: string;
     message: string;
     createdAt?: Date | string;
+    phone: string;
 };
 export type MessageUncheckedCreateInput = {
     id?: string;
     name: string;
-    phone: string;
     subject: string;
     message: string;
     createdAt?: Date | string;
+    phone: string;
 };
 export type MessageUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
-    phone?: Prisma.StringFieldUpdateOperationsInput | string;
     subject?: Prisma.StringFieldUpdateOperationsInput | string;
     message?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    phone?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 export type MessageUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
-    phone?: Prisma.StringFieldUpdateOperationsInput | string;
     subject?: Prisma.StringFieldUpdateOperationsInput | string;
     message?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    phone?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 export type MessageCreateManyInput = {
     id?: string;
     name: string;
-    phone: string;
     subject: string;
     message: string;
     createdAt?: Date | string;
+    phone: string;
 };
 export type MessageUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
-    phone?: Prisma.StringFieldUpdateOperationsInput | string;
     subject?: Prisma.StringFieldUpdateOperationsInput | string;
     message?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    phone?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 export type MessageUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     name?: Prisma.StringFieldUpdateOperationsInput | string;
-    phone?: Prisma.StringFieldUpdateOperationsInput | string;
     subject?: Prisma.StringFieldUpdateOperationsInput | string;
     message?: Prisma.StringFieldUpdateOperationsInput | string;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    phone?: Prisma.StringFieldUpdateOperationsInput | string;
 };
 export type MessageCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
-    phone?: Prisma.SortOrder;
     subject?: Prisma.SortOrder;
     message?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
+    phone?: Prisma.SortOrder;
 };
 export type MessageMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
-    phone?: Prisma.SortOrder;
     subject?: Prisma.SortOrder;
     message?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
+    phone?: Prisma.SortOrder;
 };
 export type MessageMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     name?: Prisma.SortOrder;
-    phone?: Prisma.SortOrder;
     subject?: Prisma.SortOrder;
     message?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
+    phone?: Prisma.SortOrder;
 };
 export type MessageSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
-    phone?: boolean;
     subject?: boolean;
     message?: boolean;
     createdAt?: boolean;
+    phone?: boolean;
 }, ExtArgs["result"]["message"]>;
 export type MessageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
-    phone?: boolean;
     subject?: boolean;
     message?: boolean;
     createdAt?: boolean;
+    phone?: boolean;
 }, ExtArgs["result"]["message"]>;
 export type MessageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     name?: boolean;
-    phone?: boolean;
     subject?: boolean;
     message?: boolean;
     createdAt?: boolean;
+    phone?: boolean;
 }, ExtArgs["result"]["message"]>;
 export type MessageSelectScalar = {
     id?: boolean;
     name?: boolean;
-    phone?: boolean;
     subject?: boolean;
     message?: boolean;
     createdAt?: boolean;
+    phone?: boolean;
 };
-export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "phone" | "subject" | "message" | "createdAt", ExtArgs["result"]["message"]>;
+export type MessageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "subject" | "message" | "createdAt" | "phone", ExtArgs["result"]["message"]>;
 export type $MessagePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "Message";
     objects: {};
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
         name: string;
-        phone: string;
         subject: string;
         message: string;
         createdAt: Date;
+        phone: string;
     }, ExtArgs["result"]["message"]>;
     composites: {};
 };
@@ -667,10 +667,10 @@ export interface Prisma__MessageClient<T, Null = never, ExtArgs extends runtime.
 export interface MessageFieldRefs {
     readonly id: Prisma.FieldRef<"Message", 'String'>;
     readonly name: Prisma.FieldRef<"Message", 'String'>;
-    readonly phone: Prisma.FieldRef<"Message", 'String'>;
     readonly subject: Prisma.FieldRef<"Message", 'String'>;
     readonly message: Prisma.FieldRef<"Message", 'String'>;
     readonly createdAt: Prisma.FieldRef<"Message", 'DateTime'>;
+    readonly phone: Prisma.FieldRef<"Message", 'String'>;
 }
 /**
  * Message findUnique

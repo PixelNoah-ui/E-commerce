@@ -6,7 +6,7 @@ const AppError_js_1 = require("../utils/AppError.js");
 const catchAsync__js_1 = require("../utils/catchAsync .js");
 const OWNER_ADDRESS_ID = "fixed-owner-address-id";
 exports.createOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
-    const { fullName, email, phone, address, location } = req.body;
+    const { fullName, email, phone, secondPhone, address, location } = req.body;
     if (!fullName || !email) {
         return next(new AppError_js_1.AppError("Full name and email are required", 400));
     }
@@ -16,6 +16,7 @@ exports.createOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, n
             fullName,
             email,
             phone,
+            secondPhone,
             address,
             location,
         },
@@ -24,6 +25,7 @@ exports.createOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, n
             fullName,
             email,
             phone,
+            secondPhone,
             address,
             location,
         },
@@ -62,7 +64,7 @@ exports.getOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next
 });
 exports.updateOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     console.log("Request body:", req.body);
-    const { fullName, email, phone, address, location } = req.body;
+    const { fullName, email, phone, secondPhone, address, location } = req.body;
     const data = {};
     if (fullName !== undefined)
         data.fullName = String(fullName);
@@ -70,6 +72,8 @@ exports.updateOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, n
         data.email = String(email);
     if (phone !== undefined)
         data.phone = String(phone);
+    if (secondPhone !== undefined)
+        data.secondPhone = String(secondPhone);
     if (address !== undefined)
         data.address = String(address);
     if (location !== undefined)
@@ -82,6 +86,7 @@ exports.updateOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, n
             fullName: String(fullName || ""),
             email: String(email || ""),
             phone: phone ? String(phone) : null,
+            secondPhone: secondPhone ? String(secondPhone) : null,
             address: address ? String(address) : null,
             location: location ? String(location) : null,
         },

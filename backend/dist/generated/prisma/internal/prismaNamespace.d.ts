@@ -235,6 +235,7 @@ export declare const ModelName: {
     readonly Product: "Product";
     readonly OwnerAddress: "OwnerAddress";
     readonly Message: "Message";
+    readonly Coupon: "Coupon";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export interface TypeMapCb<GlobalOmitOptions = {}> extends runtime.Types.Utils.Fn<{
@@ -247,7 +248,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "product" | "ownerAddress" | "message";
+        modelProps: "user" | "product" | "ownerAddress" | "message" | "coupon";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -547,6 +548,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 };
             };
         };
+        Coupon: {
+            payload: Prisma.$CouponPayload<ExtArgs>;
+            fields: Prisma.CouponFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.CouponFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.CouponFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                findFirst: {
+                    args: Prisma.CouponFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.CouponFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                findMany: {
+                    args: Prisma.CouponFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>[];
+                };
+                create: {
+                    args: Prisma.CouponCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                createMany: {
+                    args: Prisma.CouponCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.CouponCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>[];
+                };
+                delete: {
+                    args: Prisma.CouponDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                update: {
+                    args: Prisma.CouponUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.CouponDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.CouponUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.CouponUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>[];
+                };
+                upsert: {
+                    args: Prisma.CouponUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CouponPayload>;
+                };
+                aggregate: {
+                    args: Prisma.CouponAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateCoupon>;
+                };
+                groupBy: {
+                    args: Prisma.CouponGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CouponGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.CouponCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CouponCountAggregateOutputType> | number;
+                };
+            };
+        };
     };
 } & {
     other: {
@@ -583,10 +658,8 @@ export declare const TransactionIsolationLevel: {
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 export declare const UserScalarFieldEnum: {
     readonly id: "id";
-    readonly fullName: "fullName";
     readonly email: "email";
     readonly password: "password";
-    readonly imageUrl: "imageUrl";
     readonly role: "role";
     readonly resetToken: "resetToken";
     readonly resetTokenExpiry: "resetTokenExpiry";
@@ -595,6 +668,8 @@ export declare const UserScalarFieldEnum: {
     readonly lockUntil: "lockUntil";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
+    readonly fullName: "fullName";
+    readonly imageUrl: "imageUrl";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 export declare const ProductScalarFieldEnum: {
@@ -615,6 +690,7 @@ export declare const OwnerAddressScalarFieldEnum: {
     readonly fullName: "fullName";
     readonly email: "email";
     readonly phone: "phone";
+    readonly secondPhone: "secondPhone";
     readonly address: "address";
     readonly location: "location";
     readonly createdAt: "createdAt";
@@ -624,12 +700,19 @@ export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[k
 export declare const MessageScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
-    readonly phone: "phone";
     readonly subject: "subject";
     readonly message: "message";
     readonly createdAt: "createdAt";
+    readonly phone: "phone";
 };
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum];
+export declare const CouponScalarFieldEnum: {
+    readonly id: "id";
+    readonly code: "code";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+};
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
@@ -790,6 +873,7 @@ export type GlobalOmitConfig = {
     product?: Prisma.ProductOmit;
     ownerAddress?: Prisma.OwnerAddressOmit;
     message?: Prisma.MessageOmit;
+    coupon?: Prisma.CouponOmit;
 };
 export type LogLevel = 'info' | 'query' | 'warn' | 'error';
 export type LogDefinition = {

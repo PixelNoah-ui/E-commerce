@@ -19,6 +19,7 @@ const ownerAddressRouter_js_1 = __importDefault(require("./router/ownerAddressRo
 const authRouter_js_1 = __importDefault(require("./router/authRouter.js"));
 const messageRouter_js_1 = __importDefault(require("./router/messageRouter.js"));
 const dashboardRouter_js_1 = __importDefault(require("./router/dashboardRouter.js"));
+const couponRouter_js_1 = __importDefault(require("./router/couponRouter.js"));
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)("dev"));
 app.use((0, helmet_1.default)());
@@ -32,8 +33,6 @@ const limiter = (0, express_rate_limit_1.default)({
 app.use("/api", limiter);
 app.use((0, cors_1.default)({
     origin: [
-        "http://localhost:3000",
-        "http://localhost:3001",
         "https://abduelectronics.com",
         "https://admin.abduelectronics.com",
     ],
@@ -52,6 +51,7 @@ app.use("/api/v1/contact/messages", messageRouter_js_1.default);
 app.use("/api/v1/products", productRouter_js_1.default);
 app.use("/api/v1/managers", managerRouter_js_1.default);
 app.use("/api/v1/ownerAddress", ownerAddressRouter_js_1.default);
+app.use("/api/v1/coupons", couponRouter_js_1.default);
 app.all("/{*any}", (req, res, next) => {
     res.status(404).json({
         status: "fail",

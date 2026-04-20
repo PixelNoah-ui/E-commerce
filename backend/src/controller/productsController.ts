@@ -12,7 +12,6 @@ export const createProduct = catchAsync(async (req, res, next) => {
     req.body;
 
   if (!name || !description || !price || !imageUrl || !categoryType) {
-    console.log("❌ Missing required fields:", req.body);
     return next(
       new AppError(
         "Missing required fields: name, description, price, imageUrl, categoryType",
@@ -32,8 +31,6 @@ export const createProduct = catchAsync(async (req, res, next) => {
         isFeatured: isFeatured === "true" || isFeatured === true,
       },
     });
-
-    console.log("✅ Product created successfully:", product);
 
     res.status(201).json({
       status: "success",

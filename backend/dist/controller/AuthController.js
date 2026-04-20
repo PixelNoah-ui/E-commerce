@@ -29,6 +29,7 @@ const createSendToken = (user, statusCode, res, message) => {
         httpOnly: true,
         secure: isProd,
         sameSite: isProd ? "none" : "lax",
+        domain: isProd ? ".abdulectroncs.com" : ".abdulectroncs.com",
     });
     res.status(statusCode).json({
         status: "success",

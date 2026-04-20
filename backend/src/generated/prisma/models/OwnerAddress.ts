@@ -29,6 +29,7 @@ export type OwnerAddressMinAggregateOutputType = {
   fullName: string | null
   email: string | null
   phone: string | null
+  secondPhone: string | null
   address: string | null
   location: string | null
   createdAt: Date | null
@@ -40,6 +41,7 @@ export type OwnerAddressMaxAggregateOutputType = {
   fullName: string | null
   email: string | null
   phone: string | null
+  secondPhone: string | null
   address: string | null
   location: string | null
   createdAt: Date | null
@@ -51,6 +53,7 @@ export type OwnerAddressCountAggregateOutputType = {
   fullName: number
   email: number
   phone: number
+  secondPhone: number
   address: number
   location: number
   createdAt: number
@@ -64,6 +67,7 @@ export type OwnerAddressMinAggregateInputType = {
   fullName?: true
   email?: true
   phone?: true
+  secondPhone?: true
   address?: true
   location?: true
   createdAt?: true
@@ -75,6 +79,7 @@ export type OwnerAddressMaxAggregateInputType = {
   fullName?: true
   email?: true
   phone?: true
+  secondPhone?: true
   address?: true
   location?: true
   createdAt?: true
@@ -86,6 +91,7 @@ export type OwnerAddressCountAggregateInputType = {
   fullName?: true
   email?: true
   phone?: true
+  secondPhone?: true
   address?: true
   location?: true
   createdAt?: true
@@ -170,6 +176,7 @@ export type OwnerAddressGroupByOutputType = {
   fullName: string
   email: string
   phone: string | null
+  secondPhone: string | null
   address: string | null
   location: string | null
   createdAt: Date
@@ -202,6 +209,7 @@ export type OwnerAddressWhereInput = {
   fullName?: Prisma.StringFilter<"OwnerAddress"> | string
   email?: Prisma.StringFilter<"OwnerAddress"> | string
   phone?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
+  secondPhone?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   address?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   location?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OwnerAddress"> | Date | string
@@ -213,6 +221,7 @@ export type OwnerAddressOrderByWithRelationInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  secondPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -227,6 +236,7 @@ export type OwnerAddressWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.OwnerAddressWhereInput | Prisma.OwnerAddressWhereInput[]
   fullName?: Prisma.StringFilter<"OwnerAddress"> | string
   phone?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
+  secondPhone?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   address?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   location?: Prisma.StringNullableFilter<"OwnerAddress"> | string | null
   createdAt?: Prisma.DateTimeFilter<"OwnerAddress"> | Date | string
@@ -238,6 +248,7 @@ export type OwnerAddressOrderByWithAggregationInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
+  secondPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   location?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -255,6 +266,7 @@ export type OwnerAddressScalarWhereWithAggregatesInput = {
   fullName?: Prisma.StringWithAggregatesFilter<"OwnerAddress"> | string
   email?: Prisma.StringWithAggregatesFilter<"OwnerAddress"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"OwnerAddress"> | string | null
+  secondPhone?: Prisma.StringNullableWithAggregatesFilter<"OwnerAddress"> | string | null
   address?: Prisma.StringNullableWithAggregatesFilter<"OwnerAddress"> | string | null
   location?: Prisma.StringNullableWithAggregatesFilter<"OwnerAddress"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"OwnerAddress"> | Date | string
@@ -266,6 +278,7 @@ export type OwnerAddressCreateInput = {
   fullName: string
   email: string
   phone?: string | null
+  secondPhone?: string | null
   address?: string | null
   location?: string | null
   createdAt?: Date | string
@@ -277,6 +290,7 @@ export type OwnerAddressUncheckedCreateInput = {
   fullName: string
   email: string
   phone?: string | null
+  secondPhone?: string | null
   address?: string | null
   location?: string | null
   createdAt?: Date | string
@@ -288,6 +302,7 @@ export type OwnerAddressUpdateInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -299,6 +314,7 @@ export type OwnerAddressUncheckedUpdateInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -310,6 +326,7 @@ export type OwnerAddressCreateManyInput = {
   fullName: string
   email: string
   phone?: string | null
+  secondPhone?: string | null
   address?: string | null
   location?: string | null
   createdAt?: Date | string
@@ -321,6 +338,7 @@ export type OwnerAddressUpdateManyMutationInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -332,6 +350,7 @@ export type OwnerAddressUncheckedUpdateManyInput = {
   fullName?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  secondPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   location?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -343,6 +362,7 @@ export type OwnerAddressCountOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  secondPhone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   location?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -354,6 +374,7 @@ export type OwnerAddressMaxOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  secondPhone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   location?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -365,6 +386,7 @@ export type OwnerAddressMinOrderByAggregateInput = {
   fullName?: Prisma.SortOrder
   email?: Prisma.SortOrder
   phone?: Prisma.SortOrder
+  secondPhone?: Prisma.SortOrder
   address?: Prisma.SortOrder
   location?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -378,6 +400,7 @@ export type OwnerAddressSelect<ExtArgs extends runtime.Types.Extensions.Internal
   fullName?: boolean
   email?: boolean
   phone?: boolean
+  secondPhone?: boolean
   address?: boolean
   location?: boolean
   createdAt?: boolean
@@ -389,6 +412,7 @@ export type OwnerAddressSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   fullName?: boolean
   email?: boolean
   phone?: boolean
+  secondPhone?: boolean
   address?: boolean
   location?: boolean
   createdAt?: boolean
@@ -400,6 +424,7 @@ export type OwnerAddressSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   fullName?: boolean
   email?: boolean
   phone?: boolean
+  secondPhone?: boolean
   address?: boolean
   location?: boolean
   createdAt?: boolean
@@ -411,13 +436,14 @@ export type OwnerAddressSelectScalar = {
   fullName?: boolean
   email?: boolean
   phone?: boolean
+  secondPhone?: boolean
   address?: boolean
   location?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type OwnerAddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "phone" | "address" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["ownerAddress"]>
+export type OwnerAddressOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "phone" | "secondPhone" | "address" | "location" | "createdAt" | "updatedAt", ExtArgs["result"]["ownerAddress"]>
 
 export type $OwnerAddressPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OwnerAddress"
@@ -427,6 +453,7 @@ export type $OwnerAddressPayload<ExtArgs extends runtime.Types.Extensions.Intern
     fullName: string
     email: string
     phone: string | null
+    secondPhone: string | null
     address: string | null
     location: string | null
     createdAt: Date
@@ -858,6 +885,7 @@ export interface OwnerAddressFieldRefs {
   readonly fullName: Prisma.FieldRef<"OwnerAddress", 'String'>
   readonly email: Prisma.FieldRef<"OwnerAddress", 'String'>
   readonly phone: Prisma.FieldRef<"OwnerAddress", 'String'>
+  readonly secondPhone: Prisma.FieldRef<"OwnerAddress", 'String'>
   readonly address: Prisma.FieldRef<"OwnerAddress", 'String'>
   readonly location: Prisma.FieldRef<"OwnerAddress", 'String'>
   readonly createdAt: Prisma.FieldRef<"OwnerAddress", 'DateTime'>

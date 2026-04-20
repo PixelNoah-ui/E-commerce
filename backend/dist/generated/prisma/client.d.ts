@@ -41,4 +41,9 @@ export type OwnerAddress = Prisma.OwnerAddressModel;
  *
  */
 export type Message = Prisma.MessageModel;
+/**
+ * Model Coupon
+ *
+ */
+export type Coupon = Prisma.CouponModel;
 //# sourceMappingURL=client.d.ts.map

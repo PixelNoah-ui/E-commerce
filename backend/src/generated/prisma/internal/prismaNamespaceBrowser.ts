@@ -54,7 +54,8 @@ export const ModelName = {
   User: 'User',
   Product: 'Product',
   OwnerAddress: 'OwnerAddress',
-  Message: 'Message'
+  Message: 'Message',
+  Coupon: 'Coupon'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -75,10 +76,8 @@ export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof
 
 export const UserScalarFieldEnum = {
   id: 'id',
-  fullName: 'fullName',
   email: 'email',
   password: 'password',
-  imageUrl: 'imageUrl',
   role: 'role',
   resetToken: 'resetToken',
   resetTokenExpiry: 'resetTokenExpiry',
@@ -86,7 +85,9 @@ export const UserScalarFieldEnum = {
   failedLoginAttempts: 'failedLoginAttempts',
   lockUntil: 'lockUntil',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  fullName: 'fullName',
+  imageUrl: 'imageUrl'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -113,6 +114,7 @@ export const OwnerAddressScalarFieldEnum = {
   fullName: 'fullName',
   email: 'email',
   phone: 'phone',
+  secondPhone: 'secondPhone',
   address: 'address',
   location: 'location',
   createdAt: 'createdAt',
@@ -125,13 +127,23 @@ export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[k
 export const MessageScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  phone: 'phone',
   subject: 'subject',
   message: 'message',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  phone: 'phone'
 } as const
 
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
+
+
+export const CouponScalarFieldEnum = {
+  id: 'id',
+  code: 'code',
+  isActive: 'isActive',
+  createdAt: 'createdAt'
+} as const
+
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
 
 
 export const SortOrder = {

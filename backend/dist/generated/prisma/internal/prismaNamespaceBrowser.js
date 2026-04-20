@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.MessageScalarFieldEnum = exports.OwnerAddressScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.CouponScalarFieldEnum = exports.MessageScalarFieldEnum = exports.OwnerAddressScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -78,7 +78,8 @@ exports.ModelName = {
     User: 'User',
     Product: 'Product',
     OwnerAddress: 'OwnerAddress',
-    Message: 'Message'
+    Message: 'Message',
+    Coupon: 'Coupon'
 };
 /*
  * Enums
@@ -91,10 +92,8 @@ exports.TransactionIsolationLevel = runtime.makeStrictEnum({
 });
 exports.UserScalarFieldEnum = {
     id: 'id',
-    fullName: 'fullName',
     email: 'email',
     password: 'password',
-    imageUrl: 'imageUrl',
     role: 'role',
     resetToken: 'resetToken',
     resetTokenExpiry: 'resetTokenExpiry',
@@ -102,7 +101,9 @@ exports.UserScalarFieldEnum = {
     failedLoginAttempts: 'failedLoginAttempts',
     lockUntil: 'lockUntil',
     createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
+    updatedAt: 'updatedAt',
+    fullName: 'fullName',
+    imageUrl: 'imageUrl'
 };
 exports.ProductScalarFieldEnum = {
     id: 'id',
@@ -121,6 +122,7 @@ exports.OwnerAddressScalarFieldEnum = {
     fullName: 'fullName',
     email: 'email',
     phone: 'phone',
+    secondPhone: 'secondPhone',
     address: 'address',
     location: 'location',
     createdAt: 'createdAt',
@@ -129,9 +131,15 @@ exports.OwnerAddressScalarFieldEnum = {
 exports.MessageScalarFieldEnum = {
     id: 'id',
     name: 'name',
-    phone: 'phone',
     subject: 'subject',
     message: 'message',
+    createdAt: 'createdAt',
+    phone: 'phone'
+};
+exports.CouponScalarFieldEnum = {
+    id: 'id',
+    code: 'code',
+    isActive: 'isActive',
     createdAt: 'createdAt'
 };
 exports.SortOrder = {

@@ -30,6 +30,7 @@ export declare const ModelName: {
     readonly Product: "Product";
     readonly OwnerAddress: "OwnerAddress";
     readonly Message: "Message";
+    readonly Coupon: "Coupon";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -41,10 +42,8 @@ export declare const TransactionIsolationLevel: {
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel];
 export declare const UserScalarFieldEnum: {
     readonly id: "id";
-    readonly fullName: "fullName";
     readonly email: "email";
     readonly password: "password";
-    readonly imageUrl: "imageUrl";
     readonly role: "role";
     readonly resetToken: "resetToken";
     readonly resetTokenExpiry: "resetTokenExpiry";
@@ -53,6 +52,8 @@ export declare const UserScalarFieldEnum: {
     readonly lockUntil: "lockUntil";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
+    readonly fullName: "fullName";
+    readonly imageUrl: "imageUrl";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
 export declare const ProductScalarFieldEnum: {
@@ -73,6 +74,7 @@ export declare const OwnerAddressScalarFieldEnum: {
     readonly fullName: "fullName";
     readonly email: "email";
     readonly phone: "phone";
+    readonly secondPhone: "secondPhone";
     readonly address: "address";
     readonly location: "location";
     readonly createdAt: "createdAt";
@@ -82,12 +84,19 @@ export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[k
 export declare const MessageScalarFieldEnum: {
     readonly id: "id";
     readonly name: "name";
-    readonly phone: "phone";
     readonly subject: "subject";
     readonly message: "message";
     readonly createdAt: "createdAt";
+    readonly phone: "phone";
 };
 export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum];
+export declare const CouponScalarFieldEnum: {
+    readonly id: "id";
+    readonly code: "code";
+    readonly isActive: "isActive";
+    readonly createdAt: "createdAt";
+};
+export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";

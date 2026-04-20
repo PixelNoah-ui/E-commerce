@@ -43,6 +43,7 @@ const createSendToken = (
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? "none" : "lax",
+    domain: isProd ? ".abdulectroncs.com" : ".abdulectroncs.com",
   });
 
   res.status(statusCode).json({

@@ -5,7 +5,7 @@ import { catchAsync } from "../utils/catchAsync .js";
 const OWNER_ADDRESS_ID = "fixed-owner-address-id";
 
 export const createOwnerAddress = catchAsync(async (req, res, next) => {
-  const { fullName, email, phone, address, location } = req.body;
+  const { fullName, email, phone, secondPhone, address, location } = req.body;
 
   if (!fullName || !email) {
     return next(new AppError("Full name and email are required", 400));
@@ -17,6 +17,7 @@ export const createOwnerAddress = catchAsync(async (req, res, next) => {
       fullName,
       email,
       phone,
+      secondPhone,
       address,
       location,
     },
@@ -25,6 +26,7 @@ export const createOwnerAddress = catchAsync(async (req, res, next) => {
       fullName,
       email,
       phone,
+      secondPhone,
       address,
       location,
     },
@@ -71,12 +73,13 @@ export const getOwnerAddress = catchAsync(async (req, res, next) => {
 
 export const updateOwnerAddress = catchAsync(async (req, res, next) => {
   console.log("Request body:", req.body);
-  const { fullName, email, phone, address, location } = req.body;
+  const { fullName, email, phone, secondPhone, address, location } = req.body;
   const data: Record<string, unknown> = {};
 
   if (fullName !== undefined) data.fullName = String(fullName);
   if (email !== undefined) data.email = String(email);
   if (phone !== undefined) data.phone = String(phone);
+  if (secondPhone !== undefined) data.secondPhone = String(secondPhone);
   if (address !== undefined) data.address = String(address);
   if (location !== undefined) data.location = String(location);
 
@@ -88,6 +91,7 @@ export const updateOwnerAddress = catchAsync(async (req, res, next) => {
       fullName: String(fullName || ""),
       email: String(email || ""),
       phone: phone ? String(phone) : null,
+      secondPhone: secondPhone ? String(secondPhone) : null,
       address: address ? String(address) : null,
       location: location ? String(location) : null,
     },

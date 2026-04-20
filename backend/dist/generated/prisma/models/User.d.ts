@@ -21,10 +21,8 @@ export type UserSumAggregateOutputType = {
 };
 export type UserMinAggregateOutputType = {
     id: string | null;
-    fullName: string | null;
     email: string | null;
     password: string | null;
-    imageUrl: string | null;
     role: $Enums.Role | null;
     resetToken: string | null;
     resetTokenExpiry: Date | null;
@@ -33,13 +31,13 @@ export type UserMinAggregateOutputType = {
     lockUntil: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
+    fullName: string | null;
+    imageUrl: string | null;
 };
 export type UserMaxAggregateOutputType = {
     id: string | null;
-    fullName: string | null;
     email: string | null;
     password: string | null;
-    imageUrl: string | null;
     role: $Enums.Role | null;
     resetToken: string | null;
     resetTokenExpiry: Date | null;
@@ -48,13 +46,13 @@ export type UserMaxAggregateOutputType = {
     lockUntil: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
+    fullName: string | null;
+    imageUrl: string | null;
 };
 export type UserCountAggregateOutputType = {
     id: number;
-    fullName: number;
     email: number;
     password: number;
-    imageUrl: number;
     role: number;
     resetToken: number;
     resetTokenExpiry: number;
@@ -63,6 +61,8 @@ export type UserCountAggregateOutputType = {
     lockUntil: number;
     createdAt: number;
     updatedAt: number;
+    fullName: number;
+    imageUrl: number;
     _all: number;
 };
 export type UserAvgAggregateInputType = {
@@ -73,10 +73,8 @@ export type UserSumAggregateInputType = {
 };
 export type UserMinAggregateInputType = {
     id?: true;
-    fullName?: true;
     email?: true;
     password?: true;
-    imageUrl?: true;
     role?: true;
     resetToken?: true;
     resetTokenExpiry?: true;
@@ -85,13 +83,13 @@ export type UserMinAggregateInputType = {
     lockUntil?: true;
     createdAt?: true;
     updatedAt?: true;
+    fullName?: true;
+    imageUrl?: true;
 };
 export type UserMaxAggregateInputType = {
     id?: true;
-    fullName?: true;
     email?: true;
     password?: true;
-    imageUrl?: true;
     role?: true;
     resetToken?: true;
     resetTokenExpiry?: true;
@@ -100,13 +98,13 @@ export type UserMaxAggregateInputType = {
     lockUntil?: true;
     createdAt?: true;
     updatedAt?: true;
+    fullName?: true;
+    imageUrl?: true;
 };
 export type UserCountAggregateInputType = {
     id?: true;
-    fullName?: true;
     email?: true;
     password?: true;
-    imageUrl?: true;
     role?: true;
     resetToken?: true;
     resetTokenExpiry?: true;
@@ -115,6 +113,8 @@ export type UserCountAggregateInputType = {
     lockUntil?: true;
     createdAt?: true;
     updatedAt?: true;
+    fullName?: true;
+    imageUrl?: true;
     _all?: true;
 };
 export type UserAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -195,10 +195,8 @@ export type UserGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
 };
 export type UserGroupByOutputType = {
     id: string;
-    fullName: string;
     email: string;
     password: string;
-    imageUrl: string | null;
     role: $Enums.Role;
     resetToken: string | null;
     resetTokenExpiry: Date | null;
@@ -207,6 +205,8 @@ export type UserGroupByOutputType = {
     lockUntil: Date | null;
     createdAt: Date;
     updatedAt: Date;
+    fullName: string;
+    imageUrl: string | null;
     _count: UserCountAggregateOutputType | null;
     _avg: UserAvgAggregateOutputType | null;
     _sum: UserSumAggregateOutputType | null;
@@ -221,10 +221,8 @@ export type UserWhereInput = {
     OR?: Prisma.UserWhereInput[];
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     id?: Prisma.StringFilter<"User"> | string;
-    fullName?: Prisma.StringFilter<"User"> | string;
     email?: Prisma.StringFilter<"User"> | string;
     password?: Prisma.StringFilter<"User"> | string;
-    imageUrl?: Prisma.StringNullableFilter<"User"> | string | null;
     role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role;
     resetToken?: Prisma.StringNullableFilter<"User"> | string | null;
     resetTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
@@ -233,13 +231,13 @@ export type UserWhereInput = {
     lockUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string;
+    fullName?: Prisma.StringFilter<"User"> | string;
+    imageUrl?: Prisma.StringNullableFilter<"User"> | string | null;
 };
 export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
-    fullName?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     password?: Prisma.SortOrder;
-    imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
     role?: Prisma.SortOrder;
     resetToken?: Prisma.SortOrderInput | Prisma.SortOrder;
     resetTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -248,6 +246,8 @@ export type UserOrderByWithRelationInput = {
     lockUntil?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    fullName?: Prisma.SortOrder;
+    imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -255,9 +255,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
     OR?: Prisma.UserWhereInput[];
     NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[];
-    fullName?: Prisma.StringFilter<"User"> | string;
     password?: Prisma.StringFilter<"User"> | string;
-    imageUrl?: Prisma.StringNullableFilter<"User"> | string | null;
     role?: Prisma.EnumRoleFilter<"User"> | $Enums.Role;
     resetToken?: Prisma.StringNullableFilter<"User"> | string | null;
     resetTokenExpiry?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
@@ -266,13 +264,13 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     lockUntil?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"User"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string;
+    fullName?: Prisma.StringFilter<"User"> | string;
+    imageUrl?: Prisma.StringNullableFilter<"User"> | string | null;
 }, "id" | "email">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
-    fullName?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     password?: Prisma.SortOrder;
-    imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
     role?: Prisma.SortOrder;
     resetToken?: Prisma.SortOrderInput | Prisma.SortOrder;
     resetTokenExpiry?: Prisma.SortOrderInput | Prisma.SortOrder;
@@ -281,6 +279,8 @@ export type UserOrderByWithAggregationInput = {
     lockUntil?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    fullName?: Prisma.SortOrder;
+    imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
     _count?: Prisma.UserCountOrderByAggregateInput;
     _avg?: Prisma.UserAvgOrderByAggregateInput;
     _max?: Prisma.UserMaxOrderByAggregateInput;
@@ -292,10 +292,8 @@ export type UserScalarWhereWithAggregatesInput = {
     OR?: Prisma.UserScalarWhereWithAggregatesInput[];
     NOT?: Prisma.UserScalarWhereWithAggregatesInput | Prisma.UserScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"User"> | string;
-    fullName?: Prisma.StringWithAggregatesFilter<"User"> | string;
     email?: Prisma.StringWithAggregatesFilter<"User"> | string;
     password?: Prisma.StringWithAggregatesFilter<"User"> | string;
-    imageUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     role?: Prisma.EnumRoleWithAggregatesFilter<"User"> | $Enums.Role;
     resetToken?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
     resetTokenExpiry?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null;
@@ -304,13 +302,13 @@ export type UserScalarWhereWithAggregatesInput = {
     lockUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string;
+    fullName?: Prisma.StringWithAggregatesFilter<"User"> | string;
+    imageUrl?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null;
 };
 export type UserCreateInput = {
     id?: string;
-    fullName: string;
     email: string;
     password: string;
-    imageUrl?: string | null;
     role?: $Enums.Role;
     resetToken?: string | null;
     resetTokenExpiry?: Date | string | null;
@@ -319,13 +317,13 @@ export type UserCreateInput = {
     lockUntil?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    fullName: string;
+    imageUrl?: string | null;
 };
 export type UserUncheckedCreateInput = {
     id?: string;
-    fullName: string;
     email: string;
     password: string;
-    imageUrl?: string | null;
     role?: $Enums.Role;
     resetToken?: string | null;
     resetTokenExpiry?: Date | string | null;
@@ -334,13 +332,13 @@ export type UserUncheckedCreateInput = {
     lockUntil?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    fullName: string;
+    imageUrl?: string | null;
 };
 export type UserUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.StringFieldUpdateOperationsInput | string;
     password?: Prisma.StringFieldUpdateOperationsInput | string;
-    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
@@ -349,13 +347,13 @@ export type UserUpdateInput = {
     lockUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 export type UserUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.StringFieldUpdateOperationsInput | string;
     password?: Prisma.StringFieldUpdateOperationsInput | string;
-    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
@@ -364,13 +362,13 @@ export type UserUncheckedUpdateInput = {
     lockUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 export type UserCreateManyInput = {
     id?: string;
-    fullName: string;
     email: string;
     password: string;
-    imageUrl?: string | null;
     role?: $Enums.Role;
     resetToken?: string | null;
     resetTokenExpiry?: Date | string | null;
@@ -379,13 +377,13 @@ export type UserCreateManyInput = {
     lockUntil?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
+    fullName: string;
+    imageUrl?: string | null;
 };
 export type UserUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.StringFieldUpdateOperationsInput | string;
     password?: Prisma.StringFieldUpdateOperationsInput | string;
-    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
@@ -394,13 +392,13 @@ export type UserUpdateManyMutationInput = {
     lockUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 export type UserUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
     email?: Prisma.StringFieldUpdateOperationsInput | string;
     password?: Prisma.StringFieldUpdateOperationsInput | string;
-    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
     resetToken?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     resetTokenExpiry?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
@@ -409,13 +407,13 @@ export type UserUncheckedUpdateManyInput = {
     lockUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    fullName?: Prisma.StringFieldUpdateOperationsInput | string;
+    imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
 };
 export type UserCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    fullName?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     password?: Prisma.SortOrder;
-    imageUrl?: Prisma.SortOrder;
     role?: Prisma.SortOrder;
     resetToken?: Prisma.SortOrder;
     resetTokenExpiry?: Prisma.SortOrder;
@@ -424,16 +422,16 @@ export type UserCountOrderByAggregateInput = {
     lockUntil?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    fullName?: Prisma.SortOrder;
+    imageUrl?: Prisma.SortOrder;
 };
 export type UserAvgOrderByAggregateInput = {
     failedLoginAttempts?: Prisma.SortOrder;
 };
 export type UserMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    fullName?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     password?: Prisma.SortOrder;
-    imageUrl?: Prisma.SortOrder;
     role?: Prisma.SortOrder;
     resetToken?: Prisma.SortOrder;
     resetTokenExpiry?: Prisma.SortOrder;
@@ -442,13 +440,13 @@ export type UserMaxOrderByAggregateInput = {
     lockUntil?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    fullName?: Prisma.SortOrder;
+    imageUrl?: Prisma.SortOrder;
 };
 export type UserMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
-    fullName?: Prisma.SortOrder;
     email?: Prisma.SortOrder;
     password?: Prisma.SortOrder;
-    imageUrl?: Prisma.SortOrder;
     role?: Prisma.SortOrder;
     resetToken?: Prisma.SortOrder;
     resetTokenExpiry?: Prisma.SortOrder;
@@ -457,6 +455,8 @@ export type UserMinOrderByAggregateInput = {
     lockUntil?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
+    fullName?: Prisma.SortOrder;
+    imageUrl?: Prisma.SortOrder;
 };
 export type UserSumOrderByAggregateInput = {
     failedLoginAttempts?: Prisma.SortOrder;
@@ -464,11 +464,11 @@ export type UserSumOrderByAggregateInput = {
 export type StringFieldUpdateOperationsInput = {
     set?: string;
 };
-export type NullableStringFieldUpdateOperationsInput = {
-    set?: string | null;
-};
 export type EnumRoleFieldUpdateOperationsInput = {
     set?: $Enums.Role;
+};
+export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null;
 };
 export type NullableDateTimeFieldUpdateOperationsInput = {
     set?: Date | string | null;
@@ -485,10 +485,8 @@ export type DateTimeFieldUpdateOperationsInput = {
 };
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    fullName?: boolean;
     email?: boolean;
     password?: boolean;
-    imageUrl?: boolean;
     role?: boolean;
     resetToken?: boolean;
     resetTokenExpiry?: boolean;
@@ -497,13 +495,13 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     lockUntil?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    fullName?: boolean;
+    imageUrl?: boolean;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    fullName?: boolean;
     email?: boolean;
     password?: boolean;
-    imageUrl?: boolean;
     role?: boolean;
     resetToken?: boolean;
     resetTokenExpiry?: boolean;
@@ -512,13 +510,13 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     lockUntil?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    fullName?: boolean;
+    imageUrl?: boolean;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
-    fullName?: boolean;
     email?: boolean;
     password?: boolean;
-    imageUrl?: boolean;
     role?: boolean;
     resetToken?: boolean;
     resetTokenExpiry?: boolean;
@@ -527,13 +525,13 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     lockUntil?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    fullName?: boolean;
+    imageUrl?: boolean;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectScalar = {
     id?: boolean;
-    fullName?: boolean;
     email?: boolean;
     password?: boolean;
-    imageUrl?: boolean;
     role?: boolean;
     resetToken?: boolean;
     resetTokenExpiry?: boolean;
@@ -542,17 +540,17 @@ export type UserSelectScalar = {
     lockUntil?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
+    fullName?: boolean;
+    imageUrl?: boolean;
 };
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "fullName" | "email" | "password" | "imageUrl" | "role" | "resetToken" | "resetTokenExpiry" | "passwordChangedAt" | "failedLoginAttempts" | "lockUntil" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>;
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "email" | "password" | "role" | "resetToken" | "resetTokenExpiry" | "passwordChangedAt" | "failedLoginAttempts" | "lockUntil" | "createdAt" | "updatedAt" | "fullName" | "imageUrl", ExtArgs["result"]["user"]>;
 export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     name: "User";
     objects: {};
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
-        fullName: string;
         email: string;
         password: string;
-        imageUrl: string | null;
         role: $Enums.Role;
         resetToken: string | null;
         resetTokenExpiry: Date | null;
@@ -561,6 +559,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         lockUntil: Date | null;
         createdAt: Date;
         updatedAt: Date;
+        fullName: string;
+        imageUrl: string | null;
     }, ExtArgs["result"]["user"]>;
     composites: {};
 };
@@ -916,10 +916,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
  */
 export interface UserFieldRefs {
     readonly id: Prisma.FieldRef<"User", 'String'>;
-    readonly fullName: Prisma.FieldRef<"User", 'String'>;
     readonly email: Prisma.FieldRef<"User", 'String'>;
     readonly password: Prisma.FieldRef<"User", 'String'>;
-    readonly imageUrl: Prisma.FieldRef<"User", 'String'>;
     readonly role: Prisma.FieldRef<"User", 'Role'>;
     readonly resetToken: Prisma.FieldRef<"User", 'String'>;
     readonly resetTokenExpiry: Prisma.FieldRef<"User", 'DateTime'>;
@@ -928,6 +926,8 @@ export interface UserFieldRefs {
     readonly lockUntil: Prisma.FieldRef<"User", 'DateTime'>;
     readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"User", 'DateTime'>;
+    readonly fullName: Prisma.FieldRef<"User", 'String'>;
+    readonly imageUrl: Prisma.FieldRef<"User", 'String'>;
 }
 /**
  * User findUnique

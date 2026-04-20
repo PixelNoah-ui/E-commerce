@@ -3,6 +3,7 @@ export interface Address {
   fullName: string;
   email: string;
   phone: string | null;
+  secondPhone: string | null;
   address: string | null;
   location: string | null;
   createdAt: string;

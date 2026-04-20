@@ -159,6 +159,17 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get message(): Prisma.MessageDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    /**
+     * `prisma.coupon`: Exposes CRUD operations for the **Coupon** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more Coupons
+      * const coupons = await prisma.coupon.findMany()
+      * ```
+      */
+    get coupon(): Prisma.CouponDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(): PrismaClientConstructor;
 //# sourceMappingURL=class.d.ts.map

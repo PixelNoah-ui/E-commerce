@@ -105,7 +105,6 @@ export const updateManager = catchAsync(async (req, res, next) => {
     return next(new AppError("Manager not found", 404));
   }
 
-  console.log("Request body:", req.body);
   const { email, imageUrl, fullName } = req.body;
   const data: Record<string, unknown> = {};
 

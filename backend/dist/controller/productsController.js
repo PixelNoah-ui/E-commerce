@@ -15,7 +15,6 @@ function normalizeCategory(value) {
 exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
     if (!name || !description || !price || !imageUrl || !categoryType) {
-        console.log("❌ Missing required fields:", req.body);
         return next(new AppError_js_1.AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
     }
     try {
@@ -29,7 +28,6 @@ exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
                 isFeatured: isFeatured === "true" || isFeatured === true,
             },
         });
-        console.log("✅ Product created successfully:", product);
         res.status(201).json({
             status: "success",
             data: { product },

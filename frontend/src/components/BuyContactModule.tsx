@@ -3,16 +3,28 @@
 import { useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
-import { Phone, MapPin, MapMinus } from "lucide-react";
+import { Phone, MapPin, MapMinus, Copy, Check } from "lucide-react";
 import { useAddress } from "@/hooks/useAddress";
+import { useTodayCoupon } from "@/hooks/useCoupon";
 
 export default function BuyContactModule() {
   const [open, setOpen] = useState(false);
-  const { data: address, isLoading } = useAddress();
+  const [copied, setCopied] = useState(false);
+  const { data: address } = useAddress();
+  const { data: coupon } = useTodayCoupon();
 
   const phone = address?.phone || "+251 911 234 567";
+  const secondPhone = address?.secondPhone || null;
   const location = address?.address || "Jimma, Ethiopia";
-  const subLocation = address?.location || "imma, Ethiopia";
+  const subLocation = address?.location || "Jimma, Ethiopia";
+
+  const handleCopyCode = () => {
+    if (coupon?.code) {
+      navigator.clipboard.writeText(coupon.code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -43,14 +55,36 @@ export default function BuyContactModule() {
             <span className="font-medium leading-relaxed">{subLocation} </span>
           </div>
 
-          {/* PHONE */}
-          <div className="flex items-center gap-3 text-sm">
-            <Phone className="h-4 w-4 text-primary" />
-            <span className="font-medium">{phone}</span>
+          <div className="flex items-center gap-4 justify-between">
+            {/* PHONE */}
+            <div className="flex items-center gap-3 text-sm">
+              <Phone className="h-4 w-4 text-primary" />
+              <span className="font-medium">{phone}</span>
+            </div>
+
+            {/* SECOND PHONE */}
+            {secondPhone && (
+              <div className="flex items-center gap-3 text-sm">
+                <Phone className="h-4 w-4 text-primary" />
+                <span className="font-medium">{secondPhone} </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* ACTION */}
+        {coupon && (
+          <div className="mt-5 flex justify-center">
+            <div className="flex items-center gap-3 px-5 py-2 border border-primary/30 bg-primary/5 rounded-full shadow-sm">
+              <span className="text-xs font-medium text-muted-foreground">
+                COUPON :
+              </span>
+
+              <span className="text-sm font-bold tracking-wider text-primary">
+                {coupon.code}
+              </span>
+            </div>
+          </div>
+        )}
         <Button
           className="w-full mt-6 rounded-none"
           onClick={() => setOpen(false)}
