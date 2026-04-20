@@ -170,7 +170,15 @@ export const logout = catchAsync(async (req, res) => {
 
 /* ================= PROTECT ================= */
 export const protect = catchAsync(async (req, res, next) => {
-  const token = req.cookies?.token;
+  // Check cookies first, then Authorization header
+  let token = req.cookies?.token;
+
+  if (!token) {
+    const authHeader = req.headers.authorization;
+    if (authHeader?.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    }
+  }
 
   if (!token) {
     return next(new AppError("Not authenticated", 401));
