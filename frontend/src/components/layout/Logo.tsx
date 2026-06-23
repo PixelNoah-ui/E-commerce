@@ -7,14 +7,14 @@ export default function Logo() {
       <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white">
         <Image
           src="/icons/logo.svg"
-          alt="AbduJelil-Electronics"
+          alt="Meqdii Electronics"
           fill
           className="object-contain"
         />
       </div>
 
       <span className="font-bold text-lg bg-gradient-primary bg-clip-text text-primary">
-        AbdulJelil-Electronics
+        Meqdii Electronics
       </span>
     </Link>
   );

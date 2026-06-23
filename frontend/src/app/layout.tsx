@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AbdulJelil Electronics | Buy & Rent Electronics in Ethiopia",
+  title: "Meqdii Electronics | Buy & Rent Electronics in Ethiopia",
   description:
-    "AbdulJelil Electronics is your trusted platform to buy, sell, and rent electronics in Ethiopia. Discover laptops, phones, cameras, and more at affordable prices.",
+    "Meqdii Electronics is your trusted platform to buy, sell, and rent electronics in Ethiopia. Discover laptops, phones, cameras, and more at affordable prices.",
   keywords: [
-    "AbdulJelil Electronics",
+    "Meqdii Electronics",
     "electronics Ethiopia",
     "buy electronics Addis Ababa",
     "rent electronics Ethiopia",
@@ -32,14 +32,14 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icons/logo.svg",
   },
-  authors: [{ name: "AbdulJelil Electronics" }],
-  creator: "AbdulJelil Electronics",
+  authors: [{ name: "Meqdii Electronics" }],
+  creator: "Meqdii Electronics",
   openGraph: {
-    title: "AbdulJelil Electronics",
+    title: "Meqdii Electronics",
     description:
       "Buy, sell, and rent electronics easily in Ethiopia. Affordable, reliable, and fast.",
     url: "https://abduelectronics.com",
-    siteName: "AbdulJelil Electronics",
+    siteName: "Meqdii Electronics",
     locale: "en_ET",
     type: "website",
   },

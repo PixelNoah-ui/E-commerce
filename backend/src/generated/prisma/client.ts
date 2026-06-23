@@ -54,13 +54,3 @@ export type Product = Prisma.ProductModel
  * 
  */
 export type OwnerAddress = Prisma.OwnerAddressModel
-/**
- * Model Message
- * 
- */
-export type Message = Prisma.MessageModel
-/**
- * Model Coupon
- * 
- */
-export type Coupon = Prisma.CouponModel

@@ -3,13 +3,32 @@ import { prisma } from "../lib/Prisma.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
 
-// Create Product
 function normalizeCategory(value: string | string[]) {
   return String(value).trim().toUpperCase();
 }
+
+function parseJsonField(value: unknown) {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed === "") return undefined;
+    try {
+      return JSON.parse(trimmed);
+    } catch {
+      return undefined;
+    }
+  }
+
+  if (typeof value === "object" && value !== null) {
+    return value;
+  }
+
+  return undefined;
+}
+
 export const createProduct = catchAsync(async (req, res, next) => {
   const { name, description, price, imageUrl, categoryType, isFeatured } =
     req.body;
+  const specifications = parseJsonField(req.body.specifications);
 
   if (!name || !description || !price || !imageUrl || !categoryType) {
     return next(
@@ -25,10 +44,11 @@ export const createProduct = catchAsync(async (req, res, next) => {
       data: {
         name,
         description,
-        price: price, // if using Decimal
+        price: price,
         imageUrl,
         categoryType: normalizeCategory(categoryType),
         isFeatured: isFeatured === "true" || isFeatured === true,
+        ...(specifications ? { specifications } : {}),
       },
     });
 
@@ -209,12 +229,14 @@ export const updateProduct = catchAsync(async (req, res) => {
     categoryType,
     isFeatured,
   } = req.body;
+  const specifications = parseJsonField(req.body.specifications);
 
   const data: Parameters<typeof prisma.product.update>[0]["data"] = {};
 
   if (name !== undefined) data.name = String(name);
   if (description !== undefined) data.description = String(description);
   if (price !== undefined) data.price = price;
+  if (specifications !== undefined) data.specifications = specifications;
 
   if (categoryType !== undefined)
     data.categoryType = normalizeCategory(categoryType);

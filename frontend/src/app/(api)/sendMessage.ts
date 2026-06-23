@@ -1,5 +1,6 @@
 export interface ContactFormData {
   name: string;
+  email: string;
   phone: string;
   subject: "Bulk Buy" | "Sell to Owners" | string;
   message: string;

@@ -1,0 +1,1 @@
+{"version":3,"file":"contact-email.d.ts","sourceRoot":"","sources":["../../src/utils/contact-email.ts"],"names":[],"mappings":"AAAA,UAAU,iBAAiB;IACzB,IAAI,EAAE,MAAM,CAAC;IACb,KAAK,EAAE,MAAM,CAAC;IACd,KAAK,CAAC,EAAE,MAAM,CAAC;IACf,OAAO,EAAE,MAAM,CAAC;IAChB,OAAO,EAAE,MAAM,CAAC;CACjB;AAED,wBAAgB,oBAAoB,CAAC,EACnC,IAAI,EACJ,KAAK,EACL,KAAK,EACL,OAAO,EACP,OAAO,GACR,EAAE,iBAAiB,UA0BnB"}

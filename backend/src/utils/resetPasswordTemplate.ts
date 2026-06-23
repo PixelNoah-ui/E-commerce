@@ -20,7 +20,7 @@ export const resetPasswordTemplate = (resetURL: string): string => {
           <tr>
             <td align="center" style="padding-bottom:16px;">
               <!-- Replace with your logo -->
-              <div style="font-weight:bold;font-size:18px;">Abdu Electronics</div>
+              <div style="font-weight:bold;font-size:18px;">Meqdii Electronics</div>
             </td>
           </tr>
 
@@ -95,7 +95,7 @@ export const resetPasswordTemplate = (resetURL: string): string => {
           <!-- Footer -->
           <tr>
             <td style="text-align:center;font-size:12px;color:#888;line-height:1.6;">
-              © ${new Date().getFullYear()} Gym Management System<br/>
+              © ${new Date().getFullYear()} Meqdii Electronics<br/>
               If you need help, contact support.
             </td>
           </tr>

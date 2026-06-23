@@ -20,6 +20,7 @@ import { useAddress } from "@/hooks/useAddress";
 
 type FormData = {
   name: string;
+  email: string;
   phone: string;
   subject: string;
   message: string;
@@ -167,6 +168,26 @@ export default function ContactSectionForm() {
                   </p>
                 )}
               </div>
+            </div>
+
+            <div>
+              <Input
+                placeholder="Email"
+                type="email"
+                className="rounded-none"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
+              />
+              {errors.email && (
+                <p className="text-sm text-destructive mt-1">
+                  {errors.email.message}
+                </p>
+              )}
             </div>
 
             {/* Subject */}

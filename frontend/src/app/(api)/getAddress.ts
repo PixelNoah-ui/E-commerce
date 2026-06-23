@@ -35,6 +35,7 @@ export default async function getAddress(): Promise<Address> {
   }
 
   const result: GetAddressResponse = await response.json();
+  console.log("getAddress result:", result); // Log the entire result for debugging
 
   return result.data.owner;
 }

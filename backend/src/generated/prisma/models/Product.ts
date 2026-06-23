@@ -57,6 +57,7 @@ export type ProductCountAggregateOutputType = {
   price: number
   imageUrl: number
   categoryType: number
+  specifications: number
   isFeatured: number
   isActive: number
   createdAt: number
@@ -98,6 +99,7 @@ export type ProductCountAggregateInputType = {
   price?: true
   imageUrl?: true
   categoryType?: true
+  specifications?: true
   isFeatured?: true
   isActive?: true
   createdAt?: true
@@ -184,6 +186,7 @@ export type ProductGroupByOutputType = {
   price: string
   imageUrl: string
   categoryType: string
+  specifications: runtime.JsonValue | null
   isFeatured: boolean
   isActive: boolean
   createdAt: Date
@@ -218,6 +221,7 @@ export type ProductWhereInput = {
   price?: Prisma.StringFilter<"Product"> | string
   imageUrl?: Prisma.StringFilter<"Product"> | string
   categoryType?: Prisma.StringFilter<"Product"> | string
+  specifications?: Prisma.JsonNullableFilter<"Product">
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -231,6 +235,7 @@ export type ProductOrderByWithRelationInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   categoryType?: Prisma.SortOrder
+  specifications?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -247,6 +252,7 @@ export type ProductWhereUniqueInput = Prisma.AtLeast<{
   price?: Prisma.StringFilter<"Product"> | string
   imageUrl?: Prisma.StringFilter<"Product"> | string
   categoryType?: Prisma.StringFilter<"Product"> | string
+  specifications?: Prisma.JsonNullableFilter<"Product">
   isFeatured?: Prisma.BoolFilter<"Product"> | boolean
   isActive?: Prisma.BoolFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Product"> | Date | string
@@ -260,6 +266,7 @@ export type ProductOrderByWithAggregationInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   categoryType?: Prisma.SortOrder
+  specifications?: Prisma.SortOrderInput | Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -279,6 +286,7 @@ export type ProductScalarWhereWithAggregatesInput = {
   price?: Prisma.StringWithAggregatesFilter<"Product"> | string
   imageUrl?: Prisma.StringWithAggregatesFilter<"Product"> | string
   categoryType?: Prisma.StringWithAggregatesFilter<"Product"> | string
+  specifications?: Prisma.JsonNullableWithAggregatesFilter<"Product">
   isFeatured?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   isActive?: Prisma.BoolWithAggregatesFilter<"Product"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Product"> | Date | string
@@ -292,6 +300,7 @@ export type ProductCreateInput = {
   price: string
   imageUrl: string
   categoryType: string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: Date | string
@@ -305,6 +314,7 @@ export type ProductUncheckedCreateInput = {
   price: string
   imageUrl: string
   categoryType: string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: Date | string
@@ -318,6 +328,7 @@ export type ProductUpdateInput = {
   price?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   categoryType?: Prisma.StringFieldUpdateOperationsInput | string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -331,6 +342,7 @@ export type ProductUncheckedUpdateInput = {
   price?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   categoryType?: Prisma.StringFieldUpdateOperationsInput | string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -344,6 +356,7 @@ export type ProductCreateManyInput = {
   price: string
   imageUrl: string
   categoryType: string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: Date | string
@@ -357,6 +370,7 @@ export type ProductUpdateManyMutationInput = {
   price?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   categoryType?: Prisma.StringFieldUpdateOperationsInput | string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,6 +384,7 @@ export type ProductUncheckedUpdateManyInput = {
   price?: Prisma.StringFieldUpdateOperationsInput | string
   imageUrl?: Prisma.StringFieldUpdateOperationsInput | string
   categoryType?: Prisma.StringFieldUpdateOperationsInput | string
+  specifications?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   isFeatured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -383,6 +398,7 @@ export type ProductCountOrderByAggregateInput = {
   price?: Prisma.SortOrder
   imageUrl?: Prisma.SortOrder
   categoryType?: Prisma.SortOrder
+  specifications?: Prisma.SortOrder
   isFeatured?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -428,6 +444,7 @@ export type ProductSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   price?: boolean
   imageUrl?: boolean
   categoryType?: boolean
+  specifications?: boolean
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -441,6 +458,7 @@ export type ProductSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   imageUrl?: boolean
   categoryType?: boolean
+  specifications?: boolean
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -454,6 +472,7 @@ export type ProductSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   price?: boolean
   imageUrl?: boolean
   categoryType?: boolean
+  specifications?: boolean
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -467,13 +486,14 @@ export type ProductSelectScalar = {
   price?: boolean
   imageUrl?: boolean
   categoryType?: boolean
+  specifications?: boolean
   isFeatured?: boolean
   isActive?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "imageUrl" | "categoryType" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+export type ProductOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "imageUrl" | "categoryType" | "specifications" | "isFeatured" | "isActive" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
 
 export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Product"
@@ -485,6 +505,7 @@ export type $ProductPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     price: string
     imageUrl: string
     categoryType: string
+    specifications: runtime.JsonValue | null
     isFeatured: boolean
     isActive: boolean
     createdAt: Date
@@ -918,6 +939,7 @@ export interface ProductFieldRefs {
   readonly price: Prisma.FieldRef<"Product", 'String'>
   readonly imageUrl: Prisma.FieldRef<"Product", 'String'>
   readonly categoryType: Prisma.FieldRef<"Product", 'String'>
+  readonly specifications: Prisma.FieldRef<"Product", 'Json'>
   readonly isFeatured: Prisma.FieldRef<"Product", 'Boolean'>
   readonly isActive: Prisma.FieldRef<"Product", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Product", 'DateTime'>

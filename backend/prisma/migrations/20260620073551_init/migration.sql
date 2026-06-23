@@ -28,6 +28,7 @@ CREATE TABLE "Product" (
     "price" TEXT NOT NULL,
     "imageUrl" TEXT NOT NULL,
     "categoryType" TEXT NOT NULL,
+    "specifications" JSONB,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -67,9 +68,7 @@ CREATE TABLE "Message" (
 CREATE TABLE "Coupon" (
     "id" TEXT NOT NULL,
     "code" TEXT NOT NULL,
-    "discount" INTEGER NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
-    "expiresAt" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Coupon_pkey" PRIMARY KEY ("id")

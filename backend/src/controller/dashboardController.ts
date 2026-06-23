@@ -144,68 +144,40 @@ export const getDashboardStats = catchAsync(async (req, res) => {
   const [
     totalUsers,
     totalProducts,
-    totalMessages,
     adminUsers,
     managerUsers,
     availableProducts,
   ] = await prisma.$transaction([
     prisma.user.count(),
     prisma.product.count(),
-    prisma.message.count(),
     prisma.user.count({ where: { role: "ADMIN" } }),
     prisma.user.count({ where: { role: "MANAGER" } }),
     prisma.product.count({ where: { isActive: true } }),
   ]);
 
-  const [
-    currentUsers,
-    prevUsers,
-    currentProducts,
-    prevProducts,
-    currentMessages,
-    prevMessages,
-  ] = await prisma.$transaction([
-    prisma.user.count({ where: { createdAt: { gte: start } } }),
-    prisma.user.count({
-      where: { createdAt: { gte: prevStart, lt: prevEnd } },
-    }),
+  const [currentUsers, prevUsers, currentProducts, prevProducts] =
+    await prisma.$transaction([
+      prisma.user.count({ where: { createdAt: { gte: start } } }),
+      prisma.user.count({
+        where: { createdAt: { gte: prevStart, lt: prevEnd } },
+      }),
 
-    prisma.product.count({ where: { createdAt: { gte: start } } }),
-    prisma.product.count({
-      where: { createdAt: { gte: prevStart, lt: prevEnd } },
-    }),
-
-    prisma.message.count({ where: { createdAt: { gte: start } } }),
-    prisma.message.count({
-      where: { createdAt: { gte: prevStart, lt: prevEnd } },
-    }),
-  ]);
+      prisma.product.count({ where: { createdAt: { gte: start } } }),
+      prisma.product.count({
+        where: { createdAt: { gte: prevStart, lt: prevEnd } },
+      }),
+    ]);
 
   const userTrend = calculateTrend(currentUsers, prevUsers);
   const productTrend = calculateTrend(currentProducts, prevProducts);
-  const messageTrend = calculateTrend(currentMessages, prevMessages);
 
-  const [productsRaw, messagesRaw] = await prisma.$transaction([
-    prisma.product.findMany({
-      where: { createdAt: { gte: start } },
-      select: { createdAt: true },
-    }),
-    prisma.message.findMany({
-      where: { createdAt: { gte: start } },
-      select: { createdAt: true },
-    }),
-  ]);
+  const productsRaw = await prisma.product.findMany({
+    where: { createdAt: { gte: start } },
+    select: { createdAt: true },
+  });
 
   const productMap = groupByPeriod(productsRaw, period);
-  const messageMap = groupByPeriod(messagesRaw, period);
-
   const productData = fillData(productMap, period);
-  const messageData = fillData(messageMap, period);
-
-  const recentMessages = await prisma.message.findMany({
-    orderBy: { createdAt: "desc" },
-    take: 5,
-  });
 
   res.status(200).json({
     status: "success",
@@ -225,13 +197,6 @@ export const getDashboardStats = catchAsync(async (req, res) => {
           trend: productTrend.trend,
           change: productTrend.change,
         },
-        {
-          title: "Total Messages",
-          value: totalMessages,
-          icon: "AlertTriangle",
-          trend: messageTrend.trend,
-          change: messageTrend.change,
-        },
       ],
       userRoleDistribution: [
         { name: "Admin Users", value: adminUsers },
@@ -247,11 +212,6 @@ export const getDashboardStats = catchAsync(async (req, res) => {
         day: d.day,
         products: d.count,
       })),
-      messageGrowth: messageData.map((d) => ({
-        day: d.day,
-        messages: d.count,
-      })),
-      messages: recentMessages,
     },
   });
 });

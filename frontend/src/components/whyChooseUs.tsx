@@ -18,12 +18,12 @@ export default function WhyChooseUs() {
 
         {/* RIGHT CONTENT */}
         <div className="py-10 px-4 lg:px-0 basis-3/5">
-          <p className="text-orange-500 font-semibold uppercase tracking-wide">
+          <p className="text-primary font-semibold uppercase tracking-wide">
             Our Specialization
           </p>
 
-          <h2 className="text-4xl font-bold mt-2 mb-10">
-            Why Choose Abdu Electronics
+          <h2 className="text-4xl font-bold mt-2 mb-10 text-slate-950 dark:text-white">
+            Why Choose Meqdii Electronics
           </h2>
 
           <div className="grid sm:grid-cols-2 gap-8">
@@ -40,7 +40,7 @@ export default function WhyChooseUs() {
             />
 
             <FeatureCard
-              icon="/icons/laptop.svg"
+              icon="/icons/tech.svg"
               title="Latest Tech Devices"
               desc="Explore the newest smartphones, laptops, and modern gadgets."
             />
@@ -84,7 +84,7 @@ function FeatureCard({
       {/* TEXT */}
       <div>
         <h4 className="font-semibold text-lg">{title}</h4>
-        <p className="text-gray-500 text-sm mt-2">{desc}</p>
+        <p className="text-muted-foreground text-sm mt-2">{desc}</p>
       </div>
     </div>
   );

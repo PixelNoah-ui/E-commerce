@@ -53,9 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Product: 'Product',
-  OwnerAddress: 'OwnerAddress',
-  Message: 'Message',
-  Coupon: 'Coupon'
+  OwnerAddress: 'OwnerAddress'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -100,6 +98,7 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   imageUrl: 'imageUrl',
   categoryType: 'categoryType',
+  specifications: 'specifications',
   isFeatured: 'isFeatured',
   isActive: 'isActive',
   createdAt: 'createdAt',
@@ -124,34 +123,20 @@ export const OwnerAddressScalarFieldEnum = {
 export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[keyof typeof OwnerAddressScalarFieldEnum]
 
 
-export const MessageScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  subject: 'subject',
-  message: 'message',
-  createdAt: 'createdAt',
-  phone: 'phone'
-} as const
-
-export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
-
-
-export const CouponScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  isActive: 'isActive',
-  createdAt: 'createdAt'
-} as const
-
-export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum]
-
-
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -168,4 +153,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

@@ -122,7 +122,14 @@ exports.logout = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
 /* ================= PROTECT ================= */
 exports.protect = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     var _a;
-    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+    // Check cookies first, then Authorization header
+    let token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
+    if (!token) {
+        const authHeader = req.headers.authorization;
+        if (authHeader === null || authHeader === void 0 ? void 0 : authHeader.startsWith("Bearer ")) {
+            token = authHeader.split(" ")[1];
+        }
+    }
     if (!token) {
         return next(new AppError_js_1.AppError("Not authenticated", 401));
     }

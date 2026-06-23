@@ -31,6 +31,7 @@ model Product {
   price        String
   imageUrl     String
   categoryType String
+   specifications Json?
   isFeatured   Boolean  @default(false)
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
@@ -49,25 +50,10 @@ model OwnerAddress {
   updatedAt DateTime @updatedAt
 }
 
-model Message {
-  id        String   @id @default(uuid())
-  name      String
-  subject   String
-  message   String
-  createdAt DateTime @default(now())
-  phone     String
-}
+
 
 enum Role {
   ADMIN
   MANAGER
   USER
-}
-model Coupon {
-  id        String   @id @default(uuid())
-  code      String   @unique
- 
-  isActive  Boolean  @default(true)
-  
-  createdAt DateTime @default(now())
 }

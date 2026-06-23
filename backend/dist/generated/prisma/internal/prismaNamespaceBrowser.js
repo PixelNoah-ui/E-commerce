@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.CouponScalarFieldEnum = exports.MessageScalarFieldEnum = exports.OwnerAddressScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.OwnerAddressScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -77,9 +77,7 @@ exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     User: 'User',
     Product: 'Product',
-    OwnerAddress: 'OwnerAddress',
-    Message: 'Message',
-    Coupon: 'Coupon'
+    OwnerAddress: 'OwnerAddress'
 };
 /*
  * Enums
@@ -112,6 +110,7 @@ exports.ProductScalarFieldEnum = {
     price: 'price',
     imageUrl: 'imageUrl',
     categoryType: 'categoryType',
+    specifications: 'specifications',
     isFeatured: 'isFeatured',
     isActive: 'isActive',
     createdAt: 'createdAt',
@@ -128,23 +127,13 @@ exports.OwnerAddressScalarFieldEnum = {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
-exports.MessageScalarFieldEnum = {
-    id: 'id',
-    name: 'name',
-    subject: 'subject',
-    message: 'message',
-    createdAt: 'createdAt',
-    phone: 'phone'
-};
-exports.CouponScalarFieldEnum = {
-    id: 'id',
-    code: 'code',
-    isActive: 'isActive',
-    createdAt: 'createdAt'
-};
 exports.SortOrder = {
     asc: 'asc',
     desc: 'desc'
+};
+exports.NullableJsonNullValueInput = {
+    DbNull: exports.DbNull,
+    JsonNull: exports.JsonNull
 };
 exports.QueryMode = {
     default: 'default',
@@ -153,5 +142,10 @@ exports.QueryMode = {
 exports.NullsOrder = {
     first: 'first',
     last: 'last'
+};
+exports.JsonNullValueFilter = {
+    DbNull: exports.DbNull,
+    JsonNull: exports.JsonNull,
+    AnyNull: exports.AnyNull
 };
 //# sourceMappingURL=prismaNamespaceBrowser.js.map

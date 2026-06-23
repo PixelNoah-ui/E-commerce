@@ -8,12 +8,29 @@ const cloudinary_js_1 = __importDefault(require("../lib/cloudinary.js"));
 const Prisma_js_1 = require("../lib/Prisma.js");
 const AppError_js_1 = require("../utils/AppError.js");
 const catchAsync__js_1 = require("../utils/catchAsync .js");
-// Create Product
 function normalizeCategory(value) {
     return String(value).trim().toUpperCase();
 }
+function parseJsonField(value) {
+    if (typeof value === "string") {
+        const trimmed = value.trim();
+        if (trimmed === "")
+            return undefined;
+        try {
+            return JSON.parse(trimmed);
+        }
+        catch {
+            return undefined;
+        }
+    }
+    if (typeof value === "object" && value !== null) {
+        return value;
+    }
+    return undefined;
+}
 exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
+    const specifications = parseJsonField(req.body.specifications);
     if (!name || !description || !price || !imageUrl || !categoryType) {
         return next(new AppError_js_1.AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
     }
@@ -22,10 +39,11 @@ exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
             data: {
                 name,
                 description,
-                price: price, // if using Decimal
+                price: price,
                 imageUrl,
                 categoryType: normalizeCategory(categoryType),
                 isFeatured: isFeatured === "true" || isFeatured === true,
+                ...(specifications ? { specifications } : {}),
             },
         });
         res.status(201).json({
@@ -163,6 +181,7 @@ exports.updateProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const id = req.params.id;
     // Destructure fields from request body
     const { name, description, price, imageUrl, imagePublicId, categoryType, isFeatured, } = req.body;
+    const specifications = parseJsonField(req.body.specifications);
     const data = {};
     if (name !== undefined)
         data.name = String(name);
@@ -170,6 +189,8 @@ exports.updateProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
         data.description = String(description);
     if (price !== undefined)
         data.price = price;
+    if (specifications !== undefined)
+        data.specifications = specifications;
     if (categoryType !== undefined)
         data.categoryType = normalizeCategory(categoryType);
     if (isFeatured !== undefined)

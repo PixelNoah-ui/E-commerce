@@ -3,23 +3,30 @@ import Image from "next/image";
 const processSteps = [
   {
     step: "Step 1",
-    title: "Call Your Order",
+    title: "Contact Owner via WhatsApp",
     description:
-      "Place your request quickly by phone or chat, and our team will confirm availability right away.",
-    icon: "/icons/phone.svg",
+      "Start by messaging the owner directly on WhatsApp to check product availability, price, and details instantly.",
+    icon: "/icons/whatsapp.svg",
   },
   {
     step: "Step 2",
-    title: "Confirm & Prepare",
+    title: "Chat & Confirm Order",
     description:
-      "We verify your order details, prepare the product, and update you with every step.",
-    icon: "/icons/mail.svg",
+      "Discuss with our team, confirm your selected product, and finalize all order details before processing.",
+    icon: "/icons/chat.svg",
   },
   {
     step: "Step 3",
-    title: "Deliver Fast",
+    title: "Place Your Order",
     description:
-      "Receive your electronics reliably and on time with fast delivery across Ethiopia.",
+      "Once confirmed, your order is officially registered and prepared for delivery with full tracking support.",
+    icon: "/icons/order.svg",
+  },
+  {
+    step: "Step 4",
+    title: "Receive Your Delivery",
+    description:
+      "Get your electronics delivered safely and quickly to your location anywhere in Ethiopia.",
     icon: "/icons/truck.svg",
   },
 ];
@@ -34,7 +41,8 @@ export default function OurProcess() {
             Our Process
           </p>
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-slate-900">
-            Call order, confirm, and deliver with confidence
+            Contact us, confirm your order, and receive your products in just a
+            few easy steps.
           </h2>
           <p className="mt-4 text-base text-slate-600 leading-relaxed">
             Follow our simple three-step process to place your order, get clear
@@ -43,7 +51,7 @@ export default function OurProcess() {
         </div>
 
         {/* Steps */}
-        <div className="mt-16 grid gap-12 md:grid-cols-3 text-center">
+        <div className="mt-16 grid gap-12 md:grid-cols-3 lg:grid-cols-4 text-center">
           {processSteps.map((step, index) => (
             <div key={step.title} className="flex flex-col items-center group">
               {/* Icon */}

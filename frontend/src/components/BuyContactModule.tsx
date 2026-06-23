@@ -18,19 +18,11 @@ export default function BuyContactModule() {
   const location = address?.address || "Jimma, Ethiopia";
   const subLocation = address?.location || "Jimma, Ethiopia";
 
-  const handleCopyCode = () => {
-    if (coupon?.code) {
-      navigator.clipboard.writeText(coupon.code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* BUTTON */}
       <DialogTrigger asChild>
-        <Button className="w-full py-5 rounded-none mt-4">Buy Now</Button>
+        <Button className="w-full py-5 rounded-none mt-2">Buy Now</Button>
       </DialogTrigger>
 
       {/* MODAL */}

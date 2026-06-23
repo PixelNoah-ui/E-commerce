@@ -38,14 +38,14 @@ export async function generateMetadata({
   const formatted = formatSlug(slug);
 
   return {
-    title: `${formatted} | AbdulJelil Electronics`,
-    description: `Shop ${formatted} at AbdulJelil Electronics. Best prices in Ethiopia.`,
+    title: `${formatted} | Meqdii Electronics`,
+    description: `Shop ${formatted} at Meqdii Electronics. Best prices in Ethiopia.`,
     openGraph: {
-      title: `${formatted} | AbdulJelil Electronics`,
+      title: `${formatted} | Meqdii Electronics`,
       description: `Browse ${formatted} with great deals.`,
       url: `https://abduelectronics.com/electronics/${slug}`,
       images: ["/images/bg.png"],
-      siteName: "AbdulJelil Electronics",
+      siteName: "Meqdii Electronics",
       locale: "en_ET",
       type: "website",
     },

@@ -4,6 +4,8 @@ interface EmailOptions {
   email: string;
   subject: string;
   html: string;
+  from?: string;
+  replyTo?: string;
 }
 
 const sendEmail = async (options: EmailOptions): Promise<void> => {
@@ -18,11 +20,12 @@ const sendEmail = async (options: EmailOptions): Promise<void> => {
     },
   });
 
-  const mailOptions = {
-    from: `Abdu electronics" <${process.env.EMAIL_USERNAME}>`,
+  const mailOptions: nodemailer.SendMailOptions = {
+    from: options.from || `Meqdii Electronics <${process.env.EMAIL_USERNAME}>`,
     to: options.email,
     subject: options.subject,
     html: options.html,
+    replyTo: options.replyTo,
   };
 
   await transporter.sendMail(mailOptions);

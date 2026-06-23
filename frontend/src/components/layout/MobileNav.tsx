@@ -42,12 +42,12 @@ export default function MobileNavbar() {
                 <Link href="/" className="flex items-center gap-2">
                   <Image
                     src="/icons/logo.svg"
-                    alt="Abdu Electronics"
+                    alt="Meqdii Electronics"
                     width={40}
                     height={40}
                   />
                   <span className="text-sm font-bold text-primary">
-                    ABDU ELECTRONICS
+                    MEQDII ELECTRONICS
                   </span>
                 </Link>
               </SheetTitle>

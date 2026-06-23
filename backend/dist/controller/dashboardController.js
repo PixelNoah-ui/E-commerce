@@ -118,15 +118,14 @@ exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) =>
         : "month";
     const { start, prevStart, prevEnd } = getDateRange(period);
     // 🔥 TOTAL COUNTS
-    const [totalUsers, totalProducts, totalMessages, adminUsers, managerUsers, availableProducts,] = await Prisma_js_1.prisma.$transaction([
+    const [totalUsers, totalProducts, adminUsers, managerUsers, availableProducts,] = await Prisma_js_1.prisma.$transaction([
         Prisma_js_1.prisma.user.count(),
         Prisma_js_1.prisma.product.count(),
-        Prisma_js_1.prisma.message.count(),
         Prisma_js_1.prisma.user.count({ where: { role: "ADMIN" } }),
         Prisma_js_1.prisma.user.count({ where: { role: "MANAGER" } }),
         Prisma_js_1.prisma.product.count({ where: { isActive: true } }),
     ]);
-    const [currentUsers, prevUsers, currentProducts, prevProducts, currentMessages, prevMessages,] = await Prisma_js_1.prisma.$transaction([
+    const [currentUsers, prevUsers, currentProducts, prevProducts] = await Prisma_js_1.prisma.$transaction([
         Prisma_js_1.prisma.user.count({ where: { createdAt: { gte: start } } }),
         Prisma_js_1.prisma.user.count({
             where: { createdAt: { gte: prevStart, lt: prevEnd } },
@@ -135,32 +134,15 @@ exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) =>
         Prisma_js_1.prisma.product.count({
             where: { createdAt: { gte: prevStart, lt: prevEnd } },
         }),
-        Prisma_js_1.prisma.message.count({ where: { createdAt: { gte: start } } }),
-        Prisma_js_1.prisma.message.count({
-            where: { createdAt: { gte: prevStart, lt: prevEnd } },
-        }),
     ]);
     const userTrend = calculateTrend(currentUsers, prevUsers);
     const productTrend = calculateTrend(currentProducts, prevProducts);
-    const messageTrend = calculateTrend(currentMessages, prevMessages);
-    const [productsRaw, messagesRaw] = await Prisma_js_1.prisma.$transaction([
-        Prisma_js_1.prisma.product.findMany({
-            where: { createdAt: { gte: start } },
-            select: { createdAt: true },
-        }),
-        Prisma_js_1.prisma.message.findMany({
-            where: { createdAt: { gte: start } },
-            select: { createdAt: true },
-        }),
-    ]);
-    const productMap = groupByPeriod(productsRaw, period);
-    const messageMap = groupByPeriod(messagesRaw, period);
-    const productData = fillData(productMap, period);
-    const messageData = fillData(messageMap, period);
-    const recentMessages = await Prisma_js_1.prisma.message.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 5,
+    const productsRaw = await Prisma_js_1.prisma.product.findMany({
+        where: { createdAt: { gte: start } },
+        select: { createdAt: true },
     });
+    const productMap = groupByPeriod(productsRaw, period);
+    const productData = fillData(productMap, period);
     res.status(200).json({
         status: "success",
         data: {
@@ -179,13 +161,6 @@ exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) =>
                     trend: productTrend.trend,
                     change: productTrend.change,
                 },
-                {
-                    title: "Total Messages",
-                    value: totalMessages,
-                    icon: "AlertTriangle",
-                    trend: messageTrend.trend,
-                    change: messageTrend.change,
-                },
             ],
             userRoleDistribution: [
                 { name: "Admin Users", value: adminUsers },
@@ -201,11 +176,6 @@ exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) =>
                 day: d.day,
                 products: d.count,
             })),
-            messageGrowth: messageData.map((d) => ({
-                day: d.day,
-                messages: d.count,
-            })),
-            messages: recentMessages,
         },
     });
 });

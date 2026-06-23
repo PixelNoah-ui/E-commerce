@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, Phone, Mail, Clock } from "lucide-react";
+import { MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useAddress } from "@/hooks/useAddress";
@@ -8,9 +8,12 @@ import { useAddress } from "@/hooks/useAddress";
 export default function TopBar() {
   const { data: address, isLoading } = useAddress();
 
-  const phone = address?.phone ?? "+251 911477215";
-  const email = address?.email ?? "noreply@company.com";
-  const location = address?.location ?? "Jimma, Ethiopia";
+  const phone = address?.phone ?? "+971 55 153 2113";
+  const location = address?.location ?? "Dubai, UAE";
+  const tiktokHandle = "Meqdii TikTok";
+  const tiktokUrl = "https://vt.tiktok.com/ZSQw1R4SV/";
+  const tiktokUrl2 = "https://vt.tiktok.com/ZSQw11VDu/";
+  const tiktokUrl3 = "https://vt.tiktok.com/ZSQTooR14/";
 
   return (
     <div className="w-full bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-b border-primary/20 text-sm py-2.5">
@@ -35,35 +38,29 @@ export default function TopBar() {
           {/* Divider */}
           <div className="hidden sm:block h-4 w-px bg-primary/30" />
 
-          {/* Email */}
-          <div className="hidden md:flex items-center gap-1.5 group">
-            <Mail
-              size={15}
-              className="text-primary group-hover:scale-110 transition-transform"
-            />
-            {isLoading ? (
-              <span className="animate-pulse">Loading...</span>
-            ) : (
-              <span className="hover:text-primary transition font-medium">
-                {email}
-              </span>
-            )}
-          </div>
-
-          {/* Divider */}
-          <div className="hidden md:block h-4 w-px bg-primary/30" />
-
-          {/* Working Hours */}
-          <div className="hidden lg:flex items-center gap-1.5">
-            <Clock size={15} className="text-primary" />
-            <span className="font-medium">Mon-Sat: 8:00 AM - 9:00 PM</span>
+          {/* TikTok Account */}
+          <div className=" lg:flex items-center gap-1.5">
+            <Link
+              href={tiktokUrl}
+              target="_blank"
+              className="flex items-center gap-1.5 group hover:text-primary transition"
+            >
+              <Image
+                src="/icons/tiktok.svg"
+                alt="TikTok"
+                width={14}
+                height={14}
+                className="group-hover:scale-110 transition-transform"
+              />
+              <span className="font-medium">TikTok: {tiktokHandle}</span>
+            </Link>
           </div>
         </div>
 
         {/* RIGHT - Location & Social */}
         <div className="flex items-center gap-4">
           {/* Location */}
-          <div className="flex items-center gap-1.5 group">
+          <div className="hidden md:flex items-center gap-1.5 group">
             <MapPin
               size={15}
               className="text-primary group-hover:scale-110 transition-transform"
@@ -83,26 +80,26 @@ export default function TopBar() {
           {/* Social Icons */}
           <div className="flex items-center gap-2">
             <Link
-              href="https://www.tiktok.com/@abduljelilm?_r=1&_t=ZS-95a47ZI2Ath"
+              href={tiktokUrl2}
               target="_blank"
               className="p-1.5 rounded-full hover:bg-primary/10 transition-colors group"
             >
               <Image
                 src="/icons/tiktok.svg"
-                alt="TikTok"
+                alt="TikTok2"
                 width={14}
                 height={14}
                 className="group-hover:scale-110 transition-transform"
               />
             </Link>
             <Link
-              href="https://t.me/Abduljelilshemsu"
+              href={tiktokUrl3}
               target="_blank"
               className="p-1.5 rounded-full hover:bg-primary/10 transition-colors group"
             >
               <Image
-                src="/icons/telegram.svg"
-                alt="Telegram"
+                src="/icons/tiktok.svg"
+                alt="TikTok3"
                 width={14}
                 height={14}
                 className="group-hover:scale-110 transition-transform"

@@ -17,16 +17,16 @@ export default function Home() {
       <WhyChooseUs />
       <div className="fixed bottom-6 right-6 z-50">
         {/* Wave Animation */}
-        <span className="absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75 animate-ping"></span>
+        <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping"></span>
 
         {/* Main Button */}
         <Button
           asChild
           size="icon"
-          className="relative h-14 w-14 rounded-full py-4 bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg hover:scale-110 transition-all duration-300"
+          className="relative h-14 w-14 rounded-full py-4 bg-gradient-to-r from-primary to-primary/90 shadow-lg hover:scale-110 transition-all duration-300"
         >
           <Link
-            href="https://t.me/Abduljelilshemsu"
+            href="https://wa.me/971 55 153 2113"
             target="_blank"
             rel="noopener noreferrer"
           >

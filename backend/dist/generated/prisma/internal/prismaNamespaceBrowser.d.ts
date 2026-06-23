@@ -29,8 +29,6 @@ export declare const ModelName: {
     readonly User: "User";
     readonly Product: "Product";
     readonly OwnerAddress: "OwnerAddress";
-    readonly Message: "Message";
-    readonly Coupon: "Coupon";
 };
 export type ModelName = (typeof ModelName)[keyof typeof ModelName];
 export declare const TransactionIsolationLevel: {
@@ -63,6 +61,7 @@ export declare const ProductScalarFieldEnum: {
     readonly price: "price";
     readonly imageUrl: "imageUrl";
     readonly categoryType: "categoryType";
+    readonly specifications: "specifications";
     readonly isFeatured: "isFeatured";
     readonly isActive: "isActive";
     readonly createdAt: "createdAt";
@@ -81,27 +80,16 @@ export declare const OwnerAddressScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type OwnerAddressScalarFieldEnum = (typeof OwnerAddressScalarFieldEnum)[keyof typeof OwnerAddressScalarFieldEnum];
-export declare const MessageScalarFieldEnum: {
-    readonly id: "id";
-    readonly name: "name";
-    readonly subject: "subject";
-    readonly message: "message";
-    readonly createdAt: "createdAt";
-    readonly phone: "phone";
-};
-export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum];
-export declare const CouponScalarFieldEnum: {
-    readonly id: "id";
-    readonly code: "code";
-    readonly isActive: "isActive";
-    readonly createdAt: "createdAt";
-};
-export type CouponScalarFieldEnum = (typeof CouponScalarFieldEnum)[keyof typeof CouponScalarFieldEnum];
 export declare const SortOrder: {
     readonly asc: "asc";
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const NullableJsonNullValueInput: {
+    readonly DbNull: import("@prisma/client-runtime-utils").DbNullClass;
+    readonly JsonNull: import("@prisma/client-runtime-utils").JsonNullClass;
+};
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput];
 export declare const QueryMode: {
     readonly default: "default";
     readonly insensitive: "insensitive";
@@ -112,4 +100,10 @@ export declare const NullsOrder: {
     readonly last: "last";
 };
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder];
+export declare const JsonNullValueFilter: {
+    readonly DbNull: import("@prisma/client-runtime-utils").DbNullClass;
+    readonly JsonNull: import("@prisma/client-runtime-utils").JsonNullClass;
+    readonly AnyNull: import("@prisma/client-runtime-utils").AnyNullClass;
+};
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter];
 //# sourceMappingURL=prismaNamespaceBrowser.d.ts.map

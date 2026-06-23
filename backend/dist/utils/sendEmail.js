@@ -16,10 +16,11 @@ const sendEmail = async (options) => {
         },
     });
     const mailOptions = {
-        from: `Abdu electronics" <${process.env.EMAIL_USERNAME}>`,
+        from: options.from || `Meqdii Electronics <${process.env.EMAIL_USERNAME}>`,
         to: options.email,
         subject: options.subject,
         html: options.html,
+        replyTo: options.replyTo,
     };
     await transporter.sendMail(mailOptions);
 };

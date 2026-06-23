@@ -2,6 +2,8 @@ interface EmailOptions {
     email: string;
     subject: string;
     html: string;
+    from?: string;
+    replyTo?: string;
 }
 declare const sendEmail: (options: EmailOptions) => Promise<void>;
 export default sendEmail;

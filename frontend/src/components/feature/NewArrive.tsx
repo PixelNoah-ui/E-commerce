@@ -3,7 +3,9 @@
 import NewArrivalSkeleton from "@/components/NewArrivalSkeleton";
 import BuyContactModule from "../BuyContactModule";
 import Image from "next/image";
+import specIcons from "../specIcons";
 import useGetNewProducts from "@/hooks/useProducts";
+import ProductCard from "../ProductCard";
 
 export default function NewArriveProducts() {
   const { isLoading, data: newProducts } = useGetNewProducts();
@@ -28,54 +30,7 @@ export default function NewArriveProducts() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 items-stretch">
             {newProducts?.map((product) => (
-              <div
-                key={product.id}
-                className="border rounded-xl p-4 hover:shadow-lg transition-all duration-300 flex flex-col h-full bg-white"
-              >
-                {/* IMAGE */}
-                <div className="relative w-full h-64 mb-4">
-                  <Image
-                    src={product.imageUrl || "/images/default-product.png"}
-                    alt={product.name || "New Product"}
-                    fill
-                    className="object-contain"
-                  />
-                </div>
-
-                {/* CONTENT */}
-                <div className="flex flex-col flex-grow">
-                  {/* NAME */}
-                  <h2 className="text-base font-semibold text-gray-900 line-clamp-2">
-                    {product.name}
-                  </h2>
-
-                  {/* DESCRIPTION */}
-                  <p className="text-sm text-gray-500 mt-1 line-clamp-2">
-                    {product.description || "No description available"}
-                  </p>
-
-                  {/* 🔥 BOTTOM SECTION (ALWAYS STICKS DOWN) */}
-                  <div className="mt-auto pt-4 border-t border-gray-200">
-                    {/* PRICE */}
-                    <p className="text-gray-900 font-semibold text-lg">
-                      {product?.price
-                        ? Number(product.price).toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })
-                        : "0.00"}{" "}
-                      <span className="text-green-500 text-sm font-medium">
-                        ETB
-                      </span>
-                    </p>
-
-                    {/* BUTTON */}
-                    <div className="mt-3">
-                      <BuyContactModule />
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         )}

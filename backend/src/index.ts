@@ -15,7 +15,6 @@ import ownerRouter from "./router/ownerAddressRouter.js";
 import authRouter from "./router/authRouter.js";
 import messageRouter from "./router/messageRouter.js";
 import dashboardRouter from "./router/dashboardRouter.js";
-import couponRouter from "./router/couponRouter.js";
 const app = express();
 
 app.use(morgan("dev"));
@@ -34,6 +33,11 @@ app.use("/api", limiter);
 app.use(
   cors({
     origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://adminjelil.vercel.app",
+      "https://abdu-electronics.vercel.app",
+      "https://abduljeliladmin.abduelectronics.com",
       "https://abduelectronics.com",
       "https://admin.abduelectronics.com",
     ],
@@ -55,7 +59,6 @@ app.use("/api/v1/contact/messages", messageRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/managers", managerRouter);
 app.use("/api/v1/ownerAddress", ownerRouter);
-app.use("/api/v1/coupons", couponRouter);
 
 app.all("/{*any}", (req, res, next) => {
   res.status(404).json({
