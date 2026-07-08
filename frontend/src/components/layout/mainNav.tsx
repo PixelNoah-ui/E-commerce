@@ -1,12 +1,38 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";
 import MobileNavbar from "./MobileNav";
+import dynamic from "next/dynamic";
+
+const CartSheet = dynamic(() => import("@/components/cart/CartSheet"), {
+  ssr: false,
+});
 
 export default function MainNav() {
-  const pathname = usePathname(); // current route
+  const pathname = usePathname();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const updateAuthState = () => {
+      setIsAuthenticated(Boolean(localStorage.getItem("token")));
+    };
+
+    updateAuthState();
+    window.addEventListener("auth-state-changed", updateAuthState);
+
+    return () => {
+      window.removeEventListener("auth-state-changed", updateAuthState);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    window.dispatchEvent(new Event("auth-state-changed"));
+  };
 
   const menuItems = [
     { title: "Home", href: "/" },
@@ -48,9 +74,28 @@ export default function MainNav() {
           >
             Sell with us
           </Link>
+          {isAuthenticated ? (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-primary hover:text-white"
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              href="/auth"
+              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-primary hover:text-white"
+            >
+              Sign in
+            </Link>
+          )}
         </div>
 
-        <MobileNavbar />
+        <div className="flex items-center gap-3">
+          <CartSheet />
+          <MobileNavbar />
+        </div>
       </div>
     </div>
   );

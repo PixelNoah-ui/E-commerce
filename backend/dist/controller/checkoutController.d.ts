@@ -1,0 +1,2 @@
+export declare const validateCheckout: import("express").RequestHandler<import("express-serve-static-core").ParamsDictionary, any, any, import("qs").ParsedQs, Record<string, any>>;
+//# sourceMappingURL=checkoutController.d.ts.map

@@ -6,6 +6,7 @@ const auth_js_1 = require("../middleware/auth.js");
 const router = (0, express_1.Router)();
 router.post("/signup", AuthController_js_1.signup);
 router.post("/login", AuthController_js_1.login);
+router.post("/google", AuthController_js_1.googleLogin);
 router.post("/forgot-password", AuthController_js_1.forgotPassword);
 router.post("/reset-password/:token", AuthController_js_1.resetPassword);
 router.use(AuthController_js_1.protect);

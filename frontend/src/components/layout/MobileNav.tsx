@@ -21,6 +21,7 @@ export default function MobileNavbar() {
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },
+    { title: "Sign in", href: "/auth" },
   ];
 
   return (

@@ -19,9 +19,13 @@ const ownerAddressRouter_js_1 = __importDefault(require("./router/ownerAddressRo
 const authRouter_js_1 = __importDefault(require("./router/authRouter.js"));
 const messageRouter_js_1 = __importDefault(require("./router/messageRouter.js"));
 const dashboardRouter_js_1 = __importDefault(require("./router/dashboardRouter.js"));
+const checkoutRouter_js_1 = __importDefault(require("./router/checkoutRouter.js"));
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)("dev"));
-app.use((0, helmet_1.default)());
+app.use((0, helmet_1.default)({
+    crossOriginEmbedderPolicy: false,
+    crossOriginOpenerPolicy: false,
+}));
 app.use((0, cookie_parser_1.default)());
 const limiter = (0, express_rate_limit_1.default)({
     windowMs: 15 * 60 * 1000,
@@ -33,12 +37,8 @@ app.use("/api", limiter);
 app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
-        "http://localhost:3001",
-        "https://adminjelil.vercel.app",
-        "https://abdu-electronics.vercel.app",
-        "https://abduljeliladmin.abduelectronics.com",
-        "https://abduelectronics.com",
-        "https://admin.abduelectronics.com",
+        "https://meqdiadmin.vercel.app",
+        "https://meqdielectronics.vercel.app",
     ],
     credentials: true,
 }));
@@ -51,6 +51,7 @@ app.use("/api/v1/test", (req, res) => {
 });
 app.use("/api/v1/auth", authRouter_js_1.default);
 app.use("/api/v1/dashboard", dashboardRouter_js_1.default);
+app.use("/api/v1/checkout", checkoutRouter_js_1.default);
 app.use("/api/v1/contact/messages", messageRouter_js_1.default);
 app.use("/api/v1/products", productRouter_js_1.default);
 app.use("/api/v1/managers", managerRouter_js_1.default);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMe = exports.updatePassword = exports.resetPassword = exports.forgotPassword = exports.protect = exports.logout = exports.login = exports.signup = void 0;
+exports.getMe = exports.updatePassword = exports.resetPassword = exports.forgotPassword = exports.protect = exports.googleLogin = exports.logout = exports.login = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -13,12 +13,17 @@ const Prisma_js_1 = require("../lib/Prisma.js");
 const sendEmail_js_1 = __importDefault(require("../utils/sendEmail.js"));
 const catchAsync__js_1 = require("../utils/catchAsync .js");
 const resetPasswordTemplate_js_1 = require("../utils/resetPasswordTemplate.js");
+const google_auth_library_1 = require("google-auth-library");
 dotenv_1.default.config();
 /* ================= CONFIG ================= */
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = "7d";
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 if (!JWT_SECRET)
     throw new Error("Missing JWT_SECRET");
+if (!GOOGLE_CLIENT_ID)
+    throw new Error("Missing GOOGLE_CLIENT_ID");
+const googleClient = new google_auth_library_1.OAuth2Client(GOOGLE_CLIENT_ID);
 /* ================= HELPER ================= */
 const signToken = (id) => jsonwebtoken_1.default.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
 const createSendToken = (user, statusCode, res, message) => {
@@ -76,13 +81,13 @@ exports.login = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     if (!user) {
         return next(new AppError_js_1.AppError("Invalid email or password", 401));
     }
-    if (user.role === "USER") {
-        return next(new AppError_js_1.AppError("You should expect approval by the super admin", 403));
-    }
     // 🔒 Check if account is locked
     if (user.lockUntil && user.lockUntil > new Date()) {
         const remainingTime = Math.ceil((user.lockUntil.getTime() - Date.now()) / 1000 / 60);
         return next(new AppError_js_1.AppError(`Account locked. Try again in ${remainingTime} minutes.`, 403));
+    }
+    if (!user.password) {
+        return next(new AppError_js_1.AppError("Invalid email or password", 401));
     }
     const isMatch = await bcryptjs_1.default.compare(password, user.password);
     if (!isMatch) {
@@ -118,6 +123,77 @@ exports.logout = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
         status: "success",
         message: "Logged out",
     });
+});
+exports.googleLogin = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
+    const { credential } = req.body;
+    if (!credential) {
+        return res
+            .status(400)
+            .json({ error: "Google credential token is required" });
+    }
+    try {
+        // 1. Verify the Google Identity token
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (!(payload === null || payload === void 0 ? void 0 : payload.sub) || !payload.email) {
+            return res.status(401).json({ error: "Invalid Google credential" });
+        }
+        const { sub: googleId, email, name, picture } = payload;
+        // 2. Query DB by googleId OR by email
+        let user = await Prisma_js_1.prisma.user.findFirst({
+            where: {
+                OR: [{ googleId: googleId }, { email: email }],
+            },
+        });
+        if (user) {
+            // Link Google authentication if account was originally created via email password
+            if (!user.googleId) {
+                user = await Prisma_js_1.prisma.user.update({
+                    where: { id: user.id },
+                    data: {
+                        googleId: googleId,
+                        imageUrl: user.imageUrl || picture || null,
+                    },
+                });
+            }
+        }
+        else {
+            // 3. Create a brand new e-commerce customer (USER role)
+            user = await Prisma_js_1.prisma.user.create({
+                data: {
+                    googleId: googleId,
+                    email: email.toLowerCase(),
+                    fullName: name !== null && name !== void 0 ? name : email,
+                    imageUrl: picture !== null && picture !== void 0 ? picture : null,
+                    role: "USER", // Matches your schema Enum
+                    password: null,
+                },
+            });
+        }
+        // 4. Generate your internal App JWT token for authentication persistence
+        const appToken = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
+        // 5. Return token and user data profile
+        return res.status(200).json({
+            message: "Login successful",
+            token: appToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                fullName: user.fullName,
+                role: user.role,
+                imageUrl: user.imageUrl,
+            },
+        });
+    }
+    catch (error) {
+        console.error("Google Authentication Error:", error);
+        return res
+            .status(401)
+            .json({ error: "Invalid Google credential authentication failed" });
+    }
 });
 /* ================= PROTECT ================= */
 exports.protect = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
@@ -240,6 +316,9 @@ exports.updatePassword = (0, catchAsync__js_1.catchAsync)(async (req, res, next)
     });
     if (!user) {
         return next(new AppError_js_1.AppError("User not found", 404));
+    }
+    if (!user.password) {
+        return next(new AppError_js_1.AppError("Current password incorrect", 401));
     }
     const isMatch = await bcryptjs_1.default.compare(currentPassword, user.password);
     if (!isMatch) {

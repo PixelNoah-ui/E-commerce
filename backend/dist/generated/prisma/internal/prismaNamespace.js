@@ -120,6 +120,7 @@ exports.UserScalarFieldEnum = {
     id: 'id',
     email: 'email',
     password: 'password',
+    googleId: 'googleId',
     role: 'role',
     resetToken: 'resetToken',
     resetTokenExpiry: 'resetTokenExpiry',

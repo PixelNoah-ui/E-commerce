@@ -1,10 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
-import { MessageSquare } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { Button } from "./ui/button";
-import { useAddress } from "@/hooks/useAddress";
+import { useCart } from "@/hooks/useCart";
+import { toast } from "sonner";
 import formatPrice from "@/lib/currency";
 import specIcons from "./specIcons";
 import { ProductType } from "@/types/Types";
@@ -14,11 +14,8 @@ type ProductCardProps = {
 };
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const { data: address } = useAddress();
+  const cart = useCart();
   const specs = product.specifications || {};
-  const phone = address?.phone || "+251911477218";
-  const whatsappNumber = phone.replace(/\D/g, "");
-  const whatsappLink = `https://wa.me/${whatsappNumber}`;
 
   return (
     <div className="border p-4 bg-white hover:shadow-lg transition-all duration-300 flex flex-col h-full">
@@ -69,16 +66,31 @@ export default function ProductCard({ product }: ProductCardProps) {
           <p className="text-lg font-semibold">{formatPrice(product.price)}</p>
 
           <div className="mt-2">
-            <Button asChild className="w-full rounded-none">
-              <Link
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2"
-              >
-                <MessageSquare className="h-4 w-4" />
-                Buy Now
-              </Link>
+            <Button
+              className="w-full rounded-none"
+              onClick={() => {
+                if (!product.id) return;
+                cart.addItem({
+                  productId: product.id,
+                  name: product.name || "Product",
+                  price:
+                    typeof product.price === "string"
+                      ? Number(product.price)
+                      : product.price || 0,
+                  image:
+                    product.imageUrl ||
+                    product.image_url ||
+                    "/images/headphones.png",
+                  variant: [],
+                  quantity: 1,
+                });
+                toast.success("Added to cart");
+              }}
+            >
+              <div className="flex items-center justify-center gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                Add to Cart
+              </div>
             </Button>
           </div>
         </div>

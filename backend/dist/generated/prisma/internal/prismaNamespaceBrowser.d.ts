@@ -42,6 +42,7 @@ export declare const UserScalarFieldEnum: {
     readonly id: "id";
     readonly email: "email";
     readonly password: "password";
+    readonly googleId: "googleId";
     readonly role: "role";
     readonly resetToken: "resetToken";
     readonly resetTokenExpiry: "resetTokenExpiry";
