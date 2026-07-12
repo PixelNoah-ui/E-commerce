@@ -35,15 +35,16 @@ export default async function getProducts(
   if (filters.sort) params.append("sort", filters.sort);
   if (filters.page) params.append("page", String(filters.page));
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/products?${params.toString()}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const API_URL = (
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  ).replace(/\/$/, "");
+
+  const response = await fetch(`${API_URL}/products?${params.toString()}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!response.ok) {
     const errorData = await response.json();

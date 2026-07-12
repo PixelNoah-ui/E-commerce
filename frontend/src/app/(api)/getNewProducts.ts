@@ -1,15 +1,16 @@
 import { ProductType } from "@/types/Types";
 
 export default async function getNewProducts(): Promise<ProductType[]> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/products/new-arrivals`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+  const API_URL = (
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  ).replace(/\/$/, "");
+
+  const response = await fetch(`${API_URL}/products/new-arrivals`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+  });
 
   if (!response.ok) {
     console.error("Failed to fetch new products");

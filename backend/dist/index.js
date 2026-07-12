@@ -20,6 +20,9 @@ const authRouter_js_1 = __importDefault(require("./router/authRouter.js"));
 const messageRouter_js_1 = __importDefault(require("./router/messageRouter.js"));
 const dashboardRouter_js_1 = __importDefault(require("./router/dashboardRouter.js"));
 const checkoutRouter_js_1 = __importDefault(require("./router/checkoutRouter.js"));
+const orderRouter_js_1 = __importDefault(require("./router/orderRouter.js"));
+const addressRouter_js_1 = __importDefault(require("./router/addressRouter.js"));
+const customerRouter_js_1 = __importDefault(require("./router/customerRouter.js"));
 const app = (0, express_1.default)();
 app.use((0, morgan_1.default)("dev"));
 app.use((0, helmet_1.default)({
@@ -52,6 +55,9 @@ app.use("/api/v1/test", (req, res) => {
 app.use("/api/v1/auth", authRouter_js_1.default);
 app.use("/api/v1/dashboard", dashboardRouter_js_1.default);
 app.use("/api/v1/checkout", checkoutRouter_js_1.default);
+app.use("/api/v1/orders", orderRouter_js_1.default);
+app.use("/api/v1/addresses", addressRouter_js_1.default);
+app.use("/api/v1/customer", customerRouter_js_1.default);
 app.use("/api/v1/contact/messages", messageRouter_js_1.default);
 app.use("/api/v1/products", productRouter_js_1.default);
 app.use("/api/v1/managers", managerRouter_js_1.default);

@@ -128,6 +128,14 @@ const handlePrismaKnownErrors = (
         status: "fail",
         isOperational: true,
       };
+    case "P2022":
+      return {
+        ...err,
+        message: "Database column missing or invalid.",
+        statusCode: 500,
+        status: "error",
+        isOperational: false,
+      };
     default:
       return {
         ...err,

@@ -16,16 +16,17 @@ export default async function sendMessage(
   data: ContactFormData,
 ): Promise<SendMessageResponse> {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/contact/messages`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const API_URL = (
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+    ).replace(/\/$/, "");
+
+    const response = await fetch(`${API_URL}/contact/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
 
     if (!response.ok) {
       const errData = await response.json();

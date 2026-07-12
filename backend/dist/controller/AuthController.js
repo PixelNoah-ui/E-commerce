@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMe = exports.updatePassword = exports.resetPassword = exports.forgotPassword = exports.protect = exports.googleLogin = exports.logout = exports.login = exports.signup = void 0;
+exports.updateMe = exports.getMe = exports.updatePassword = exports.resetPassword = exports.forgotPassword = exports.protect = exports.googleLogin = exports.logout = exports.login = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const crypto_1 = __importDefault(require("crypto"));
@@ -18,7 +18,10 @@ dotenv_1.default.config();
 /* ================= CONFIG ================= */
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = "7d";
+const JWT_EXPIRES_DAYS = 7;
+const JWT_COOKIE_MAX_AGE = JWT_EXPIRES_DAYS * 24 * 60 * 60 * 1000;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".abdulectroncs.com";
 if (!JWT_SECRET)
     throw new Error("Missing JWT_SECRET");
 if (!GOOGLE_CLIENT_ID)
@@ -27,19 +30,28 @@ const googleClient = new google_auth_library_1.OAuth2Client(GOOGLE_CLIENT_ID);
 /* ================= HELPER ================= */
 const signToken = (id) => jsonwebtoken_1.default.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES });
 const createSendToken = (user, statusCode, res, message) => {
+    var _a;
     const token = signToken(user.id);
-    delete user.password;
     const isProd = process.env.NODE_ENV === "production";
+    const userData = {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        imageUrl: (_a = user.imageUrl) !== null && _a !== void 0 ? _a : null,
+    };
     res.cookie("token", token, {
         httpOnly: true,
         secure: isProd,
         sameSite: isProd ? "none" : "lax",
-        domain: isProd ? ".abdulectroncs.com" : ".abdulectroncs.com",
+        domain: isProd ? COOKIE_DOMAIN : undefined,
+        path: "/",
+        maxAge: JWT_COOKIE_MAX_AGE,
     });
     res.status(statusCode).json({
         status: "success",
         message,
-        token,
+        data: { user: userData },
     });
 };
 /* ================= SIGNUP ================= */
@@ -115,41 +127,42 @@ exports.login = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
 });
 /* ================= LOGOUT ================= */
 exports.logout = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
+    const isProd = process.env.NODE_ENV === "production";
     res.cookie("token", "", {
         httpOnly: true,
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+        domain: isProd ? COOKIE_DOMAIN : undefined,
+        path: "/",
         expires: new Date(0),
+        maxAge: 0,
     });
     res.status(200).json({
         status: "success",
         message: "Logged out",
     });
 });
-exports.googleLogin = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
+exports.googleLogin = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     const { credential } = req.body;
     if (!credential) {
-        return res
-            .status(400)
-            .json({ error: "Google credential token is required" });
+        return next(new AppError_js_1.AppError("Google credential token is required", 400));
     }
     try {
-        // 1. Verify the Google Identity token
         const ticket = await googleClient.verifyIdToken({
             idToken: credential,
             audience: GOOGLE_CLIENT_ID,
         });
         const payload = ticket.getPayload();
         if (!(payload === null || payload === void 0 ? void 0 : payload.sub) || !payload.email) {
-            return res.status(401).json({ error: "Invalid Google credential" });
+            return next(new AppError_js_1.AppError("Invalid Google credential", 401));
         }
         const { sub: googleId, email, name, picture } = payload;
-        // 2. Query DB by googleId OR by email
         let user = await Prisma_js_1.prisma.user.findFirst({
             where: {
                 OR: [{ googleId: googleId }, { email: email }],
             },
         });
         if (user) {
-            // Link Google authentication if account was originally created via email password
             if (!user.googleId) {
                 user = await Prisma_js_1.prisma.user.update({
                     where: { id: user.id },
@@ -161,51 +174,28 @@ exports.googleLogin = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
             }
         }
         else {
-            // 3. Create a brand new e-commerce customer (USER role)
             user = await Prisma_js_1.prisma.user.create({
                 data: {
                     googleId: googleId,
                     email: email.toLowerCase(),
                     fullName: name !== null && name !== void 0 ? name : email,
                     imageUrl: picture !== null && picture !== void 0 ? picture : null,
-                    role: "USER", // Matches your schema Enum
+                    role: "USER",
                     password: null,
                 },
             });
         }
-        // 4. Generate your internal App JWT token for authentication persistence
-        const appToken = jsonwebtoken_1.default.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: "7d" });
-        // 5. Return token and user data profile
-        return res.status(200).json({
-            message: "Login successful",
-            token: appToken,
-            user: {
-                id: user.id,
-                email: user.email,
-                fullName: user.fullName,
-                role: user.role,
-                imageUrl: user.imageUrl,
-            },
-        });
+        createSendToken(user, 200, res, "Login successful");
     }
     catch (error) {
         console.error("Google Authentication Error:", error);
-        return res
-            .status(401)
-            .json({ error: "Invalid Google credential authentication failed" });
+        return next(new AppError_js_1.AppError("Invalid Google credential authentication failed", 401));
     }
 });
 /* ================= PROTECT ================= */
 exports.protect = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
     var _a;
-    // Check cookies first, then Authorization header
-    let token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
-    if (!token) {
-        const authHeader = req.headers.authorization;
-        if (authHeader === null || authHeader === void 0 ? void 0 : authHeader.startsWith("Bearer ")) {
-            token = authHeader.split(" ")[1];
-        }
-    }
+    const token = (_a = req.cookies) === null || _a === void 0 ? void 0 : _a.token;
     if (!token) {
         return next(new AppError_js_1.AppError("Not authenticated", 401));
     }
@@ -343,6 +333,40 @@ exports.getMe = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
             fullName: req.user.fullName,
             email: req.user.email,
             role: req.user.role,
+            imageUrl: req.user.imageUrl,
+        },
+    });
+});
+exports.updateMe = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
+    const { fullName, email } = req.body;
+    const data = {};
+    if (fullName !== undefined)
+        data.fullName = String(fullName).trim();
+    if (email !== undefined)
+        data.email = String(email).trim().toLowerCase();
+    if (Object.keys(data).length === 0) {
+        return next(new AppError_js_1.AppError("No profile fields provided", 400));
+    }
+    if (data.email) {
+        const existing = await Prisma_js_1.prisma.user.findUnique({
+            where: { email: data.email },
+        });
+        if (existing && existing.id !== req.user.id) {
+            return next(new AppError_js_1.AppError("Email already exists", 409));
+        }
+    }
+    const updatedUser = await Prisma_js_1.prisma.user.update({
+        where: { id: req.user.id },
+        data,
+    });
+    res.status(200).json({
+        status: "success",
+        data: {
+            id: updatedUser.id,
+            fullName: updatedUser.fullName,
+            email: updatedUser.email,
+            role: updatedUser.role,
+            imageUrl: updatedUser.imageUrl,
         },
     });
 });

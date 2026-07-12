@@ -19,16 +19,17 @@ export interface GetAddressResponse {
 }
 
 export default async function getAddress(): Promise<Address> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/ownerAddress`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
+  const API_URL = (
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  ).replace(/\/$/, "");
+
+  const response = await fetch(`${API_URL}/ownerAddress`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
     },
-  );
+    cache: "no-store",
+  });
 
   if (!response.ok) {
     throw new Error("Failed to fetch owner address");
