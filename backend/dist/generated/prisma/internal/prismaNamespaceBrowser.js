@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.OwnerAddressScalarFieldEnum = exports.PaymentScalarFieldEnum = exports.OrderItemScalarFieldEnum = exports.OrderScalarFieldEnum = exports.WishlistItemScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserAddressScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.JsonNullValueInput = exports.SortOrder = exports.OwnerAddressScalarFieldEnum = exports.PaymentScalarFieldEnum = exports.OrderItemScalarFieldEnum = exports.OrderScalarFieldEnum = exports.WishlistItemScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserAddressScalarFieldEnum = exports.CheckoutSessionScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -76,6 +76,7 @@ exports.JsonNull = runtime.JsonNull;
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     User: 'User',
+    CheckoutSession: 'CheckoutSession',
     UserAddress: 'UserAddress',
     Product: 'Product',
     Review: 'Review',
@@ -107,6 +108,18 @@ exports.UserScalarFieldEnum = {
     lockUntil: 'lockUntil',
     fullName: 'fullName',
     imageUrl: 'imageUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.CheckoutSessionScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    txRef: 'txRef',
+    status: 'status',
+    customer: 'customer',
+    items: 'items',
+    totals: 'totals',
+    notes: 'notes',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -205,6 +218,9 @@ exports.OwnerAddressScalarFieldEnum = {
 exports.SortOrder = {
     asc: 'asc',
     desc: 'desc'
+};
+exports.JsonNullValueInput = {
+    JsonNull: exports.JsonNull
 };
 exports.NullableJsonNullValueInput = {
     DbNull: exports.DbNull,

@@ -27,6 +27,11 @@ export { Prisma };
  */
 export type User = Prisma.UserModel;
 /**
+ * Model CheckoutSession
+ *
+ */
+export type CheckoutSession = Prisma.CheckoutSessionModel;
+/**
  * Model UserAddress
  *
  */

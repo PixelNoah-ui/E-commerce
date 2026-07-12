@@ -25,8 +25,10 @@ enum OrderStatus {
 
 enum PaymentStatus {
   PENDING
+  PROCESSING
   PAID
   FAILED
+  CANCELLED
   REFUNDED
 }
 
@@ -55,6 +57,24 @@ model User {
   orders              Order[]
   reviews             Review[]
   wishlistItems      WishlistItem[]
+  checkoutSessions    CheckoutSession[]
+}
+
+model CheckoutSession {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  txRef        String   @unique
+  status       String   @default("PENDING")
+
+  customer     Json
+  items        Json
+  totals       Json
+  notes        String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model UserAddress {

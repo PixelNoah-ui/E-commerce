@@ -232,6 +232,7 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 export declare const ModelName: {
     readonly User: "User";
+    readonly CheckoutSession: "CheckoutSession";
     readonly UserAddress: "UserAddress";
     readonly Product: "Product";
     readonly Review: "Review";
@@ -252,7 +253,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "userAddress" | "product" | "review" | "wishlistItem" | "order" | "orderItem" | "payment" | "ownerAddress";
+        modelProps: "user" | "checkoutSession" | "userAddress" | "product" | "review" | "wishlistItem" | "order" | "orderItem" | "payment" | "ownerAddress";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -327,6 +328,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.UserCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number;
+                };
+            };
+        };
+        CheckoutSession: {
+            payload: Prisma.$CheckoutSessionPayload<ExtArgs>;
+            fields: Prisma.CheckoutSessionFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.CheckoutSessionFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.CheckoutSessionFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                findFirst: {
+                    args: Prisma.CheckoutSessionFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.CheckoutSessionFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                findMany: {
+                    args: Prisma.CheckoutSessionFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[];
+                };
+                create: {
+                    args: Prisma.CheckoutSessionCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                createMany: {
+                    args: Prisma.CheckoutSessionCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.CheckoutSessionCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[];
+                };
+                delete: {
+                    args: Prisma.CheckoutSessionDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                update: {
+                    args: Prisma.CheckoutSessionUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.CheckoutSessionDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.CheckoutSessionUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.CheckoutSessionUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[];
+                };
+                upsert: {
+                    args: Prisma.CheckoutSessionUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>;
+                };
+                aggregate: {
+                    args: Prisma.CheckoutSessionAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateCheckoutSession>;
+                };
+                groupBy: {
+                    args: Prisma.CheckoutSessionGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CheckoutSessionGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.CheckoutSessionCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.CheckoutSessionCountAggregateOutputType> | number;
                 };
             };
         };
@@ -973,6 +1048,19 @@ export declare const UserScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const CheckoutSessionScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly txRef: "txRef";
+    readonly status: "status";
+    readonly customer: "customer";
+    readonly items: "items";
+    readonly totals: "totals";
+    readonly notes: "notes";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type CheckoutSessionScalarFieldEnum = (typeof CheckoutSessionScalarFieldEnum)[keyof typeof CheckoutSessionScalarFieldEnum];
 export declare const UserAddressScalarFieldEnum: {
     readonly id: "id";
     readonly fullName: "fullName";
@@ -1078,6 +1166,10 @@ export declare const SortOrder: {
     readonly desc: "desc";
 };
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder];
+export declare const JsonNullValueInput: {
+    readonly JsonNull: runtime.JsonNullClass;
+};
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput];
 export declare const NullableJsonNullValueInput: {
     readonly DbNull: runtime.DbNullClass;
     readonly JsonNull: runtime.JsonNullClass;
@@ -1135,6 +1227,14 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>;
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>;
@@ -1146,14 +1246,6 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>;
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>;
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>;
 /**
  * Reference to a field of type 'OrderStatus'
  */
@@ -1273,6 +1365,7 @@ export type PrismaClientOptions = ({
 };
 export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
+    checkoutSession?: Prisma.CheckoutSessionOmit;
     userAddress?: Prisma.UserAddressOmit;
     product?: Prisma.ProductOmit;
     review?: Prisma.ReviewOmit;

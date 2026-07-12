@@ -127,6 +127,17 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
         omit: OmitOpts;
     }>;
     /**
+     * `prisma.checkoutSession`: Exposes CRUD operations for the **CheckoutSession** model.
+      * Example usage:
+      * ```ts
+      * // Fetch zero or more CheckoutSessions
+      * const checkoutSessions = await prisma.checkoutSession.findMany()
+      * ```
+      */
+    get checkoutSession(): Prisma.CheckoutSessionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    /**
      * `prisma.userAddress`: Exposes CRUD operations for the **UserAddress** model.
       * Example usage:
       * ```ts

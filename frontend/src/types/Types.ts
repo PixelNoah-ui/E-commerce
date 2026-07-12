@@ -22,3 +22,12 @@ export type ProductType = {
   createdAt?: string;
   updatedAt?: string;
 };
+export type UserRole = "USER" | "ADMIN" | "MANAGER";
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  role: UserRole;
+  imageUrl: string | null;
+}

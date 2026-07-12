@@ -10,6 +10,7 @@ const Prisma_js_1 = require("../lib/Prisma.js");
 const AppError_js_1 = require("../utils/AppError.js");
 const catchAsync__js_1 = require("../utils/catchAsync .js");
 const notificationService_js_1 = require("../services/notificationService.js");
+const chapaService_js_1 = require("../services/chapaService.js");
 const paymentLifecycle_js_1 = require("../utils/paymentLifecycle.js");
 const MAX_ORDER_ITEMS = 20;
 const MAX_ORDER_QUANTITY = 10;
@@ -19,13 +20,7 @@ const normalizeText = (value) => (value === null || value === void 0 ? void 0 : 
 const toDecimal = (value) => new client_js_1.Prisma.Decimal(value.toFixed(2));
 const buildOrderNumber = () => `ORD-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 const getChapaConfig = () => {
-    const secretKey = process.env.CHAPA_SECRET_KEY;
-    if (!secretKey) {
-        throw new AppError_js_1.AppError("Chapa secret key is not configured", 500);
-    }
     return {
-        secretKey,
-        baseUrl: process.env.CHAPA_BASE_URL || "https://api.chapa.co/v1/transaction",
         callbackUrl: process.env.CHAPA_CALLBACK_URL ||
             `${process.env.BACKEND_URL || "http://localhost:8000"}/api/v1/checkout/chapa/callback`,
         returnUrl: process.env.CHAPA_RETURN_URL ||
@@ -102,7 +97,6 @@ exports.validateCheckout = (0, catchAsync__js_1.catchAsync)(async (req, res, nex
     }
 });
 exports.initializeCheckout = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
-    var _a;
     const { items, customer, notes } = req.body;
     const fullName = normalizeName((customer === null || customer === void 0 ? void 0 : customer.fullName) || "");
     const phone = normalizePhone((customer === null || customer === void 0 ? void 0 : customer.phone) || "");
@@ -118,98 +112,51 @@ exports.initializeCheckout = (0, catchAsync__js_1.catchAsync)(async (req, res, n
         const shipping = subtotal > 100 ? 0 : 10;
         const tax = Number((subtotal * 0.07).toFixed(2));
         const total = Number((subtotal + shipping + tax).toFixed(2));
-        const address = await Prisma_js_1.prisma.userAddress.create({
-            data: {
-                userId: req.user.id,
-                fullName,
-                phone,
-                country,
-                city,
-                address: addressLine,
-                postalCode,
-                state: null,
-                isDefault: false,
-            },
-        });
         const orderNumber = buildOrderNumber();
         const txRef = `chapa-${orderNumber}`;
-        const order = await Prisma_js_1.prisma.order.create({
+        const { callbackUrl, returnUrl } = getChapaConfig();
+        await Prisma_js_1.prisma.checkoutSession.create({
             data: {
-                orderNumber,
                 userId: req.user.id,
-                addressId: address.id,
-                subtotal: toDecimal(subtotal),
-                shipping: toDecimal(shipping),
-                tax: toDecimal(tax),
-                total: toDecimal(total),
+                txRef,
+                orderNumber,
+                status: "INITIATED",
+                customer: {
+                    fullName,
+                    phone,
+                    country,
+                    city,
+                    address: addressLine,
+                    postalCode,
+                    orderNotes: normalizeText(notes || (customer === null || customer === void 0 ? void 0 : customer.orderNotes)) || null,
+                },
+                items: validatedItems,
+                totals: {
+                    subtotal,
+                    shipping,
+                    tax,
+                    total,
+                    currency: "ETB",
+                },
                 notes: normalizeText(notes || (customer === null || customer === void 0 ? void 0 : customer.orderNotes)) || null,
-                status: "PENDING",
-                paymentStatus: "PENDING",
-                items: {
-                    create: validatedItems.map((item) => ({
-                        productId: item.productId,
-                        quantity: item.quantity,
-                        price: toDecimal(item.unitPrice),
-                        total: toDecimal(item.lineTotal),
-                    })),
-                },
-                payment: {
-                    create: {
-                        transactionId: txRef,
-                        provider: "CHAPA",
-                        amount: toDecimal(total),
-                        status: "PENDING",
-                    },
-                },
             },
         });
-        void (0, notificationService_js_1.notifyCustomerOrderPlaced)(req.user.email, order.orderNumber);
-        void (0, notificationService_js_1.notifyAdminNewOrder)(order.orderNumber);
-        const { secretKey, baseUrl, callbackUrl, returnUrl } = getChapaConfig();
-        const chapaResponse = await fetch(`${baseUrl}/initialize`, {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                amount: total.toFixed(2),
-                currency: "ETB",
-                email: req.user.email,
-                first_name: fullName.split(" ")[0] || fullName,
-                last_name: fullName.split(" ").slice(1).join(" ") || "Customer",
-                phone_number: phone,
-                tx_ref: txRef,
-                callback_url: callbackUrl,
-                return_url: `${returnUrl}?orderId=${order.id}&orderNumber=${order.orderNumber}`,
-                customization: {
-                    title: "Abdu Electronics",
-                    description: `Order ${order.orderNumber}`,
-                },
-            }),
-        });
-        const chapaData = (await chapaResponse.json());
-        if (!chapaResponse.ok || chapaData.status !== "success") {
-            await Prisma_js_1.prisma.payment.update({
-                where: { orderId: order.id },
-                data: { status: "FAILED" },
-            });
-            await Prisma_js_1.prisma.order.update({
-                where: { id: order.id },
-                data: { status: "CANCELLED", paymentStatus: "FAILED" },
-            });
-            return next(new AppError_js_1.AppError(chapaData.message || "Unable to initialize payment", 502));
-        }
-        await Prisma_js_1.prisma.payment.update({
-            where: { orderId: order.id },
-            data: { transactionId: txRef },
+        const chapaCheckout = await (0, chapaService_js_1.initializeChapaPayment)({
+            amount: total,
+            email: req.user.email,
+            fullName,
+            phone,
+            txRef,
+            callbackUrl,
+            returnUrl: `${returnUrl}?orderId=${orderNumber}&orderNumber=${orderNumber}`,
+            orderNumber,
         });
         res.status(200).json({
             status: "success",
             data: {
-                orderId: order.id,
-                orderNumber: order.orderNumber,
-                checkoutUrl: (_a = chapaData.data) === null || _a === void 0 ? void 0 : _a.checkout_url,
+                orderId: orderNumber,
+                orderNumber,
+                checkoutUrl: chapaCheckout.checkoutUrl,
                 txRef,
             },
         });
@@ -252,6 +199,24 @@ exports.getOrder = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
         },
     });
     if (!order) {
+        // Fall back: check if a checkout session with this orderNumber exists but
+        // hasn't completed yet (payment pending/failed), so the frontend can show
+        // an accurate "pending" or "failed" state instead of a raw 404.
+        const session = await Prisma_js_1.prisma.checkoutSession.findFirst({
+            where: { orderNumber: orderId },
+        });
+        if (session) {
+            return res.status(200).json({
+                status: "success",
+                data: {
+                    order: null,
+                    sessionStatus: session.status,
+                    message: session.status === "FAILED"
+                        ? "Payment for this order was not completed"
+                        : "Payment for this order is still processing",
+                },
+            });
+        }
         return next(new AppError_js_1.AppError("Order not found", 404));
     }
     if (order.userId !== req.user.id) {
@@ -299,98 +264,148 @@ exports.chapaCallback = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
             .status(401)
             .json({ status: "fail", message: "Invalid signature" });
     }
-    const payment = await Prisma_js_1.prisma.payment.findFirst({
-        where: { transactionId: tx_ref },
+    const checkoutSession = await Prisma_js_1.prisma.checkoutSession.findUnique({
+        where: { txRef: tx_ref },
     });
-    if (!payment) {
+    if (!checkoutSession) {
         return res
             .status(404)
-            .json({ status: "fail", message: "Payment not found" });
+            .json({ status: "fail", message: "Checkout session not found" });
     }
-    if (payment.status === "PAID") {
+    if (checkoutSession.status === "COMPLETED") {
         return res.status(200).json({
             status: "success",
             message: "Payment already confirmed",
         });
     }
-    const { secretKey, baseUrl } = getChapaConfig();
-    const verifyResponse = await fetch(`${baseUrl}/verify/${tx_ref}`, {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${secretKey}`,
-        },
-    });
-    const verifyData = (await verifyResponse.json());
-    const decision = (0, paymentLifecycle_js_1.resolveChapaPaymentState)(status, (_e = verifyData.data) === null || _e === void 0 ? void 0 : _e.status, verifyResponse.ok && verifyData.status === "success");
-    const order = await Prisma_js_1.prisma.order.findUnique({
-        where: { id: payment.orderId },
-        include: {
-            items: true,
-            user: {
-                select: {
-                    email: true,
-                },
-            },
-        },
-    });
-    if (!order) {
-        return res.status(404).json({ status: "fail", message: "Order not found" });
-    }
-    if (decision.isSuccessful && order.paymentStatus !== "PAID") {
-        await Prisma_js_1.prisma.$transaction(async (tx) => {
-            await tx.payment.update({
-                where: { id: payment.id },
-                data: { status: "PAID" },
-            });
-            await tx.order.update({
-                where: { id: order.id },
-                data: {
-                    status: "CONFIRMED",
-                    paymentStatus: "PAID",
-                },
-            });
-            for (const item of order.items) {
-                await tx.product.update({
-                    where: { id: item.productId },
-                    data: {
-                        quantity: {
-                            decrement: item.quantity,
-                        },
-                    },
-                });
-            }
-        });
-    }
-    else if (!decision.isSuccessful && order.paymentStatus !== "FAILED") {
-        await Prisma_js_1.prisma.payment.update({
-            where: { id: payment.id },
+    const verification = await (0, chapaService_js_1.verifyChapaPayment)(tx_ref);
+    // TEMP diagnostic log — remove once payment-failure cause is confirmed
+    console.log("CHAPA VERIFY RESULT:", JSON.stringify(verification, null, 2));
+    const decision = (0, paymentLifecycle_js_1.resolveChapaPaymentState)(status, verification.status, verification.success);
+    if (!decision.isSuccessful) {
+        await Prisma_js_1.prisma.checkoutSession.update({
+            where: { id: checkoutSession.id },
             data: { status: "FAILED" },
         });
-        await Prisma_js_1.prisma.order.update({
-            where: { id: order.id },
-            data: {
-                status: "CANCELLED",
-                paymentStatus: "FAILED",
+        const customerData = checkoutSession.customer;
+        void (notificationService_js_1.notifyCustomerPaymentFailed === null || notificationService_js_1.notifyCustomerPaymentFailed === void 0 ? void 0 : (0, notificationService_js_1.notifyCustomerPaymentFailed)(checkoutSession.userId, (_e = checkoutSession.orderNumber) !== null && _e !== void 0 ? _e : tx_ref));
+        return res.status(200).json({
+            status: "success",
+            message: "Payment was not completed",
+        });
+    }
+    const sessionItems = checkoutSession.items;
+    const sessionTotals = checkoutSession.totals;
+    const customerData = checkoutSession.customer;
+    const order = await Prisma_js_1.prisma.$transaction(async (tx) => {
+        var _a;
+        const existingPayment = await tx.payment.findFirst({
+            where: { transactionId: tx_ref },
+        });
+        if ((existingPayment === null || existingPayment === void 0 ? void 0 : existingPayment.status) === "PAID") {
+            return null;
+        }
+        const address = await tx.userAddress.findFirst({
+            where: {
+                userId: checkoutSession.userId,
+                fullName: customerData.fullName,
+                phone: customerData.phone,
+                country: customerData.country,
+                city: customerData.city,
+                address: customerData.address,
+                postalCode: customerData.postalCode,
             },
+        });
+        const savedAddress = address ||
+            (await tx.userAddress.create({
+                data: {
+                    userId: checkoutSession.userId,
+                    fullName: customerData.fullName,
+                    phone: customerData.phone,
+                    country: customerData.country,
+                    city: customerData.city,
+                    address: customerData.address,
+                    postalCode: customerData.postalCode,
+                    state: null,
+                    isDefault: false,
+                },
+            }));
+        // Reuse the SAME orderNumber generated at checkout time, so the
+        // return URL the frontend already navigated to actually resolves.
+        const orderNumber = (_a = checkoutSession.orderNumber) !== null && _a !== void 0 ? _a : buildOrderNumber();
+        const createdOrder = await tx.order.create({
+            data: {
+                orderNumber,
+                userId: checkoutSession.userId,
+                addressId: savedAddress.id,
+                subtotal: toDecimal(sessionTotals.subtotal),
+                shipping: toDecimal(sessionTotals.shipping),
+                tax: toDecimal(sessionTotals.tax),
+                total: toDecimal(sessionTotals.total),
+                notes: checkoutSession.notes || null,
+                status: "CONFIRMED",
+                paymentStatus: "PAID",
+                items: {
+                    create: sessionItems.map((item) => ({
+                        productId: item.productId,
+                        quantity: item.quantity,
+                        price: toDecimal(item.unitPrice),
+                        total: toDecimal(item.lineTotal),
+                    })),
+                },
+            },
+            include: {
+                payment: true,
+                user: {
+                    select: {
+                        email: true,
+                    },
+                },
+            },
+        });
+        await tx.payment.create({
+            data: {
+                orderId: createdOrder.id,
+                transactionId: tx_ref,
+                provider: "CHAPA",
+                amount: toDecimal(sessionTotals.total),
+                status: "PAID",
+            },
+        });
+        for (const item of sessionItems) {
+            await tx.product.update({
+                where: { id: item.productId },
+                data: {
+                    quantity: {
+                        decrement: item.quantity,
+                    },
+                },
+            });
+        }
+        await tx.checkoutSession.update({
+            where: { id: checkoutSession.id },
+            data: { status: "COMPLETED" },
+        });
+        return createdOrder;
+    });
+    if (!order) {
+        await Prisma_js_1.prisma.checkoutSession.update({
+            where: { id: checkoutSession.id },
+            data: { status: "COMPLETED" },
+        });
+        return res.status(200).json({
+            status: "success",
+            message: "Payment already confirmed",
         });
     }
     const userEmail = (_f = order.user) === null || _f === void 0 ? void 0 : _f.email;
-    if (decision.isSuccessful) {
-        if (userEmail) {
-            void (0, notificationService_js_1.notifyCustomerPaymentSuccess)(userEmail, order.orderNumber);
-        }
-        void (0, notificationService_js_1.notifyAdminPaymentReceived)(order.orderNumber);
+    if (userEmail) {
+        void (0, notificationService_js_1.notifyCustomerPaymentSuccess)(userEmail, order.orderNumber);
     }
-    else if (decision.paymentStatus === "FAILED") {
-        if (userEmail) {
-            void (0, notificationService_js_1.notifyCustomerPaymentFailed)(userEmail, order.orderNumber);
-        }
-    }
+    void (0, notificationService_js_1.notifyAdminPaymentReceived)(order.orderNumber);
     res.status(200).json({
         status: "success",
-        message: decision.isSuccessful
-            ? "Payment confirmed"
-            : "Payment was not completed",
+        message: "Payment confirmed",
     });
 });
 exports.chapaWebhook = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {

@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  CheckoutSession: 'CheckoutSession',
   UserAddress: 'UserAddress',
   Product: 'Product',
   Review: 'Review',
@@ -96,6 +97,22 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const CheckoutSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  txRef: 'txRef',
+  status: 'status',
+  customer: 'customer',
+  items: 'items',
+  totals: 'totals',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CheckoutSessionScalarFieldEnum = (typeof CheckoutSessionScalarFieldEnum)[keyof typeof CheckoutSessionScalarFieldEnum]
 
 
 export const UserAddressScalarFieldEnum = {
@@ -228,6 +245,13 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
 export const NullableJsonNullValueInput = {

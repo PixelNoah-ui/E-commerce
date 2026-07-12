@@ -1,4 +1,5 @@
 export type * from './models/User';
+export type * from './models/CheckoutSession';
 export type * from './models/UserAddress';
 export type * from './models/Product';
 export type * from './models/Review';

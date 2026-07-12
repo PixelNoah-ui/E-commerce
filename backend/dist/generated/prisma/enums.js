@@ -25,8 +25,10 @@ exports.OrderStatus = {
 };
 exports.PaymentStatus = {
     PENDING: 'PENDING',
+    PROCESSING: 'PROCESSING',
     PAID: 'PAID',
     FAILED: 'FAILED',
+    CANCELLED: 'CANCELLED',
     REFUNDED: 'REFUNDED'
 };
 //# sourceMappingURL=enums.js.map

@@ -17,5 +17,9 @@ export function useOrderDetails(orderIdentifier?: string | null) {
     queryFn: () => getOrderDetails(orderIdentifier),
     enabled: Boolean(orderIdentifier),
     retry: false,
+    refetchInterval: (query) => {
+      const status = query.state.data?.paymentStatus;
+      return status === "PENDING" || status === "PROCESSING" ? 3000 : false;
+    },
   });
 }

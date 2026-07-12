@@ -38,16 +38,18 @@ export default function CheckoutSuccessContent() {
   const [pageLoadedAt] = useState(() => Date.now());
   const errorMessage = error instanceof Error ? error.message : null;
   const isPaid = order?.paymentStatus === "PAID";
+  const isPending =
+    order?.paymentStatus === "PENDING" || order?.paymentStatus === "PROCESSING";
   const statusLabel = isPaid
     ? "Payment confirmed"
-    : order?.paymentStatus === "PENDING"
-      ? "Awaiting payment"
+    : isPending
+      ? "Awaiting payment confirmation"
       : "Payment failed";
   const statusDescription = order
     ? isPaid
       ? "Your payment was processed successfully and your order is now confirmed."
-      : order.paymentStatus === "PENDING"
-        ? "Your order is created and waiting for payment confirmation."
+      : isPending
+        ? "Your order is being verified with Chapa. This page will update automatically once the payment status is confirmed."
         : "Your payment could not be completed. Please try again or contact support."
     : "Your order request has been received. If payment is required, you will be redirected to the secure checkout page.";
   const subtotal = Number(order?.subtotal ?? 0);

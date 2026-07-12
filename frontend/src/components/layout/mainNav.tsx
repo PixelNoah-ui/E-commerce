@@ -1,78 +1,54 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import dynamic from "next/dynamic";
+
 import Logo from "./Logo";
 import MobileNavbar from "./MobileNav";
-import dynamic from "next/dynamic";
-import { buildApiUrl } from "@/lib/auth";
-import { logout as apiLogout } from "@/app/(api)/auth";
+
+import { Button } from "@/components/ui/button";
+import { User } from "@/types/Types";
+import UserDropdown from "../UserDropdown";
 
 const CartSheet = dynamic(() => import("@/components/cart/CartSheet"), {
   ssr: false,
 });
 
-export default function MainNav() {
+interface MainNavProps {
+  user: User | null;
+}
+
+export default function MainNav({ user }: MainNavProps) {
   const pathname = usePathname();
-  const [authenticated, setAuthenticated] = useState(false);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch(buildApiUrl("/auth/me"), {
-          credentials: "include",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        setAuthenticated(res.ok);
-      } catch {
-        setAuthenticated(false);
-      }
-    };
-
-    void checkAuth();
-  }, []);
-
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await apiLogout();
-    } catch (e) {
-      // ignore
-    }
-    setAuthenticated(false);
-    router.push("/auth");
-    router.refresh();
-  };
-
-  const menuItems = [
+  const navItems = [
     { title: "Home", href: "/" },
+    { title: "Electronics", href: "/electronics" },
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },
-    ...(authenticated ? [{ title: "My Orders", href: "/orders" }] : []),
   ];
 
   return (
-    <div className="w-full bg-white py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 md:px-6 lg:px-8">
-        {/* LOGO */}
+    <header className="border-b border-slate-200 bg-white shadow-sm">
+      <div className="mx-auto flex h-20 max-w-7xl items-center gap-6 px-4 md:px-6 lg:px-8">
+        {/* Logo */}
         <Logo />
 
-        {/* NAV LINKS */}
-        <nav className="hidden lg:flex items-center gap-8">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href; // check if current page
+        {/* Desktop Navigation */}
+        <nav className="hidden flex-1 items-center gap-2 lg:flex">
+          {navItems.map((item) => {
+            const active = pathname === item.href;
+
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-sm font-medium transition-colors ${
-                  isActive
-                    ? "text-primary"
-                    : "text-slate-600 hover:text-primary"
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                  active
+                    ? "bg-primary/10 text-primary"
+                    : "text-slate-600 hover:bg-slate-100 hover:text-primary"
                 }`}
               >
                 {item.title}
@@ -81,36 +57,41 @@ export default function MainNav() {
           })}
         </nav>
 
-        <div className="hidden lg:flex items-center gap-4">
-          <Link
-            href="/contact"
-            className="rounded-full border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-primary hover:text-white"
-          >
-            Sell with us
+        {/* Desktop Right */}
+        <div className="ml-auto hidden items-center gap-4 lg:flex">
+          <Link href="/contact">
+            <Button variant="outline">Sell with us</Button>
           </Link>
-          {authenticated ? (
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-primary hover:text-white"
-            >
-              Logout
-            </button>
+
+          <CartSheet />
+
+          {user ? (
+            <UserDropdown user={user} />
           ) : (
-            <Link
-              href="/auth"
-              className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-primary hover:bg-primary hover:text-white"
-            >
-              Sign in
+            <Link href="/auth">
+              <Button>Sign In</Button>
             </Link>
           )}
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Tablet */}
+        <div className="ml-auto hidden items-center gap-3 md:flex lg:hidden">
           <CartSheet />
-          <MobileNavbar />
+
+          {user ? (
+            <UserDropdown user={user} />
+          ) : (
+            <Link href="/auth">
+              <Button size="sm">Sign In</Button>
+            </Link>
+          )}
+        </div>
+
+        {/* Mobile */}
+        <div className="ml-auto lg:hidden">
+          <MobileNavbar user={user} />
         </div>
       </div>
-    </div>
+    </header>
   );
 }

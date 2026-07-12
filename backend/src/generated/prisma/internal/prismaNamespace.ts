@@ -385,6 +385,7 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 
 export const ModelName = {
   User: 'User',
+  CheckoutSession: 'CheckoutSession',
   UserAddress: 'UserAddress',
   Product: 'Product',
   Review: 'Review',
@@ -408,7 +409,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "userAddress" | "product" | "review" | "wishlistItem" | "order" | "orderItem" | "payment" | "ownerAddress"
+    modelProps: "user" | "checkoutSession" | "userAddress" | "product" | "review" | "wishlistItem" | "order" | "orderItem" | "payment" | "ownerAddress"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -483,6 +484,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    CheckoutSession: {
+      payload: Prisma.$CheckoutSessionPayload<ExtArgs>
+      fields: Prisma.CheckoutSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.CheckoutSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.CheckoutSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.CheckoutSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.CheckoutSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        findMany: {
+          args: Prisma.CheckoutSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[]
+        }
+        create: {
+          args: Prisma.CheckoutSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        createMany: {
+          args: Prisma.CheckoutSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.CheckoutSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.CheckoutSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        update: {
+          args: Prisma.CheckoutSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.CheckoutSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.CheckoutSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.CheckoutSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.CheckoutSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$CheckoutSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.CheckoutSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateCheckoutSession>
+        }
+        groupBy: {
+          args: Prisma.CheckoutSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CheckoutSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.CheckoutSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.CheckoutSessionCountAggregateOutputType> | number
         }
       }
     }
@@ -1137,6 +1212,22 @@ export const UserScalarFieldEnum = {
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+export const CheckoutSessionScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  txRef: 'txRef',
+  status: 'status',
+  customer: 'customer',
+  items: 'items',
+  totals: 'totals',
+  notes: 'notes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type CheckoutSessionScalarFieldEnum = (typeof CheckoutSessionScalarFieldEnum)[keyof typeof CheckoutSessionScalarFieldEnum]
+
+
 export const UserAddressScalarFieldEnum = {
   id: 'id',
   fullName: 'fullName',
@@ -1269,6 +1360,13 @@ export const SortOrder = {
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
+export const JsonNullValueInput = {
+  JsonNull: JsonNull
+} as const
+
+export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
+
+
 export const NullableJsonNullValueInput = {
   DbNull: DbNull,
   JsonNull: JsonNull
@@ -1365,6 +1463,20 @@ export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+/**
  * Reference to a field of type 'Boolean'
  */
 export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -1382,20 +1494,6 @@ export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
  * Reference to a field of type 'Decimal[]'
  */
 export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-/**
- * Reference to a field of type 'Json'
- */
-export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
-    
-
-
-/**
- * Reference to a field of type 'QueryMode'
- */
-export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1536,6 +1634,7 @@ export type PrismaClientOptions = ({
 }
 export type GlobalOmitConfig = {
   user?: Prisma.UserOmit
+  checkoutSession?: Prisma.CheckoutSessionOmit
   userAddress?: Prisma.UserAddressOmit
   product?: Prisma.ProductOmit
   review?: Prisma.ReviewOmit
