@@ -19,12 +19,8 @@ export default function CartPage() {
   const total = subtotal + shipping + tax - discount;
 
   const handleCheckout = () => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
     if (!items.length) return;
-
-    router.push(token ? "/checkout" : "/auth?redirect=/checkout");
+    router.push("/checkout");
   };
 
   return (

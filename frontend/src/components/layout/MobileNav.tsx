@@ -1,7 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu } from "lucide-react";
 import {
   Sheet,
@@ -12,16 +13,42 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import Image from "next/image";
+import { buildApiUrl } from "@/lib/auth";
+
+import { logout as apiLogout } from "@/app/(api)/auth";
 
 export default function MobileNavbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [authenticated, setAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(buildApiUrl("/auth/me"), {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        setAuthenticated(res.ok);
+      } catch {
+        setAuthenticated(false);
+      }
+    };
+
+    void checkAuth();
+  }, []);
 
   const menuItems = [
     { title: "Home", href: "/" },
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },
-    { title: "Sign in", href: "/auth" },
+    ...(authenticated ? [{ title: "My Orders", href: "/orders" }] : []),
+    {
+      title: authenticated ? "Logout" : "Sign in",
+      href: authenticated ? "/logout" : "/auth",
+    },
   ];
 
   return (
@@ -64,6 +91,20 @@ export default function MobileNavbar() {
                 <SheetClose asChild key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={(e) => {
+                      if (item.href === "/logout") {
+                        e.preventDefault();
+                        void (async () => {
+                          try {
+                            await apiLogout();
+                          } catch (err) {
+                            // ignore
+                          }
+                          setAuthenticated(false);
+                          router.push("/auth");
+                        })();
+                      }
+                    }}
                     className={`px-6 py-5 text-lg font-medium border-b border-border transition-colors ${
                       isActive
                         ? "text-primary font-semibold bg-muted/20"

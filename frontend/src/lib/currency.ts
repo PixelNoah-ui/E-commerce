@@ -1,4 +1,4 @@
-export const CURRENCY_CODE = process.env.NEXT_PUBLIC_CURRENCY_CODE || "AED";
+export const CURRENCY_CODE = process.env.NEXT_PUBLIC_CURRENCY_CODE || "ETB";
 export const CURRENCY_DISPLAY: "symbol" | "code" | "name" =
   (process.env.NEXT_PUBLIC_CURRENCY_DISPLAY as any) || "symbol";
 

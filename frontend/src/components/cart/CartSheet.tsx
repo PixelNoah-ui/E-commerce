@@ -17,12 +17,9 @@ export default function CartSheet() {
   const subtotal = items.reduce((a, b) => a + b.price * b.quantity, 0);
 
   const handleCheckout = () => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
     if (!items.length) return;
 
-    router.push(token ? "/checkout" : "/auth?redirect=/checkout");
+    router.push("/checkout");
   };
 
   return (

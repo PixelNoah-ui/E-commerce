@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "./Logo";
 import MobileNavbar from "./MobileNav";
 import dynamic from "next/dynamic";
+import { buildApiUrl } from "@/lib/auth";
+import { logout as apiLogout } from "@/app/(api)/auth";
 
 const CartSheet = dynamic(() => import("@/components/cart/CartSheet"), {
   ssr: false,
@@ -13,25 +15,36 @@ const CartSheet = dynamic(() => import("@/components/cart/CartSheet"), {
 
 export default function MainNav() {
   const pathname = usePathname();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
-    const updateAuthState = () => {
-      setIsAuthenticated(Boolean(localStorage.getItem("token")));
+    const checkAuth = async () => {
+      try {
+        const res = await fetch(buildApiUrl("/auth/me"), {
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        setAuthenticated(res.ok);
+      } catch {
+        setAuthenticated(false);
+      }
     };
 
-    updateAuthState();
-    window.addEventListener("auth-state-changed", updateAuthState);
-
-    return () => {
-      window.removeEventListener("auth-state-changed", updateAuthState);
-    };
+    void checkAuth();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
-    window.dispatchEvent(new Event("auth-state-changed"));
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await apiLogout();
+    } catch (e) {
+      // ignore
+    }
+    setAuthenticated(false);
+    router.push("/auth");
+    router.refresh();
   };
 
   const menuItems = [
@@ -39,6 +52,7 @@ export default function MainNav() {
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },
+    ...(authenticated ? [{ title: "My Orders", href: "/orders" }] : []),
   ];
 
   return (
@@ -74,7 +88,7 @@ export default function MainNav() {
           >
             Sell with us
           </Link>
-          {isAuthenticated ? (
+          {authenticated ? (
             <button
               type="button"
               onClick={handleLogout}
