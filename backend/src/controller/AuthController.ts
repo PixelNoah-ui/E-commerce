@@ -21,7 +21,10 @@ interface DecodedToken extends JwtPayload {
 /* ================= CONFIG ================= */
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES = "7d";
+const JWT_EXPIRES_DAYS = 7;
+const JWT_COOKIE_MAX_AGE = JWT_EXPIRES_DAYS * 24 * 60 * 60 * 1000;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".abdulectroncs.com";
 
 if (!JWT_SECRET) throw new Error("Missing JWT_SECRET");
 if (!GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID");
@@ -39,20 +42,28 @@ const createSendToken = (
   message: string,
 ) => {
   const token = signToken(user.id);
-
-  delete user.password;
   const isProd = process.env.NODE_ENV === "production";
+  const userData = {
+    id: user.id,
+    fullName: user.fullName,
+    email: user.email,
+    role: user.role,
+    imageUrl: user.imageUrl ?? null,
+  };
+
   res.cookie("token", token, {
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? "none" : "lax",
-    domain: isProd ? ".abdulectroncs.com" : ".abdulectroncs.com",
+    domain: isProd ? COOKIE_DOMAIN : undefined,
+    path: "/",
+    maxAge: JWT_COOKIE_MAX_AGE,
   });
 
   res.status(statusCode).json({
     status: "success",
     message,
-    token,
+    data: { user: userData },
   });
 };
 
@@ -158,9 +169,16 @@ export const login = catchAsync(async (req, res, next) => {
 
 /* ================= LOGOUT ================= */
 export const logout = catchAsync(async (req, res) => {
+  const isProd = process.env.NODE_ENV === "production";
+
   res.cookie("token", "", {
     httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    domain: isProd ? COOKIE_DOMAIN : undefined,
+    path: "/",
     expires: new Date(0),
+    maxAge: 0,
   });
 
   res.status(200).json({
@@ -169,17 +187,14 @@ export const logout = catchAsync(async (req, res) => {
   });
 });
 
-export const googleLogin = catchAsync(async (req, res) => {
+export const googleLogin = catchAsync(async (req, res, next) => {
   const { credential } = req.body;
 
   if (!credential) {
-    return res
-      .status(400)
-      .json({ error: "Google credential token is required" });
+    return next(new AppError("Google credential token is required", 400));
   }
 
   try {
-    // 1. Verify the Google Identity token
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
       audience: GOOGLE_CLIENT_ID,
@@ -188,12 +203,11 @@ export const googleLogin = catchAsync(async (req, res) => {
     const payload = ticket.getPayload();
 
     if (!payload?.sub || !payload.email) {
-      return res.status(401).json({ error: "Invalid Google credential" });
+      return next(new AppError("Invalid Google credential", 401));
     }
 
     const { sub: googleId, email, name, picture } = payload;
 
-    // 2. Query DB by googleId OR by email
     let user = await prisma.user.findFirst({
       where: {
         OR: [{ googleId: googleId }, { email: email }],
@@ -201,7 +215,6 @@ export const googleLogin = catchAsync(async (req, res) => {
     });
 
     if (user) {
-      // Link Google authentication if account was originally created via email password
       if (!user.googleId) {
         user = await prisma.user.update({
           where: { id: user.id },
@@ -212,57 +225,30 @@ export const googleLogin = catchAsync(async (req, res) => {
         });
       }
     } else {
-      // 3. Create a brand new e-commerce customer (USER role)
       user = await prisma.user.create({
         data: {
           googleId: googleId,
           email: email.toLowerCase(),
           fullName: name ?? email,
           imageUrl: picture ?? null,
-          role: "USER", // Matches your schema Enum
+          role: "USER",
           password: null,
         },
       });
     }
 
-    // 4. Generate your internal App JWT token for authentication persistence
-    const appToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: "7d" },
-    );
-
-    // 5. Return token and user data profile
-    return res.status(200).json({
-      message: "Login successful",
-      token: appToken,
-      user: {
-        id: user.id,
-        email: user.email,
-        fullName: user.fullName,
-        role: user.role,
-        imageUrl: user.imageUrl,
-      },
-    });
+    createSendToken(user, 200, res, "Login successful");
   } catch (error) {
     console.error("Google Authentication Error:", error);
-    return res
-      .status(401)
-      .json({ error: "Invalid Google credential authentication failed" });
+    return next(
+      new AppError("Invalid Google credential authentication failed", 401),
+    );
   }
 });
 
 /* ================= PROTECT ================= */
 export const protect = catchAsync(async (req, res, next) => {
-  // Check cookies first, then Authorization header
-  let token = req.cookies?.token;
-
-  if (!token) {
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith("Bearer ")) {
-      token = authHeader.split(" ")[1];
-    }
-  }
+  const token = req.cookies?.token;
 
   if (!token) {
     return next(new AppError("Not authenticated", 401));
@@ -435,6 +421,47 @@ export const getMe = catchAsync(async (req, res) => {
       fullName: req.user.fullName,
       email: req.user.email,
       role: req.user.role,
+      imageUrl: req.user.imageUrl,
+    },
+  });
+});
+
+export const updateMe = catchAsync(async (req, res, next) => {
+  const { fullName, email } = req.body as {
+    fullName?: string;
+    email?: string;
+  };
+
+  const data: Record<string, unknown> = {};
+  if (fullName !== undefined) data.fullName = String(fullName).trim();
+  if (email !== undefined) data.email = String(email).trim().toLowerCase();
+
+  if (Object.keys(data).length === 0) {
+    return next(new AppError("No profile fields provided", 400));
+  }
+
+  if (data.email) {
+    const existing = await prisma.user.findUnique({
+      where: { email: data.email as string },
+    });
+    if (existing && existing.id !== req.user.id) {
+      return next(new AppError("Email already exists", 409));
+    }
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: req.user.id },
+    data,
+  });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      id: updatedUser.id,
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      imageUrl: updatedUser.imageUrl,
     },
   });
 });

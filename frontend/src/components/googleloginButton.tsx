@@ -25,8 +25,6 @@ export default function GoogleLoginButton() {
 
           mutate(credentialResponse.credential, {
             onSuccess: () => {
-              localStorage.setItem("token", "google-auth");
-              window.dispatchEvent(new Event("auth-state-changed"));
               router.push("/");
               router.refresh();
             },

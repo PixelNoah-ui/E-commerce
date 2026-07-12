@@ -1,5 +1,16 @@
+import { Suspense } from "react";
 import LoginPage from "./login";
 
 export default function AuthPage() {
-  return <LoginPage />;
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <LoginPage />
+    </Suspense>
+  );
 }
