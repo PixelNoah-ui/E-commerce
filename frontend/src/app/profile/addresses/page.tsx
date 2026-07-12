@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   useAddresses,
   useCreateAddress,
@@ -186,7 +187,16 @@ export default function AddressesPage() {
             <CardTitle>Saved addresses</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            {isLoading ? <div>Loading...</div> : null}
+            {isLoading ? (
+              <div className="space-y-3 py-3">
+                {[1, 2, 3].map((index) => (
+                  <div key={index} className="space-y-2">
+                    <Skeleton className="h-4 w-1/3" />
+                    <Skeleton className="h-14 w-full rounded-xl" />
+                  </div>
+                ))}
+              </div>
+            ) : null}
             {!isLoading && addresses.length === 0 ? (
               <div className="text-sm text-muted-foreground">
                 No addresses yet.

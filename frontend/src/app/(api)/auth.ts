@@ -61,13 +61,13 @@ export async function logout() {
   });
 
   const dataText = await res.text();
-  let data: any = {};
+  let data: { message?: string } = {};
   try {
     data = JSON.parse(dataText || "{}");
   } catch {
     data = { message: dataText };
   }
 
-  if (!res.ok) throw new Error(data.message || "Logout failed");
+  if (!res.ok) throw new Error(data.message ?? "Logout failed");
   return data;
 }

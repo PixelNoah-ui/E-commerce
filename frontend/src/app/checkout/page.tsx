@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Lock, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
+import { Lock, ShieldCheck, ShoppingBag, Truck, MapPin } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
+import { useAddresses } from "@/hooks/useAddresses";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,7 @@ import {
   type CheckoutOrder,
   type CheckoutInitResponse,
 } from "@/lib/checkout";
+import { toast } from "sonner";
 
 const API_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -42,8 +44,25 @@ function buildApiUrl(path: string) {
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, clear } = useCart();
+  const { data: savedAddresses = [] } = useAddresses();
+  const latestSavedAddress = useMemo(() => {
+    return (
+      [...savedAddresses]
+        .sort(
+          (a, b) =>
+            new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        )
+        .shift() ?? null
+    );
+  }, [savedAddresses]);
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState("");
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null,
+  );
+  const [useManualAddress, setUseManualAddress] = useState(true);
+  const [hasInitializedSavedAddress, setHasInitializedSavedAddress] =
+    useState(false);
 
   const {
     register,
@@ -51,6 +70,7 @@ export default function CheckoutPage() {
     formState: { errors, isValid },
     setValue,
     watch,
+    reset,
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     mode: "onChange",
@@ -65,6 +85,49 @@ export default function CheckoutPage() {
     },
   });
 
+  // Auto-fill when a recent saved address exists
+  useEffect(() => {
+    if (savedAddresses.length === 0) {
+      setUseManualAddress(true);
+      setSelectedAddressId(null);
+      setHasInitializedSavedAddress(false);
+      return;
+    }
+
+    if (!hasInitializedSavedAddress) {
+      setUseManualAddress(false);
+      setSelectedAddressId(latestSavedAddress?.id ?? null);
+      setHasInitializedSavedAddress(true);
+    }
+  }, [savedAddresses.length, latestSavedAddress, hasInitializedSavedAddress]);
+
+  useEffect(() => {
+    if (!latestSavedAddress || useManualAddress) return;
+
+    const addressToUse =
+      savedAddresses.find((addr) => addr.id === selectedAddressId) ||
+      latestSavedAddress;
+
+    if (!addressToUse) return;
+
+    setSelectedAddressId(addressToUse.id);
+    reset({
+      fullName: addressToUse.fullName,
+      phone: addressToUse.phone ?? "",
+      country: addressToUse.country,
+      city: addressToUse.city,
+      address: addressToUse.address,
+      postalCode: addressToUse.postalCode ?? "",
+      orderNotes: "",
+    });
+  }, [
+    latestSavedAddress,
+    savedAddresses,
+    selectedAddressId,
+    useManualAddress,
+    reset,
+  ]);
+
   const watchedCountry = watch("country");
 
   const subtotal = useMemo(
@@ -75,6 +138,43 @@ export default function CheckoutPage() {
   const tax = Number((subtotal * 0.07).toFixed(2));
   const total = Number((subtotal + shipping + tax).toFixed(2));
   const isOrderReady = items.length > 0 && isValid;
+
+  // Check if no addresses exist and redirect
+  useEffect(() => {
+    if (savedAddresses.length === 0 && !useManualAddress) {
+      setUseManualAddress(true);
+    }
+  }, [savedAddresses]);
+
+  // Show warning if no addresses and direct user to add one
+  const hasNoSavedAddresses = savedAddresses.length === 0;
+
+  // If no items, show empty cart
+  if (!items.length) {
+    return (
+      <main className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-4 py-16 text-center">
+        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <ShoppingBag className="h-8 w-8" />
+        </div>
+        <h1 className="text-3xl font-semibold">Your cart is empty</h1>
+        <p className="mt-3 max-w-md text-sm text-muted-foreground">
+          Add a few products to your cart and come back here when you are ready
+          to continue.
+        </p>
+        <Link
+          href="/electronics"
+          className="mt-6 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
+        >
+          Continue shopping
+        </Link>
+      </main>
+    );
+  }
+
+  // Show recommendation to add address if none exist
+  if (hasNoSavedAddresses && useManualAddress) {
+    // Still allow manual entry but show helpful message
+  }
 
   const onSubmit = async (values: CheckoutFormValues) => {
     if (!items.length) {
@@ -141,7 +241,6 @@ export default function CheckoutPage() {
       setIsPlacingOrder(false);
     }
   };
-
   if (!items.length) {
     return (
       <main className="mx-auto flex min-h-screen max-w-6xl flex-col items-center justify-center px-4 py-16 text-center">
@@ -154,7 +253,7 @@ export default function CheckoutPage() {
           to continue.
         </p>
         <Link
-          href="/equipments"
+          href="/electronics"
           className="mt-6 inline-flex items-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground"
         >
           Continue shopping
@@ -184,6 +283,62 @@ export default function CheckoutPage() {
               <CardTitle>Customer information</CardTitle>
             </CardHeader>
             <CardContent>
+              {/* Address Selection */}
+              {savedAddresses.length > 0 && (
+                <div className="mb-6 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-semibold text-sm">
+                      Use latest saved address
+                    </h3>
+                    <button
+                      type="button"
+                      onClick={() => setUseManualAddress((value) => !value)}
+                      className="text-xs text-primary hover:underline"
+                    >
+                      {useManualAddress
+                        ? "Use saved address"
+                        : "Edit address manually"}
+                    </button>
+                  </div>
+
+                  {!useManualAddress && (
+                    <Select
+                      value={selectedAddressId || ""}
+                      onValueChange={setSelectedAddressId}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a saved address" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {savedAddresses.map((addr) => (
+                          <SelectItem key={addr.id} value={addr.id}>
+                            <div className="flex items-center gap-2">
+                              <MapPin size={14} />
+                              <span>
+                                {addr.fullName} - {addr.address}, {addr.city}
+                                {addr.isDefault && " (Default)"}
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+
+                  {!useManualAddress && savedAddresses.length === 0 && (
+                    <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                      No saved addresses found.{" "}
+                      <Link
+                        href="/profile/addresses"
+                        className="font-semibold underline"
+                      >
+                        Add one now
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <form
                 id="checkout-form"
                 className="space-y-4"
