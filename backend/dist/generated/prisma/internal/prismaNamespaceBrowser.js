@@ -48,7 +48,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.OwnerAddressScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.OwnerAddressScalarFieldEnum = exports.PaymentScalarFieldEnum = exports.OrderItemScalarFieldEnum = exports.OrderScalarFieldEnum = exports.WishlistItemScalarFieldEnum = exports.ReviewScalarFieldEnum = exports.ProductScalarFieldEnum = exports.UserAddressScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -76,7 +76,13 @@ exports.JsonNull = runtime.JsonNull;
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     User: 'User',
+    UserAddress: 'UserAddress',
     Product: 'Product',
+    Review: 'Review',
+    WishlistItem: 'WishlistItem',
+    Order: 'Order',
+    OrderItem: 'OrderItem',
+    Payment: 'Payment',
     OwnerAddress: 'OwnerAddress'
 };
 /*
@@ -99,10 +105,24 @@ exports.UserScalarFieldEnum = {
     passwordChangedAt: 'passwordChangedAt',
     failedLoginAttempts: 'failedLoginAttempts',
     lockUntil: 'lockUntil',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt',
     fullName: 'fullName',
-    imageUrl: 'imageUrl'
+    imageUrl: 'imageUrl',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.UserAddressScalarFieldEnum = {
+    id: 'id',
+    fullName: 'fullName',
+    phone: 'phone',
+    country: 'country',
+    city: 'city',
+    state: 'state',
+    address: 'address',
+    postalCode: 'postalCode',
+    isDefault: 'isDefault',
+    userId: 'userId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
 };
 exports.ProductScalarFieldEnum = {
     id: 'id',
@@ -110,10 +130,64 @@ exports.ProductScalarFieldEnum = {
     description: 'description',
     price: 'price',
     imageUrl: 'imageUrl',
+    quantity: 'quantity',
+    sku: 'sku',
     categoryType: 'categoryType',
     specifications: 'specifications',
     isFeatured: 'isFeatured',
     isActive: 'isActive',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.ReviewScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    productId: 'productId',
+    rating: 'rating',
+    title: 'title',
+    comment: 'comment',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.WishlistItemScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    productId: 'productId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.OrderScalarFieldEnum = {
+    id: 'id',
+    orderNumber: 'orderNumber',
+    userId: 'userId',
+    addressId: 'addressId',
+    subtotal: 'subtotal',
+    shipping: 'shipping',
+    tax: 'tax',
+    total: 'total',
+    notes: 'notes',
+    status: 'status',
+    paymentStatus: 'paymentStatus',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.OrderItemScalarFieldEnum = {
+    id: 'id',
+    orderId: 'orderId',
+    productId: 'productId',
+    quantity: 'quantity',
+    price: 'price',
+    total: 'total',
+    selectedSize: 'selectedSize',
+    selectedColor: 'selectedColor'
+};
+exports.PaymentScalarFieldEnum = {
+    id: 'id',
+    orderId: 'orderId',
+    transactionId: 'transactionId',
+    provider: 'provider',
+    amount: 'amount',
+    status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

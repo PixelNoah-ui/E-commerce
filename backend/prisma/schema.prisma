@@ -8,53 +8,214 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id                  String    @id @default(uuid())
-  email               String    @unique
-  password            String?
-  googleId            String?   @unique
-  role                Role      @default(USER)
-  resetToken          String?
-  resetTokenExpiry    DateTime?
-  passwordChangedAt   DateTime?
-  failedLoginAttempts Int       @default(0)
-  lockUntil           DateTime?
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-  fullName            String
-  imageUrl            String?
-}
-
-model Product {
-  id           String   @id @default(uuid())
-  name         String
-  description  String
-  price        String
-  imageUrl     String
-  categoryType String
-   specifications Json?
-  isFeatured   Boolean  @default(false)
-  isActive     Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model OwnerAddress {
-  id        String   @id @default(uuid())
-  fullName  String
-  email     String   @unique
-  phone     String?
-  secondPhone String?
-  address   String?
-  location  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-
-
 enum Role {
   ADMIN
   MANAGER
   USER
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model User {
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  password            String?
+  googleId            String?  @unique
+
+  role                Role     @default(USER)
+
+  resetToken          String?
+  resetTokenExpiry    DateTime?
+  passwordChangedAt   DateTime?
+  failedLoginAttempts Int      @default(0)
+  lockUntil           DateTime?
+
+  fullName            String
+  imageUrl            String?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  // Relations
+  addresses           UserAddress[]
+  orders              Order[]
+  reviews             Review[]
+  wishlistItems      WishlistItem[]
+}
+
+model UserAddress {
+  id           String   @id @default(uuid())
+
+  fullName     String
+  phone        String
+
+  country      String
+  city         String
+  state        String?
+  address      String
+  postalCode   String?
+
+  isDefault    Boolean  @default(false)
+
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  orders        Order[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Product {
+  id              String   @id @default(uuid())
+
+  name            String
+  description     String
+
+  price           Decimal  @db.Decimal(10,2)
+
+  imageUrl        String
+
+  quantity        Int?
+
+  sku             String?  @unique
+
+  categoryType    String
+
+  specifications  Json?
+
+  isFeatured      Boolean  @default(false)
+  isActive        Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  orderItems      OrderItem[]
+  reviews         Review[]
+  wishlistItems  WishlistItem[]
+}
+
+model Review {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  rating          Int
+  title           String?
+  comment         String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, productId])
+}
+
+model WishlistItem {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, productId])
+}
+
+model Order {
+  id              String   @id @default(uuid())
+
+  orderNumber     String   @unique
+
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+
+  addressId       String
+  address         UserAddress @relation(fields: [addressId], references: [id])
+
+  subtotal        Decimal @db.Decimal(10,2)
+  shipping        Decimal @db.Decimal(10,2)
+  tax             Decimal @db.Decimal(10,2)
+  total           Decimal @db.Decimal(10,2)
+
+  notes           String?
+
+  status          OrderStatus   @default(PENDING)
+  paymentStatus   PaymentStatus @default(PENDING)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items           OrderItem[]
+  payment         Payment?
+}
+
+model OrderItem {
+  id              String @id @default(uuid())
+
+  orderId         String
+  order           Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId       String
+  product         Product @relation(fields: [productId], references: [id])
+
+  quantity        Int
+
+  price           Decimal @db.Decimal(10,2)
+
+  total           Decimal @db.Decimal(10,2)
+
+  selectedSize    String?
+  selectedColor   String?
+}
+
+model Payment {
+  id              String @id @default(uuid())
+
+  orderId         String @unique
+  order           Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  transactionId   String?
+  provider        String?
+
+  amount          Decimal @db.Decimal(10,2)
+
+  status          PaymentStatus
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model OwnerAddress {
+  id           String   @id @default(uuid())
+
+  fullName     String
+  email        String   @unique
+  phone        String?
+  secondPhone  String?
+
+  address      String?
+  location     String?
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
