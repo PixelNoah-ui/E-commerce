@@ -3,10 +3,27 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Lock, ShieldCheck, ShoppingBag, Truck } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  checkoutFormSchema,
+  type CheckoutFormValues,
+  type CheckoutOrder,
+  type CheckoutInitResponse,
+} from "@/lib/checkout";
 
 const API_URL = (
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -14,16 +31,41 @@ const API_URL = (
 
 function buildApiUrl(path: string) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
-  return API_URL.includes("/api/v1")
-    ? `${API_URL}${normalizedPath}`
-    : `${API_URL}/api/v1${normalizedPath}`;
+
+  if (API_URL.includes("/api/v1")) {
+    return `${API_URL}${normalizedPath}`;
+  }
+
+  return `${API_URL}/api/v1${normalizedPath}`;
 }
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, clear } = useCart();
-  const [isChecking, setIsChecking] = useState(false);
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [error, setError] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    setValue,
+    watch,
+  } = useForm<CheckoutFormValues>({
+    resolver: zodResolver(checkoutFormSchema),
+    mode: "onChange",
+    defaultValues: {
+      fullName: "",
+      phone: "",
+      country: "Ethiopia",
+      city: "",
+      address: "",
+      postalCode: "",
+      orderNotes: "",
+    },
+  });
+
+  const watchedCountry = watch("country");
 
   const subtotal = useMemo(
     () => items.reduce((total, item) => total + item.price * item.quantity, 0),
@@ -32,52 +74,71 @@ export default function CheckoutPage() {
   const shipping = subtotal > 100 ? 0 : 10;
   const tax = Number((subtotal * 0.07).toFixed(2));
   const total = Number((subtotal + shipping + tax).toFixed(2));
+  const isOrderReady = items.length > 0 && isValid;
 
-  const handleCheckout = async () => {
+  const onSubmit = async (values: CheckoutFormValues) => {
     if (!items.length) {
       setError("Your cart is empty.");
       return;
     }
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/auth");
-      return;
-    }
-
-    setIsChecking(true);
+    setIsPlacingOrder(true);
     setError("");
 
+    const orderPayload: CheckoutOrder = {
+      customer: values,
+      items: items.map((item) => ({
+        productId: item.productId,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        quantity: item.quantity,
+        lineTotal: item.price * item.quantity,
+      })),
+      subtotal,
+      shipping,
+      tax,
+      total,
+      placedAt: new Date().toISOString(),
+    };
+
     try {
-      const res = await fetch(buildApiUrl("/checkout/validate"), {
+      const response = await fetch(buildApiUrl("/checkout/initialize"), {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          items: items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-            name: item.name,
-          })),
-        }),
+        body: JSON.stringify(orderPayload),
       });
 
-      const data = await res.json();
+      const data: CheckoutInitResponse = await response.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || "Checkout validation failed");
+      if (response.status === 401) {
+        router.push("/auth?redirect=/checkout");
+        return;
+      }
+
+      if (!response.ok || data.status !== "success") {
+        throw new Error(
+          data?.message || "Unable to place your order right now.",
+        );
       }
 
       clear();
+      if (data?.data?.checkoutUrl) {
+        window.location.href = data.data.checkoutUrl;
+        return;
+      }
+
       router.push("/checkout/success");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Checkout failed");
-    } finally {
-      setIsChecking(false);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Unable to place your order right now.",
+      );
+      setIsPlacingOrder(false);
     }
   };
 
@@ -120,25 +181,142 @@ export default function CheckoutPage() {
         <div className="space-y-6">
           <Card>
             <CardHeader>
+              <CardTitle>Customer information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form
+                id="checkout-form"
+                className="space-y-4"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="fullName">
+                      Full name
+                    </label>
+                    <Input id="fullName" {...register("fullName")} />
+                    {errors.fullName ? (
+                      <p className="text-sm text-destructive">
+                        {errors.fullName.message}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="phone">
+                      Phone
+                    </label>
+                    <Input id="phone" {...register("phone")} />
+                    {errors.phone ? (
+                      <p className="text-sm text-destructive">
+                        {errors.phone.message}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="country">
+                      Country
+                    </label>
+                    <Select
+                      value={watchedCountry}
+                      onValueChange={(value) => setValue("country", value)}
+                    >
+                      <SelectTrigger id="country">
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Ethiopia">Ethiopia</SelectItem>
+                        <SelectItem value="Kenya">Kenya</SelectItem>
+                        <SelectItem value="Sudan">Sudan</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.country ? (
+                      <p className="text-sm text-destructive">
+                        {errors.country.message}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="city">
+                      City
+                    </label>
+                    <Input id="city" {...register("city")} />
+                    {errors.city ? (
+                      <p className="text-sm text-destructive">
+                        {errors.city.message}
+                      </p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-sm font-medium" htmlFor="address">
+                      Address
+                    </label>
+                    <Input id="address" {...register("address")} />
+                    {errors.address ? (
+                      <p className="text-sm text-destructive">
+                        {errors.address.message}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="postalCode">
+                      Postal code
+                    </label>
+                    <Input id="postalCode" {...register("postalCode")} />
+                    {errors.postalCode ? (
+                      <p className="text-sm text-destructive">
+                        {errors.postalCode.message}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium" htmlFor="orderNotes">
+                      Order notes (optional)
+                    </label>
+                    <Textarea id="orderNotes" {...register("orderNotes")} />
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle>Order details</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between rounded-xl border border-border/70 bg-muted/20 p-4"
-                >
-                  <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Qty: {item.quantity}
+            <CardContent>
+              <div className="max-h-80 space-y-3 overflow-y-auto pr-2 sm:max-h-105">
+                {items.map((item) => (
+                  <div
+                    key={item.id}
+                    className="flex items-start justify-between gap-3 rounded-xl border border-border/70 bg-muted/20 p-4"
+                  >
+                    <div className="flex items-start gap-3">
+                      {item.image ? (
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="h-14 w-14 rounded-lg object-cover"
+                        />
+                      ) : null}
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          Qty: {item.quantity}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="font-semibold">
+                      {(item.price * item.quantity).toFixed(2)} ETB
                     </p>
                   </div>
-                  <p className="font-semibold">
-                    {(item.price * item.quantity).toFixed(2)} ETB
-                  </p>
-                </div>
-              ))}
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -205,10 +383,11 @@ export default function CheckoutPage() {
 
             <Button
               className="w-full"
-              onClick={handleCheckout}
-              disabled={isChecking}
+              form="checkout-form"
+              type="submit"
+              disabled={!isOrderReady || isPlacingOrder}
             >
-              {isChecking ? "Validating order..." : "Place order"}
+              {isPlacingOrder ? "Placing order..." : "Place order"}
             </Button>
             <p className="text-center text-xs text-muted-foreground">
               By placing this order, you agree to our terms and conditions.
