@@ -317,7 +317,10 @@ export const getOrder = catchAsync(async (req, res, next) => {
       );
 
       if (decision.isSuccessful) {
-        const successfulOrder = await finalizeSuccessfulCheckout(session, session.txRef);
+        const successfulOrder = await finalizeSuccessfulCheckout(
+          session,
+          session.txRef,
+        );
         if (successfulOrder) {
           const invoiceNumber = buildInvoiceNumber(successfulOrder.orderNumber);
           const estimatedDelivery = new Date(
@@ -398,7 +401,8 @@ const finalizeSuccessfulCheckout = async (
   checkoutSession: any,
   txRef: string,
 ) => {
-  const sessionItems = checkoutSession.items as unknown as CheckoutSessionItem[];
+  const sessionItems =
+    checkoutSession.items as unknown as CheckoutSessionItem[];
   const sessionTotals = checkoutSession.totals as {
     subtotal: number;
     shipping: number;
