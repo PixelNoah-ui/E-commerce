@@ -66,6 +66,7 @@ model CheckoutSession {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   txRef        String   @unique
+  orderNumber  String 
   status       String   @default("PENDING")
 
   customer     Json

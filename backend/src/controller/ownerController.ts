@@ -72,7 +72,7 @@ export const getOwnerAddress = catchAsync(async (req, res, next) => {
 });
 
 export const updateOwnerAddress = catchAsync(async (req, res, next) => {
-  console.log("Request body:", req.body);
+  // Request validation (no sensitive data logging in production)
   const { fullName, email, phone, secondPhone, address, location } = req.body;
   const data: Record<string, unknown> = {};
 

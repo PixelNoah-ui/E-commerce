@@ -26,7 +26,7 @@ export function generateMetadata({ searchParams: { q } }: PageProps): Metadata {
       url: q
         ? `https://abduelectronics.com/equipments?q=${encodeURIComponent(q)}`
         : "https://abduelectronics.com/equipments",
-      siteName: "Meqdii Electronics",
+      siteName: "PixelShop",
       locale: "en_ET",
       type: "website",
     },

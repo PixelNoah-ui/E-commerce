@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Menu, Loader2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -13,8 +12,8 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import Image from "next/image";
-import { logout as apiLogout } from "@/app/(api)/auth";
 import { Button } from "@/components/ui/button";
+import { useLogout } from "@/hooks/useLogout";
 import { User } from "@/types/Types";
 
 interface MobileNavbarProps {
@@ -23,14 +22,12 @@ interface MobileNavbarProps {
 
 export default function MobileNavbar({ user }: MobileNavbarProps) {
   const pathname = usePathname();
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { logoutUser, isLoading } = useLogout();
 
   const authenticated = !!user;
 
   const mainMenuItems = [
     { title: "Home", href: "/" },
-    { title: "Electronics", href: "/electronics" },
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },
@@ -51,19 +48,8 @@ export default function MobileNavbar({ user }: MobileNavbarProps) {
     },
   ];
 
-  const handleLogout = async () => {
-    setIsLoading(true);
-
-    try {
-      await apiLogout();
-
-      router.refresh();
-      router.push("/");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+  const handleLogout = () => {
+    logoutUser("/");
   };
 
   return (
@@ -86,12 +72,12 @@ export default function MobileNavbar({ user }: MobileNavbarProps) {
                 <Link href="/" className="flex items-center gap-2">
                   <Image
                     src="/icons/logo.svg"
-                    alt="Meqdii Electronics"
+                    alt="PixelShop"
                     width={34}
                     height={34}
                   />
 
-                  <span className="font-bold text-primary">MEQDII</span>
+                  <span className="font-bold text-primary">PIXELSHOP</span>
                 </Link>
               </SheetTitle>
             </SheetHeader>
@@ -187,7 +173,14 @@ export default function MobileNavbar({ user }: MobileNavbarProps) {
                 disabled={isLoading}
                 onClick={handleLogout}
               >
-                {isLoading ? "Logging out..." : "Logout"}
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Logging out...
+                  </>
+                ) : (
+                  "Logout"
+                )}
               </Button>
             ) : (
               <SheetClose asChild>

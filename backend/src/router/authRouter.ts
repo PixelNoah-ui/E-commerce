@@ -20,10 +20,10 @@ router.post("/login", login);
 router.post("/google", googleLogin);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
-router.post("/logout", logout);
 
 router.use(protect);
 router.get("/me", getMe);
+router.post("/logout", logout);
 router.patch("/me", updateMe);
 router.use(restrictTo("ADMIN"));
 router.patch("/update-password", updatePassword);

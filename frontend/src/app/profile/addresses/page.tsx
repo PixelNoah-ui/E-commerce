@@ -1,17 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  useAddresses,
   useCreateAddress,
-  useDeleteAddress,
-  useSetDefaultAddress,
+  useLatestAddress,
   useUpdateAddress,
-} from "@/hooks/useAddresses";
+} from "@/hooks/useLatestAddress";
 import { toast } from "sonner";
 
 const emptyForm = {
@@ -19,25 +18,38 @@ const emptyForm = {
   phone: "",
   country: "",
   city: "",
-  state: "",
   address: "",
   postalCode: "",
-  isDefault: false,
 };
 
 export default function AddressesPage() {
-  const { data: addresses = [], isLoading } = useAddresses();
+  const { latestAddress, isLoading: isLoadingAddress } = useLatestAddress();
   const createAddress = useCreateAddress();
   const updateAddress = useUpdateAddress();
-  const deleteAddress = useDeleteAddress();
-  const setDefaultAddress = useSetDefaultAddress();
-  const [form, setForm] = useState(emptyForm);
-  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const selectedAddress = useMemo(
-    () => addresses.find((item) => item.id === editingId) ?? null,
-    [addresses, editingId],
-  );
+  const [form, setForm] = useState(emptyForm);
+
+  // Track the last address we've synced the form from. When it changes,
+  // reset the form during render instead of in a useEffect.
+  const [syncedAddress, setSyncedAddress] = useState(latestAddress);
+
+  if (latestAddress !== syncedAddress) {
+    setSyncedAddress(latestAddress);
+    setForm(
+      latestAddress
+        ? {
+            fullName: latestAddress.fullName,
+            phone: latestAddress.phone || "",
+            country: latestAddress.country,
+            city: latestAddress.city,
+            address: latestAddress.address,
+            postalCode: latestAddress.postalCode || "",
+          }
+        : emptyForm,
+    );
+  }
+
+  const isSaving = createAddress.isPending || updateAddress.isPending;
 
   const submit = async () => {
     if (
@@ -52,18 +64,30 @@ export default function AddressesPage() {
     }
 
     try {
-      if (editingId) {
+      if (latestAddress) {
         await updateAddress.mutateAsync({
-          addressId: editingId,
-          payload: { ...form },
+          addressId: latestAddress.id,
+          payload: {
+            fullName: form.fullName,
+            phone: form.phone,
+            country: form.country,
+            city: form.city,
+            address: form.address,
+            postalCode: form.postalCode || undefined,
+          },
         });
         toast.success("Address updated");
       } else {
-        await createAddress.mutateAsync(form);
-        toast.success("Address added");
+        await createAddress.mutateAsync({
+          fullName: form.fullName,
+          phone: form.phone,
+          country: form.country,
+          city: form.city,
+          address: form.address,
+          postalCode: form.postalCode || undefined,
+        });
+        toast.success("Address saved");
       }
-      setForm(emptyForm);
-      setEditingId(null);
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Unable to save address",
@@ -71,198 +95,85 @@ export default function AddressesPage() {
     }
   };
 
-  const removeAddress = async (addressId: string) => {
-    try {
-      await deleteAddress.mutateAsync(addressId);
-      toast.success("Address removed");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Unable to remove address",
-      );
-    }
-  };
-
-  const markDefault = async (addressId: string) => {
-    try {
-      await setDefaultAddress.mutateAsync(addressId);
-      toast.success("Default address updated");
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Unable to update default address",
-      );
-    }
-  };
-
   return (
-    <main className="mx-auto max-w-6xl px-4 py-12 lg:px-6">
-      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>{editingId ? "Edit address" : "Add address"}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <Input
-              placeholder="Full name"
-              value={form.fullName}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, fullName: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="Phone"
-              value={form.phone}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, phone: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="Country"
-              value={form.country}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, country: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="City"
-              value={form.city}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, city: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="State"
-              value={form.state}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, state: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="Address"
-              value={form.address}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, address: e.target.value }))
-              }
-            />
-            <Input
-              placeholder="Postal code"
-              value={form.postalCode}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, postalCode: e.target.value }))
-              }
-            />
-            <label className="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                checked={form.isDefault}
+    <main className="mx-auto max-w-3xl px-4 py-12 lg:px-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>My address</CardTitle>
+        </CardHeader>
+
+        <CardContent className="space-y-3">
+          {isLoadingAddress ? (
+            <div className="space-y-3 py-3">
+              <Skeleton className="h-4 w-1/3" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ) : (
+            <>
+              <Input
+                placeholder="Full name"
+                value={form.fullName}
                 onChange={(e) =>
-                  setForm((prev) => ({ ...prev, isDefault: e.target.checked }))
+                  setForm((prev) => ({ ...prev, fullName: e.target.value }))
                 }
               />
-              Make this my default address
-            </label>
-            <div className="flex gap-2">
-              <Button
-                onClick={submit}
-                disabled={createAddress.isPending || updateAddress.isPending}
-              >
-                {editingId ? "Save changes" : "Save address"}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setForm(emptyForm);
-                  setEditingId(null);
-                }}
-              >
-                Cancel
+              <Input
+                placeholder="Phone"
+                value={form.phone}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, phone: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Country"
+                value={form.country}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, country: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="City"
+                value={form.city}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, city: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Address"
+                value={form.address}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, address: e.target.value }))
+                }
+              />
+              <Input
+                placeholder="Postal code"
+                value={form.postalCode}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, postalCode: e.target.value }))
+                }
+              />
+            </>
+          )}
+
+          {!isLoadingAddress ? (
+            <div className="flex items-center gap-2">
+              <Button onClick={submit} disabled={isSaving}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  "Save address"
+                )}
               </Button>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Saved addresses</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            {isLoading ? (
-              <div className="space-y-3 py-3">
-                {[1, 2, 3].map((index) => (
-                  <div key={index} className="space-y-2">
-                    <Skeleton className="h-4 w-1/3" />
-                    <Skeleton className="h-14 w-full rounded-xl" />
-                  </div>
-                ))}
-              </div>
-            ) : null}
-            {!isLoading && addresses.length === 0 ? (
-              <div className="text-sm text-muted-foreground">
-                No addresses yet.
-              </div>
-            ) : null}
-            {addresses.map((address) => (
-              <div key={address.id} className="rounded-xl border p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="font-medium">{address.fullName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {address.address}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {address.city}, {address.country}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {address.phone}
-                    </p>
-                    {address.isDefault ? (
-                      <span className="mt-2 inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-xs text-emerald-700">
-                        Default
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        setEditingId(address.id);
-                        setForm({
-                          fullName: address.fullName,
-                          phone: address.phone || "",
-                          country: address.country,
-                          city: address.city,
-                          state: address.state || "",
-                          address: address.address,
-                          postalCode: address.postalCode || "",
-                          isDefault: address.isDefault,
-                        });
-                      }}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => markDefault(address.id)}
-                    >
-                      Default
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeAddress(address.id)}
-                    >
-                      Delete
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+          ) : null}
+        </CardContent>
+      </Card>
     </main>
   );
 }

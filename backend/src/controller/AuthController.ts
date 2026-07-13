@@ -24,7 +24,6 @@ const JWT_EXPIRES = "7d";
 const JWT_EXPIRES_DAYS = 7;
 const JWT_COOKIE_MAX_AGE = JWT_EXPIRES_DAYS * 24 * 60 * 60 * 1000;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
-const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || ".abdulectroncs.com";
 
 if (!JWT_SECRET) throw new Error("Missing JWT_SECRET");
 if (!GOOGLE_CLIENT_ID) throw new Error("Missing GOOGLE_CLIENT_ID");
@@ -55,7 +54,7 @@ const createSendToken = (
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? "none" : "lax",
-    domain: isProd ? COOKIE_DOMAIN : undefined,
+    domain: isProd ? ".abdulectroncs.com" : undefined,
     path: "/",
     maxAge: JWT_COOKIE_MAX_AGE,
   });
@@ -63,6 +62,7 @@ const createSendToken = (
   res.status(statusCode).json({
     status: "success",
     message,
+    token,
     data: { user: userData },
   });
 };
@@ -175,10 +175,8 @@ export const logout = catchAsync(async (req, res) => {
     httpOnly: true,
     secure: isProd,
     sameSite: isProd ? "none" : "lax",
-    domain: isProd ? COOKIE_DOMAIN : undefined,
-    path: "/",
+    domain: isProd ? ".abdulectroncs.com" : undefined,
     expires: new Date(0),
-    maxAge: 0,
   });
 
   res.status(200).json({
@@ -187,14 +185,17 @@ export const logout = catchAsync(async (req, res) => {
   });
 });
 
-export const googleLogin = catchAsync(async (req, res, next) => {
+export const googleLogin = catchAsync(async (req, res) => {
   const { credential } = req.body;
 
   if (!credential) {
-    return next(new AppError("Google credential token is required", 400));
+    return res
+      .status(400)
+      .json({ error: "Google credential token is required" });
   }
 
   try {
+    // 1. Verify the Google Identity token
     const ticket = await googleClient.verifyIdToken({
       idToken: credential,
       audience: GOOGLE_CLIENT_ID,
@@ -203,11 +204,12 @@ export const googleLogin = catchAsync(async (req, res, next) => {
     const payload = ticket.getPayload();
 
     if (!payload?.sub || !payload.email) {
-      return next(new AppError("Invalid Google credential", 401));
+      return res.status(401).json({ error: "Invalid Google credential" });
     }
 
     const { sub: googleId, email, name, picture } = payload;
 
+    // 2. Query DB by googleId OR by email
     let user = await prisma.user.findFirst({
       where: {
         OR: [{ googleId: googleId }, { email: email }],
@@ -215,6 +217,7 @@ export const googleLogin = catchAsync(async (req, res, next) => {
     });
 
     if (user) {
+      // Link Google authentication if account was originally created via email password
       if (!user.googleId) {
         user = await prisma.user.update({
           where: { id: user.id },
@@ -225,30 +228,39 @@ export const googleLogin = catchAsync(async (req, res, next) => {
         });
       }
     } else {
+      // 3. Create a brand new e-commerce customer (USER role)
       user = await prisma.user.create({
         data: {
           googleId: googleId,
           email: email.toLowerCase(),
           fullName: name ?? email,
           imageUrl: picture ?? null,
-          role: "USER",
+          role: "USER", // Matches your schema Enum
           password: null,
         },
       });
     }
 
-    createSendToken(user, 200, res, "Login successful");
+    createSendToken(user, 200, res, "Logged in with Google successfully");
   } catch (error) {
     console.error("Google Authentication Error:", error);
-    return next(
-      new AppError("Invalid Google credential authentication failed", 401),
-    );
+    return res
+      .status(401)
+      .json({ error: "Invalid Google credential authentication failed" });
   }
 });
 
 /* ================= PROTECT ================= */
 export const protect = catchAsync(async (req, res, next) => {
-  const token = req.cookies?.token;
+  let token = req.cookies?.token;
+
+  if (!token) {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader?.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1];
+    }
+  }
 
   if (!token) {
     return next(new AppError("Not authenticated", 401));
@@ -270,12 +282,13 @@ export const protect = catchAsync(async (req, res, next) => {
     return next(new AppError("User no longer exists", 401));
   }
 
-  if (user.passwordChangedAt) {
-    const changedAt = Math.floor(user.passwordChangedAt.getTime() / 1000);
-
-    if (decoded.iat < changedAt) {
-      return next(new AppError("Password recently changed", 401));
-    }
+  if (
+    user.password &&
+    user.passwordChangedAt &&
+    decoded.iat &&
+    decoded.iat < Math.floor(user.passwordChangedAt.getTime() / 1000)
+  ) {
+    return next(new AppError("Password recently changed", 401));
   }
 
   req.user = user;

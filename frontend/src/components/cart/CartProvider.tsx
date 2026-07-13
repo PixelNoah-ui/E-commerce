@@ -22,7 +22,7 @@ type Actions = {
   setPromo: (code: string | null, amount?: number) => void;
 };
 
-const STORAGE_KEY = "meqdii_cart_v1";
+const STORAGE_KEY = "pixelshop_cart_v1";
 
 const CartContext = createContext<Actions | undefined>(undefined);
 

@@ -10,7 +10,7 @@ export default function TopBar() {
 
   const phone = address?.phone ?? "+971 55 153 2113";
   const location = address?.location ?? "Dubai, UAE";
-  const tiktokHandle = "Meqdii TikTok";
+  const tiktokHandle = "PixelShop TikTok";
   const tiktokUrl = "https://vt.tiktok.com/ZSQw1R4SV/";
   const tiktokUrl2 = "https://vt.tiktok.com/ZSQw11VDu/";
   const tiktokUrl3 = "https://vt.tiktok.com/ZSQTooR14/";

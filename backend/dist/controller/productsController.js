@@ -52,8 +52,7 @@ exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
         });
     }
     catch (err) {
-        console.error("🔥 REAL BACKEND ERROR:", err); // <- see the real error here
-        next(new AppError_js_1.AppError(err.message || "Failed to create product", 500));
+        next(new AppError_js_1.AppError("Failed to create product", 500));
     }
 });
 // GET ALL PRODUCTS

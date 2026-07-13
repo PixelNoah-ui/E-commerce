@@ -12,8 +12,8 @@ export default function TermsPage() {
             Marketplace Terms for Owners
           </h1>
           <p className="text-lg text-slate-600 leading-8">
-            These terms describe how Meqdii Electronics operates, how owners
-            list products, and how we protect the interests of both sellers and
+            These terms describe how PixelShop operates, how owners list
+            products, and how we protect the interests of both sellers and
             buyers.
           </p>
         </div>
@@ -22,8 +22,8 @@ export default function TermsPage() {
           <article className="rounded-3xl bg-white p-10 shadow-sm border border-slate-200">
             <h2 className="text-2xl font-semibold mb-4">1. Platform Scope</h2>
             <p className="text-slate-600 leading-7">
-              Meqdii Electronics provides an online marketplace for electronics
-              owners and businesses to list, promote, and sell products across
+              PixelShop provides an online marketplace for electronics owners
+              and businesses to list, promote, and sell products across
               Ethiopia. By using the platform, owners agree to follow these
               terms, keep all information accurate, and maintain professional
               conduct with buyers.
@@ -71,9 +71,9 @@ export default function TermsPage() {
               4. Product Quality & Dispute Support
             </h2>
             <p className="text-slate-600 leading-7">
-              Owners must deliver products as described. Meqdii Electronics
-              supports dispute resolution between buyers and owners and may step
-              in when a listing violates platform standards or buyer protection
+              Owners must deliver products as described. PixelShop supports
+              dispute resolution between buyers and owners and may step in when
+              a listing violates platform standards or buyer protection
               guidelines.
             </p>
           </article>
@@ -98,11 +98,11 @@ export default function TermsPage() {
               6. Liability and Limitations
             </h2>
             <p className="text-slate-600 leading-7">
-              Meqdii Electronics is not responsible for the content of
-              third-party listings or for losses caused by product
-              misrepresentation. We limit our liability to the extent permitted
-              by law and encourage owners to maintain accurate descriptions and
-              good customer service.
+              PixelShop is not responsible for the content of third-party
+              listings or for losses caused by product misrepresentation. We
+              limit our liability to the extent permitted by law and encourage
+              owners to maintain accurate descriptions and good customer
+              service.
             </p>
           </article>
 

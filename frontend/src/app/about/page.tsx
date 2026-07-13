@@ -105,7 +105,7 @@ export default function AboutHero() {
       <div className="dark relative flex h-[80vh] min-h-[560px] w-full items-center justify-center overflow-hidden">
         <Image
           src="/images/iphone15.png"
-          alt="Latest devices on display at Meqdii Electronics"
+          alt="Latest devices on display at PixelShop"
           fill
           className="object-cover"
           priority
@@ -149,8 +149,8 @@ export default function AboutHero() {
 
           {/* SUPPORTING LINE */}
           <p className="mt-5 max-w-md text-sm text-muted-foreground sm:text-base">
-            Meqdii Electronics connects buyers and sellers across Ethiopia and
-            Dubai — with a physical store in Dubai and shipping to customers in
+            PixelShop connects shoppers across Ethiopia and Dubai with a modern
+            electronics marketplace and reliable shipping to customers in
             Ethiopia.
           </p>
 
@@ -179,7 +179,7 @@ export default function AboutHero() {
             <div className="relative h-[420px] w-full overflow-hidden rounded-2xl border border-border bg-muted/30 sm:h-[480px]">
               <Image
                 src="/images/electronics-seller.png"
-                alt="Meqdii Electronics shop location in Dubai"
+                alt="PixelShop shop location in Dubai"
                 fill
                 className="object-contain p-8"
               />
@@ -295,7 +295,7 @@ export default function AboutHero() {
           <div className="relative h-[420px] w-full overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-muted to-background sm:h-[480px]">
             <Image
               src="/images/s23.png"
-              alt="Meqdii Electronics flagship product"
+              alt="PixelShop flagship product"
               fill
               className="object-contain p-10"
             />
@@ -303,7 +303,7 @@ export default function AboutHero() {
 
           {/* RIGHT CONTENT */}
           <div className="flex flex-col gap-8">
-            <Eyebrow>About Meqdii Electronics</Eyebrow>
+            <Eyebrow>About PixelShop</Eyebrow>
 
             {/* BIG TITLE */}
             <h2 className="text-3xl font-bold leading-tight text-foreground md:text-4xl">
@@ -313,10 +313,9 @@ export default function AboutHero() {
 
             {/* TEXT */}
             <p className="leading-relaxed text-muted-foreground">
-              At Meqdii Electronics, we provide a reliable platform to buy and
-              sell electronics across Ethiopia. From laptops and phones to
-              cameras, we make technology accessible, affordable, and
-              trustworthy.
+              At PixelShop, we provide a reliable online platform to shop for
+              electronics across Ethiopia. From laptops and phones to cameras,
+              we make technology accessible, affordable, and trustworthy.
             </p>
 
             {/* FEATURES */}

@@ -6,7 +6,12 @@ import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/hooks/useCart";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import CartItemCard from "./CartItemCard";
 
@@ -84,9 +89,11 @@ export default function CartSheet() {
               <div className="font-semibold">{subtotal.toFixed(2)}</div>
             </div>
             <div className="mt-3 flex gap-2">
-              <Button className="flex-1" onClick={handleCheckout}>
-                Checkout
-              </Button>
+              <SheetClose asChild>
+                <Button className="flex-1" onClick={handleCheckout}>
+                  Checkout
+                </Button>
+              </SheetClose>
               <Button variant="ghost" onClick={() => clear()} className="">
                 Clear
               </Button>

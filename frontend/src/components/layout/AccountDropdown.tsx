@@ -1,9 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useLogout } from "@/hooks/useLogout";
 import Link from "next/link";
-import { User, Package, MapPin, LogOut, ChevronDown } from "lucide-react";
+import {
+  User,
+  Package,
+  MapPin,
+  LogOut,
+  ChevronDown,
+  Loader2,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +17,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logout as apiLogout } from "@/app/(api)/auth";
 import { Button } from "@/components/ui/button";
 
 interface AccountDropdownProps {
@@ -19,20 +24,10 @@ interface AccountDropdownProps {
 }
 
 export default function AccountDropdown({ userName }: AccountDropdownProps) {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const { logoutUser, isLoading } = useLogout();
 
   const handleLogout = async () => {
-    setIsLoading(true);
-    try {
-      await apiLogout();
-      router.push("/auth");
-      router.refresh();
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    await logoutUser("/auth");
   };
 
   const menuItems = [
@@ -100,7 +95,16 @@ export default function AccountDropdown({ userName }: AccountDropdownProps) {
             className="w-full flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
           >
             <LogOut size={16} />
-            <span>{isLoading ? "Logging out..." : "Logout"}</span>
+            <span>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Logging out...
+                </>
+              ) : (
+                "Logout"
+              )}
+            </span>
           </button>
         </DropdownMenuItem>
       </DropdownMenuContent>

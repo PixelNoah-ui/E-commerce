@@ -1,15 +1,15 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Meqdii Electronics | Contact Us",
+  title: "PixelShop | Contact Us",
   description:
-    "Get in touch with Meqdii Electronics for inquiries, support, orders, or assistance. We're here to help you buy, sell, or rent electronics across Ethiopia.",
+    "Get in touch with PixelShop for inquiries, support, orders, or assistance. We're here to help you shop electronics across Ethiopia.",
   openGraph: {
-    title: "Meqdii Electronics | Contact Us",
+    title: "PixelShop | Contact Us",
     description:
-      "Contact Meqdii Electronics for orders, support, and electronics services across Ethiopia.",
+      "Contact PixelShop for orders, support, and electronics services across Ethiopia.",
     url: "https://abduelectronics.com/contact",
-    siteName: "Meqdii Electronics",
+    siteName: "PixelShop",
     locale: "en_ET",
     type: "website",
   },

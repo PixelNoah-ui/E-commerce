@@ -66,6 +66,7 @@ export declare const CheckoutSessionScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
     readonly txRef: "txRef";
+    readonly orderNumber: "orderNumber";
     readonly status: "status";
     readonly customer: "customer";
     readonly items: "items";

@@ -1,5 +1,4 @@
 import crypto from "crypto";
-import { Prisma } from "../generated/prisma/client.js";
 import { prisma } from "../lib/Prisma.js";
 import { AppError } from "../utils/AppError.js";
 import { catchAsync } from "../utils/catchAsync .js";
@@ -18,6 +17,7 @@ import {
   resolveChapaPaymentState,
   buildInvoiceNumber,
 } from "../utils/paymentLifecycle.js";
+import { Prisma } from "../generated/prisma/client.js";
 
 const MAX_ORDER_ITEMS = 20;
 const MAX_ORDER_QUANTITY = 10;
@@ -216,6 +216,7 @@ export const initializeCheckout = catchAsync(async (req, res, next) => {
       data: {
         userId: req.user.id,
         txRef,
+        orderNumber, // ← store it so the callback can reuse the SAME orderNumber
         status: "INITIATED",
         customer: {
           fullName,
@@ -304,10 +305,41 @@ export const getOrder = catchAsync(async (req, res, next) => {
     // hasn't completed yet (payment pending/failed), so the frontend can show
     // an accurate "pending" or "failed" state instead of a raw 404.
     const session = await prisma.checkoutSession.findFirst({
-      where: { txRef: orderId },
+      where: { orderNumber: orderId },
     });
 
     if (session) {
+      const verification = await verifyChapaPayment(session.txRef);
+      const decision = resolveChapaPaymentState(
+        undefined,
+        verification.status,
+        verification.success,
+      );
+
+      if (decision.isSuccessful) {
+        const successfulOrder = await finalizeSuccessfulCheckout(session, session.txRef);
+        if (successfulOrder) {
+          const invoiceNumber = buildInvoiceNumber(successfulOrder.orderNumber);
+          const estimatedDelivery = new Date(
+            new Date(successfulOrder.createdAt).getTime() + 5 * 86400000,
+          ).toISOString();
+
+          return res.status(200).json({
+            status: "success",
+            data: {
+              order: {
+                ...successfulOrder,
+                invoiceNumber,
+                estimatedDelivery,
+                discount: 0,
+                currency: "ETB",
+                billingAddress: successfulOrder.address,
+              },
+            },
+          });
+        }
+      }
+
       return res.status(200).json({
         status: "success",
         data: {
@@ -360,6 +392,168 @@ const validateChapaSignature = (body: unknown, signature?: string) => {
     .digest("hex");
 
   return expected === signature;
+};
+
+const finalizeSuccessfulCheckout = async (
+  checkoutSession: any,
+  txRef: string,
+) => {
+  const sessionItems = checkoutSession.items as unknown as CheckoutSessionItem[];
+  const sessionTotals = checkoutSession.totals as {
+    subtotal: number;
+    shipping: number;
+    tax: number;
+    total: number;
+    currency: string;
+  };
+  const customerData = checkoutSession.customer as CheckoutSessionPayload;
+
+  return prisma.$transaction(async (tx) => {
+    const existingPayment = await tx.payment.findFirst({
+      where: { transactionId: txRef },
+    });
+
+    if (existingPayment) {
+      const existingOrder = await tx.order.findUnique({
+        where: { id: existingPayment.orderId },
+        include: {
+          address: true,
+          items: {
+            include: {
+              product: {
+                select: {
+                  id: true,
+                  name: true,
+                  imageUrl: true,
+                  price: true,
+                },
+              },
+            },
+          },
+          payment: true,
+          user: {
+            select: {
+              id: true,
+              fullName: true,
+              email: true,
+            },
+          },
+        },
+      });
+
+      if (existingOrder) {
+        return existingOrder;
+      }
+    }
+
+    if (existingPayment?.status === "PAID") {
+      return null;
+    }
+
+    const address = await tx.userAddress.findFirst({
+      where: {
+        userId: checkoutSession.userId,
+        fullName: customerData.fullName,
+        phone: customerData.phone,
+        country: customerData.country,
+        city: customerData.city,
+        address: customerData.address,
+        postalCode: customerData.postalCode,
+      },
+    });
+
+    const savedAddress =
+      address ||
+      (await tx.userAddress.create({
+        data: {
+          userId: checkoutSession.userId,
+          fullName: customerData.fullName,
+          phone: customerData.phone,
+          country: customerData.country,
+          city: customerData.city,
+          address: customerData.address,
+          postalCode: customerData.postalCode,
+          state: null,
+          isDefault: false,
+        },
+      }));
+
+    const orderNumber = checkoutSession.orderNumber ?? buildOrderNumber();
+
+    const createdOrder = await tx.order.create({
+      data: {
+        orderNumber,
+        userId: checkoutSession.userId,
+        addressId: savedAddress.id,
+        subtotal: toDecimal(sessionTotals.subtotal),
+        shipping: toDecimal(sessionTotals.shipping),
+        tax: toDecimal(sessionTotals.tax),
+        total: toDecimal(sessionTotals.total),
+        notes: checkoutSession.notes || null,
+        status: "CONFIRMED",
+        paymentStatus: "PAID",
+        items: {
+          create: sessionItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            price: toDecimal(item.unitPrice),
+            total: toDecimal(item.lineTotal),
+          })),
+        },
+      },
+      include: {
+        address: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true,
+                price: true,
+              },
+            },
+          },
+        },
+        payment: true,
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
+        },
+      },
+    });
+
+    await tx.payment.create({
+      data: {
+        orderId: createdOrder.id,
+        transactionId: txRef,
+        provider: "CHAPA",
+        amount: toDecimal(sessionTotals.total),
+        status: "PAID",
+      },
+    });
+
+    for (const item of sessionItems) {
+      await tx.product.update({
+        where: { id: item.productId },
+        data: {
+          quantity: {
+            decrement: item.quantity,
+          },
+        },
+      });
+    }
+
+    await tx.checkoutSession.update({
+      where: { id: checkoutSession.id },
+      data: { status: "COMPLETED" },
+    });
+
+    return createdOrder;
+  });
 };
 
 export const chapaCallback = catchAsync(async (req, res, next) => {
@@ -416,9 +610,10 @@ export const chapaCallback = catchAsync(async (req, res, next) => {
     });
 
     const customerData = checkoutSession.customer as CheckoutSessionPayload;
+    // notify the customer their payment failed, if you have their email/user id
     void notifyCustomerPaymentFailed?.(
       checkoutSession.userId,
-      tx_ref,
+      checkoutSession.orderNumber ?? tx_ref,
     );
 
     return res.status(200).json({
@@ -427,117 +622,7 @@ export const chapaCallback = catchAsync(async (req, res, next) => {
     });
   }
 
-  const sessionItems =
-    checkoutSession.items as unknown as CheckoutSessionItem[];
-  const sessionTotals = checkoutSession.totals as {
-    subtotal: number;
-    shipping: number;
-    tax: number;
-    total: number;
-    currency: string;
-  };
-  const customerData = checkoutSession.customer as CheckoutSessionPayload;
-
-  const order = await prisma.$transaction(async (tx) => {
-    const existingPayment = await tx.payment.findFirst({
-      where: { transactionId: tx_ref },
-    });
-
-    if (existingPayment?.status === "PAID") {
-      return null;
-    }
-
-    const address = await tx.userAddress.findFirst({
-      where: {
-        userId: checkoutSession.userId,
-        fullName: customerData.fullName,
-        phone: customerData.phone,
-        country: customerData.country,
-        city: customerData.city,
-        address: customerData.address,
-        postalCode: customerData.postalCode,
-      },
-    });
-
-    const savedAddress =
-      address ||
-      (await tx.userAddress.create({
-        data: {
-          userId: checkoutSession.userId,
-          fullName: customerData.fullName,
-          phone: customerData.phone,
-          country: customerData.country,
-          city: customerData.city,
-          address: customerData.address,
-          postalCode: customerData.postalCode,
-          state: null,
-          isDefault: false,
-        },
-      }));
-
-    // Reuse the SAME orderNumber generated at checkout time, so the
-    // return URL the frontend already navigated to actually resolves.
-    const orderNumber = buildOrderNumber();
-
-    const createdOrder = await tx.order.create({
-      data: {
-        orderNumber,
-        userId: checkoutSession.userId,
-        addressId: savedAddress.id,
-        subtotal: toDecimal(sessionTotals.subtotal),
-        shipping: toDecimal(sessionTotals.shipping),
-        tax: toDecimal(sessionTotals.tax),
-        total: toDecimal(sessionTotals.total),
-        notes: checkoutSession.notes || null,
-        status: "CONFIRMED",
-        paymentStatus: "PAID",
-        items: {
-          create: sessionItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: toDecimal(item.unitPrice),
-            total: toDecimal(item.lineTotal),
-          })),
-        },
-      },
-      include: {
-        payment: true,
-        user: {
-          select: {
-            email: true,
-          },
-        },
-      },
-    });
-
-    await tx.payment.create({
-      data: {
-        orderId: createdOrder.id,
-        transactionId: tx_ref,
-        provider: "CHAPA",
-        amount: toDecimal(sessionTotals.total),
-        status: "PAID",
-      },
-    });
-
-    for (const item of sessionItems) {
-      await tx.product.update({
-        where: { id: item.productId },
-        data: {
-          quantity: {
-            decrement: item.quantity,
-          },
-        },
-      });
-    }
-
-    await tx.checkoutSession.update({
-      where: { id: checkoutSession.id },
-      data: { status: "COMPLETED" },
-    });
-
-    return createdOrder;
-  });
+  const order = await finalizeSuccessfulCheckout(checkoutSession, tx_ref);
 
   if (!order) {
     await prisma.checkoutSession.update({

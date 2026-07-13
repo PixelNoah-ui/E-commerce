@@ -24,7 +24,6 @@ export default function MainNav({ user }: MainNavProps) {
 
   const navItems = [
     { title: "Home", href: "/" },
-    { title: "Electronics", href: "/electronics" },
     { title: "Equipments", href: "/equipments" },
     { title: "About", href: "/about" },
     { title: "Contact", href: "/contact" },

@@ -63,7 +63,7 @@ exports.getOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next
     });
 });
 exports.updateOwnerAddress = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
-    console.log("Request body:", req.body);
+    // Request validation (no sensitive data logging in production)
     const { fullName, email, phone, secondPhone, address, location } = req.body;
     const data = {};
     if (fullName !== undefined)

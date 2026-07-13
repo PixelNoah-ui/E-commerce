@@ -159,7 +159,7 @@ export default function HeroSection() {
             >
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
               <span className="text-xs font-medium tracking-wide text-card-foreground">
-                Meqdii Electronics
+                PixelShop
               </span>
             </motion.div>
 

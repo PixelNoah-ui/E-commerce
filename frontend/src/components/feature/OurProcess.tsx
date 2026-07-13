@@ -3,30 +3,30 @@ import Image from "next/image";
 const processSteps = [
   {
     step: "Step 1",
-    title: "Contact Owner via WhatsApp",
+    title: "Browse Premium Products",
     description:
-      "Start by messaging the owner directly on WhatsApp to check product availability, price, and details instantly.",
-    icon: "/icons/whatsapp.svg",
+      "Explore the latest smartphones, laptops, accessories, and smart gadgets curated for everyday value and performance.",
+    icon: "/icons/products.svg",
   },
   {
     step: "Step 2",
-    title: "Chat & Confirm Order",
+    title: "Add to Cart & Checkout",
     description:
-      "Discuss with our team, confirm your selected product, and finalize all order details before processing.",
-    icon: "/icons/chat.svg",
-  },
-  {
-    step: "Step 3",
-    title: "Place Your Order",
-    description:
-      "Once confirmed, your order is officially registered and prepared for delivery with full tracking support.",
+      "Choose your preferred item, review your cart, and complete a smooth checkout with secure payment options.",
     icon: "/icons/order.svg",
   },
   {
-    step: "Step 4",
-    title: "Receive Your Delivery",
+    step: "Step 3",
+    title: "Confirm & Prepare Your Order",
     description:
-      "Get your electronics delivered safely and quickly to your location anywhere in Ethiopia.",
+      "We confirm your purchase details, prepare your order, and keep you updated from processing to dispatch.",
+    icon: "/icons/chat.svg",
+  },
+  {
+    step: "Step 4",
+    title: "Receive Fast Delivery",
+    description:
+      "Enjoy quick delivery and dependable support as your electronics reach your door anywhere in Ethiopia.",
     icon: "/icons/truck.svg",
   },
 ];
@@ -41,17 +41,18 @@ export default function OurProcess() {
             Our Process
           </p>
           <h2 className="mt-4 text-3xl md:text-4xl font-bold text-slate-900">
-            Contact us, confirm your order, and receive your products in just a
-            few easy steps.
+            Shop smart, checkout fast, and get your favorite electronics
+            delivered with confidence.
           </h2>
           <p className="mt-4 text-base text-slate-600 leading-relaxed">
-            Follow our simple three-step process to place your order, get clear
-            updates, and receive your electronics quickly.
+            From discovering the right product to receiving it at your doorstep,
+            our ecommerce journey is designed to be simple, secure, and
+            reliable.
           </p>
         </div>
 
         {/* Steps */}
-        <div className="mt-16 grid gap-12 md:grid-cols-3 lg:grid-cols-4 text-center">
+        <div className="mt-16 grid gap-12 md:grid-cols-2 lg:grid-cols-4 text-center">
           {processSteps.map((step, index) => (
             <div key={step.title} className="flex flex-col items-center group">
               {/* Icon */}

@@ -14,6 +14,7 @@ export type CheckoutSessionMinAggregateOutputType = {
     id: string | null;
     userId: string | null;
     txRef: string | null;
+    orderNumber: string | null;
     status: string | null;
     notes: string | null;
     createdAt: Date | null;
@@ -23,6 +24,7 @@ export type CheckoutSessionMaxAggregateOutputType = {
     id: string | null;
     userId: string | null;
     txRef: string | null;
+    orderNumber: string | null;
     status: string | null;
     notes: string | null;
     createdAt: Date | null;
@@ -32,6 +34,7 @@ export type CheckoutSessionCountAggregateOutputType = {
     id: number;
     userId: number;
     txRef: number;
+    orderNumber: number;
     status: number;
     customer: number;
     items: number;
@@ -45,6 +48,7 @@ export type CheckoutSessionMinAggregateInputType = {
     id?: true;
     userId?: true;
     txRef?: true;
+    orderNumber?: true;
     status?: true;
     notes?: true;
     createdAt?: true;
@@ -54,6 +58,7 @@ export type CheckoutSessionMaxAggregateInputType = {
     id?: true;
     userId?: true;
     txRef?: true;
+    orderNumber?: true;
     status?: true;
     notes?: true;
     createdAt?: true;
@@ -63,6 +68,7 @@ export type CheckoutSessionCountAggregateInputType = {
     id?: true;
     userId?: true;
     txRef?: true;
+    orderNumber?: true;
     status?: true;
     customer?: true;
     items?: true;
@@ -138,6 +144,7 @@ export type CheckoutSessionGroupByOutputType = {
     id: string;
     userId: string;
     txRef: string;
+    orderNumber: string;
     status: string;
     customer: runtime.JsonValue;
     items: runtime.JsonValue;
@@ -159,6 +166,7 @@ export type CheckoutSessionWhereInput = {
     id?: Prisma.StringFilter<"CheckoutSession"> | string;
     userId?: Prisma.StringFilter<"CheckoutSession"> | string;
     txRef?: Prisma.StringFilter<"CheckoutSession"> | string;
+    orderNumber?: Prisma.StringFilter<"CheckoutSession"> | string;
     status?: Prisma.StringFilter<"CheckoutSession"> | string;
     customer?: Prisma.JsonFilter<"CheckoutSession">;
     items?: Prisma.JsonFilter<"CheckoutSession">;
@@ -172,6 +180,7 @@ export type CheckoutSessionOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
     txRef?: Prisma.SortOrder;
+    orderNumber?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
     customer?: Prisma.SortOrder;
     items?: Prisma.SortOrder;
@@ -188,6 +197,7 @@ export type CheckoutSessionWhereUniqueInput = Prisma.AtLeast<{
     OR?: Prisma.CheckoutSessionWhereInput[];
     NOT?: Prisma.CheckoutSessionWhereInput | Prisma.CheckoutSessionWhereInput[];
     userId?: Prisma.StringFilter<"CheckoutSession"> | string;
+    orderNumber?: Prisma.StringFilter<"CheckoutSession"> | string;
     status?: Prisma.StringFilter<"CheckoutSession"> | string;
     customer?: Prisma.JsonFilter<"CheckoutSession">;
     items?: Prisma.JsonFilter<"CheckoutSession">;
@@ -201,6 +211,7 @@ export type CheckoutSessionOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
     txRef?: Prisma.SortOrder;
+    orderNumber?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
     customer?: Prisma.SortOrder;
     items?: Prisma.SortOrder;
@@ -219,6 +230,7 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
     id?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string;
     userId?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string;
     txRef?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string;
+    orderNumber?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string;
     status?: Prisma.StringWithAggregatesFilter<"CheckoutSession"> | string;
     customer?: Prisma.JsonWithAggregatesFilter<"CheckoutSession">;
     items?: Prisma.JsonWithAggregatesFilter<"CheckoutSession">;
@@ -230,6 +242,7 @@ export type CheckoutSessionScalarWhereWithAggregatesInput = {
 export type CheckoutSessionCreateInput = {
     id?: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -243,6 +256,7 @@ export type CheckoutSessionUncheckedCreateInput = {
     id?: string;
     userId: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -254,6 +268,7 @@ export type CheckoutSessionUncheckedCreateInput = {
 export type CheckoutSessionUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -267,6 +282,7 @@ export type CheckoutSessionUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     userId?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -279,6 +295,7 @@ export type CheckoutSessionCreateManyInput = {
     id?: string;
     userId: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -290,6 +307,7 @@ export type CheckoutSessionCreateManyInput = {
 export type CheckoutSessionUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -302,6 +320,7 @@ export type CheckoutSessionUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     userId?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -322,6 +341,7 @@ export type CheckoutSessionCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
     txRef?: Prisma.SortOrder;
+    orderNumber?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
     customer?: Prisma.SortOrder;
     items?: Prisma.SortOrder;
@@ -334,6 +354,7 @@ export type CheckoutSessionMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
     txRef?: Prisma.SortOrder;
+    orderNumber?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
     notes?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -343,6 +364,7 @@ export type CheckoutSessionMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
     txRef?: Prisma.SortOrder;
+    orderNumber?: Prisma.SortOrder;
     status?: Prisma.SortOrder;
     notes?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
@@ -389,6 +411,7 @@ export type CheckoutSessionUncheckedUpdateManyWithoutUserNestedInput = {
 export type CheckoutSessionCreateWithoutUserInput = {
     id?: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -400,6 +423,7 @@ export type CheckoutSessionCreateWithoutUserInput = {
 export type CheckoutSessionUncheckedCreateWithoutUserInput = {
     id?: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -436,6 +460,7 @@ export type CheckoutSessionScalarWhereInput = {
     id?: Prisma.StringFilter<"CheckoutSession"> | string;
     userId?: Prisma.StringFilter<"CheckoutSession"> | string;
     txRef?: Prisma.StringFilter<"CheckoutSession"> | string;
+    orderNumber?: Prisma.StringFilter<"CheckoutSession"> | string;
     status?: Prisma.StringFilter<"CheckoutSession"> | string;
     customer?: Prisma.JsonFilter<"CheckoutSession">;
     items?: Prisma.JsonFilter<"CheckoutSession">;
@@ -447,6 +472,7 @@ export type CheckoutSessionScalarWhereInput = {
 export type CheckoutSessionCreateManyUserInput = {
     id?: string;
     txRef: string;
+    orderNumber: string;
     status?: string;
     customer: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -458,6 +484,7 @@ export type CheckoutSessionCreateManyUserInput = {
 export type CheckoutSessionUpdateWithoutUserInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -469,6 +496,7 @@ export type CheckoutSessionUpdateWithoutUserInput = {
 export type CheckoutSessionUncheckedUpdateWithoutUserInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -480,6 +508,7 @@ export type CheckoutSessionUncheckedUpdateWithoutUserInput = {
 export type CheckoutSessionUncheckedUpdateManyWithoutUserInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     txRef?: Prisma.StringFieldUpdateOperationsInput | string;
+    orderNumber?: Prisma.StringFieldUpdateOperationsInput | string;
     status?: Prisma.StringFieldUpdateOperationsInput | string;
     customer?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
     items?: Prisma.JsonNullValueInput | runtime.InputJsonValue;
@@ -492,6 +521,7 @@ export type CheckoutSessionSelect<ExtArgs extends runtime.Types.Extensions.Inter
     id?: boolean;
     userId?: boolean;
     txRef?: boolean;
+    orderNumber?: boolean;
     status?: boolean;
     customer?: boolean;
     items?: boolean;
@@ -505,6 +535,7 @@ export type CheckoutSessionSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
     id?: boolean;
     userId?: boolean;
     txRef?: boolean;
+    orderNumber?: boolean;
     status?: boolean;
     customer?: boolean;
     items?: boolean;
@@ -518,6 +549,7 @@ export type CheckoutSessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
     id?: boolean;
     userId?: boolean;
     txRef?: boolean;
+    orderNumber?: boolean;
     status?: boolean;
     customer?: boolean;
     items?: boolean;
@@ -531,6 +563,7 @@ export type CheckoutSessionSelectScalar = {
     id?: boolean;
     userId?: boolean;
     txRef?: boolean;
+    orderNumber?: boolean;
     status?: boolean;
     customer?: boolean;
     items?: boolean;
@@ -539,7 +572,7 @@ export type CheckoutSessionSelectScalar = {
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "txRef" | "status" | "customer" | "items" | "totals" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>;
+export type CheckoutSessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "txRef" | "orderNumber" | "status" | "customer" | "items" | "totals" | "notes" | "createdAt" | "updatedAt", ExtArgs["result"]["checkoutSession"]>;
 export type CheckoutSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
@@ -558,6 +591,7 @@ export type $CheckoutSessionPayload<ExtArgs extends runtime.Types.Extensions.Int
         id: string;
         userId: string;
         txRef: string;
+        orderNumber: string;
         status: string;
         customer: runtime.JsonValue;
         items: runtime.JsonValue;
@@ -923,6 +957,7 @@ export interface CheckoutSessionFieldRefs {
     readonly id: Prisma.FieldRef<"CheckoutSession", 'String'>;
     readonly userId: Prisma.FieldRef<"CheckoutSession", 'String'>;
     readonly txRef: Prisma.FieldRef<"CheckoutSession", 'String'>;
+    readonly orderNumber: Prisma.FieldRef<"CheckoutSession", 'String'>;
     readonly status: Prisma.FieldRef<"CheckoutSession", 'String'>;
     readonly customer: Prisma.FieldRef<"CheckoutSession", 'Json'>;
     readonly items: Prisma.FieldRef<"CheckoutSession", 'Json'>;

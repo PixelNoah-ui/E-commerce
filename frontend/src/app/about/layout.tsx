@@ -2,24 +2,24 @@ import type { Metadata } from "next";
 import AboutHero from "./page";
 
 export const metadata: Metadata = {
-  title: "About Us | Meqdii Electronics",
+  title: "About Us | PixelShop",
   description:
-    "Learn more about Meqdii Electronics, your trusted platform for buying, selling, and renting electronics in Ethiopia. Discover our mission, vision, and commitment to quality service.",
+    "Learn more about PixelShop, your trusted online electronics store in Ethiopia. Discover our mission, service, and commitment to quality.",
   keywords: [
-    "About Meqdii Electronics",
+    "About PixelShop",
     "electronics company Ethiopia",
-    "buy and rent electronics Addis Ababa",
+    "online electronics Addis Ababa",
     "tech marketplace Ethiopia",
     "electronics services Ethiopia",
   ],
-  authors: [{ name: "Meqdii Electronics" }],
-  creator: "Meqdii Electronics",
+  authors: [{ name: "PixelShop" }],
+  creator: "PixelShop",
   openGraph: {
-    title: "About Meqdii Electronics",
+    title: "About PixelShop",
     description:
-      "Discover the story behind Meqdii Electronics and how we make buying, selling, and renting electronics simple and affordable in Ethiopia.",
+      "Discover the story behind PixelShop and how we make buying electronics simple, affordable, and reliable in Ethiopia.",
     url: "https://abduelectronics.com/about",
-    siteName: "Meqdii Electronics",
+    siteName: "PixelShop",
     locale: "en_ET",
     type: "website",
   },

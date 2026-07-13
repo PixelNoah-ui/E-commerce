@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { User, Package, LogOut, ChevronDown } from "lucide-react";
-
-import { logout } from "@/app/(api)/auth";
+import { User, Package, LogOut, ChevronDown, Loader2 } from "lucide-react";
+import { useLogout } from "@/hooks/useLogout";
 import type { User as UserType } from "@/types/Types";
 
 interface Props {
@@ -20,13 +18,10 @@ interface Props {
 }
 
 export default function UserDropdown({ user }: Props) {
-  const router = useRouter();
+  const { logoutUser, isLoading } = useLogout();
 
   async function handleLogout() {
-    await logout();
-
-    router.refresh();
-    router.push("/");
+    await logoutUser("/");
   }
 
   return (
@@ -64,9 +59,20 @@ export default function UserDropdown({ user }: Props) {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+        <DropdownMenuItem
+          onClick={handleLogout}
+          disabled={isLoading}
+          className="text-red-600"
+        >
           <LogOut className="mr-2 h-4 w-4" />
-          Logout
+          {isLoading ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Logging out...
+            </>
+          ) : (
+            "Logout"
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

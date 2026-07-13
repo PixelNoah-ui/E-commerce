@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   CalendarDays,
@@ -19,6 +19,7 @@ import {
 import { useOrderDetails } from "@/hooks/useOrders";
 import OrderDetailSkeleton from "@/components/orders/OrderDetailSkeleton";
 import { formatPrice } from "@/lib/currency";
+import { useCartContext } from "@/components/cart/CartProvider";
 
 export default function CheckoutSuccessContent() {
   const searchParams = useSearchParams();
@@ -34,6 +35,8 @@ export default function CheckoutSuccessContent() {
     isLoading: loading,
     error,
   } = useOrderDetails(orderIdentifier);
+  const { clear } = useCartContext();
+  const hasClearedCartRef = useRef(false);
 
   const [pageLoadedAt] = useState(() => Date.now());
   const errorMessage = error instanceof Error ? error.message : null;
@@ -56,6 +59,14 @@ export default function CheckoutSuccessContent() {
   const shipping = Number(order?.shipping ?? 0);
   const tax = Number(order?.tax ?? 0);
   const total = Number(order?.total ?? subtotal + shipping + tax);
+
+  useEffect(() => {
+    if (order?.paymentStatus === "PAID" && !hasClearedCartRef.current) {
+      clear();
+      hasClearedCartRef.current = true;
+    }
+  }, [clear, order?.paymentStatus]);
+
   const estimatedDelivery = useMemo(() => {
     if (order?.estimatedDelivery) {
       return new Date(order.estimatedDelivery);
@@ -230,7 +241,7 @@ export default function CheckoutSuccessContent() {
                       className="flex items-start gap-3 rounded-2xl border border-border bg-background/70 p-4"
                     >
                       {item.product?.imageUrl ? (
-                        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-border">
+                        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-border">
                           <Image
                             src={item.product.imageUrl}
                             alt={item.product.name || "Product"}

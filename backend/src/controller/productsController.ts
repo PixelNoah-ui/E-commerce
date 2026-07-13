@@ -56,9 +56,8 @@ export const createProduct = catchAsync(async (req, res, next) => {
       status: "success",
       data: { product },
     });
-  } catch (err: any) {
-    console.error("🔥 REAL BACKEND ERROR:", err); // <- see the real error here
-    next(new AppError(err.message || "Failed to create product", 500));
+  } catch (err) {
+    next(new AppError("Failed to create product", 500));
   }
 });
 

@@ -53,21 +53,13 @@ export async function googleLogin(credential: string) {
 }
 
 export async function logout() {
-  // Call internal Next route which proxies to backend and forwards Set-Cookie
-  const res = await fetch("/logout", {
+  const res = await fetch(buildApiUrl("/auth/logout"), {
     method: "POST",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
   });
 
-  const dataText = await res.text();
-  let data: { message?: string } = {};
-  try {
-    data = JSON.parse(dataText || "{}");
-  } catch {
-    data = { message: dataText };
-  }
-
-  if (!res.ok) throw new Error(data.message ?? "Logout failed");
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.message || "Logout failed");
   return data;
 }

@@ -23,7 +23,7 @@ export default function WhyChooseUs() {
           </p>
 
           <h2 className="text-4xl font-bold mt-2 mb-10 text-slate-950 dark:text-white">
-            Why Choose Meqdii Electronics
+            Why Choose PixelShop
           </h2>
 
           <div className="grid sm:grid-cols-2 gap-8">

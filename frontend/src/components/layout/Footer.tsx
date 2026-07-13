@@ -9,7 +9,7 @@ export default function Footer() {
   const { data: address, isLoading } = useAddress();
 
   const phone = address?.phone ?? "+251 911 123 456";
-  const email = address?.email ?? "support@meqdii-electronics.com";
+  const email = address?.email ?? "support@pixelshop.com";
   const location = address?.location ?? "Jimma, Ethiopia";
 
   return (
@@ -23,16 +23,14 @@ export default function Footer() {
               <div className="relative h-16 w-16 flex-shrink-0 rounded-full border-2 border-primary bg-white overflow-hidden">
                 <Image
                   src="/icons/logo.svg"
-                  alt="Meqdii Electronics Logo"
+                  alt="PixelShop Logo"
                   fill
                   className="object-contain p-2"
                 />
               </div>
 
               <div>
-                <p className="text-2xl font-semibold text-white">
-                  Meqdii Electronics
-                </p>
+                <p className="text-2xl font-semibold text-white">PixelShop</p>
                 <p className="text-sm text-slate-500">
                   Buy, sell & rent electronics across Dubai and Ethiopia.
                 </p>
@@ -40,7 +38,7 @@ export default function Footer() {
             </div>
 
             <p className="max-w-sm leading-7 text-slate-400">
-              Meqdii Electronics connects businesses and consumers with premium
+              PixelShop connects businesses and consumers with premium
               electronics and equipment across Dubai and Ethiopia. Discover
               laptops, phones, cameras, and smart accessories with fast support
               from our Dubai store.
@@ -141,10 +139,7 @@ export default function Footer() {
 
         {/* BOTTOM BAR */}
         <div className=" flex flex-col gap-4 border-t border-slate-800 pt-8 pb-8 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>
-            © {new Date().getFullYear()} Meqdii Electronics. All rights
-            reserved.
-          </p>
+          <p>© {new Date().getFullYear()} PixelShop. All rights reserved.</p>
           <p>Designed for modern electronics buyers and sellers in Ethiopia.</p>
         </div>
 

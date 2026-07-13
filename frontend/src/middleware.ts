@@ -21,6 +21,14 @@ export function middleware(req: NextRequest) {
   );
 
   const token = req.cookies.get("token")?.value;
+  console.log(
+    "pathname:",
+    pathname,
+    "token:",
+    token,
+    "isProtected:",
+    isProtected,
+  );
 
   if (
     AUTH_PATHS.some(
@@ -41,20 +49,9 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Redirect to address page if accessing checkout without addresses
-  // Note: This check is simplified - client-side will handle the full logic
-  if (pathname === "/checkout") {
-    return NextResponse.next();
-  }
-
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/orders/:path*",
-    "/profile/:path*",
-    "/checkout/:path*",
-    "/wishlist/:path*",
-  ],
+  matcher: ["/orders/:path*", "/profile/:path*", "/checkout/:path*"],
 };

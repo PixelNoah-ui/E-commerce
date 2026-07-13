@@ -103,6 +103,7 @@ export const CheckoutSessionScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
   txRef: 'txRef',
+  orderNumber: 'orderNumber',
   status: 'status',
   customer: 'customer',
   items: 'items',

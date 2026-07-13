@@ -5,7 +5,13 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
 import { useGoogleAuth } from "@/hooks/useGoogleLogin";
 
-export default function GoogleLoginButton() {
+interface GoogleLoginButtonProps {
+  redirectTarget?: string;
+}
+
+export default function GoogleLoginButton({
+  redirectTarget = "/",
+}: GoogleLoginButtonProps) {
   const router = useRouter();
   const [error, setError] = useState("");
 
@@ -25,7 +31,7 @@ export default function GoogleLoginButton() {
 
           mutate(credentialResponse.credential, {
             onSuccess: () => {
-              router.push("/");
+              router.push(redirectTarget);
               router.refresh();
             },
 

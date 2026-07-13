@@ -14,23 +14,33 @@ let server;
 async function start() {
     await Prisma_js_1.prisma.$connect();
     server = index_js_1.default.listen(PORT, () => {
-        console.log(`🚀 Server running on port ${PORT}`);
+        if (process.env.NODE_ENV !== "production") {
+            console.log(`Server running on port ${PORT}`);
+        }
     });
 }
 start();
 process.on("unhandledRejection", (err) => {
-    console.error("UNHANDLED REJECTION 💥", err);
+    // Log to server logs only, never expose to users
+    if (process.env.NODE_ENV !== "production") {
+        console.error("Unhandled Rejection:", err);
+    }
     server === null || server === void 0 ? void 0 : server.close(async () => {
         await Prisma_js_1.prisma.$disconnect();
         process.exit(1);
     });
 });
 process.on("uncaughtException", (err) => {
-    console.error("UNCAUGHT EXCEPTION 💥", err);
+    // Log to server logs only
+    if (process.env.NODE_ENV !== "production") {
+        console.error("Uncaught Exception:", err);
+    }
     process.exit(1);
 });
 process.on("SIGTERM", async () => {
-    console.log("👋 SIGTERM received. Shutting down...");
+    if (process.env.NODE_ENV !== "production") {
+        console.log("SIGTERM received. Shutting down...");
+    }
     server === null || server === void 0 ? void 0 : server.close(async () => {
         await Prisma_js_1.prisma.$disconnect();
     });

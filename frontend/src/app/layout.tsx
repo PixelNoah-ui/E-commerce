@@ -18,29 +18,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Meqdii Electronics | Buy & Rent Electronics in Ethiopia",
+  title: "PixelShop | Electronics E-commerce in Ethiopia",
   description:
-    "Meqdii Electronics is your trusted platform to buy, sell, and rent electronics in Ethiopia. Discover laptops, phones, cameras, and more at affordable prices.",
+    "PixelShop is your trusted online destination for electronics in Ethiopia. Discover laptops, phones, cameras, and more at competitive prices.",
   keywords: [
-    "Meqdii Electronics",
+    "PixelShop",
     "electronics Ethiopia",
     "buy electronics Addis Ababa",
-    "rent electronics Ethiopia",
+    "online electronics Ethiopia",
     "laptops Ethiopia",
     "phones Ethiopia",
-    "camera rental Addis Ababa",
+    "camera shop Ethiopia",
   ],
   icons: {
     icon: "/icons/logo.svg",
   },
-  authors: [{ name: "Meqdii Electronics" }],
-  creator: "Meqdii Electronics",
+  authors: [{ name: "PixelShop" }],
+  creator: "PixelShop",
   openGraph: {
-    title: "Meqdii Electronics",
+    title: "PixelShop",
     description:
-      "Buy, sell, and rent electronics easily in Ethiopia. Affordable, reliable, and fast.",
+      "Shop electronics online in Ethiopia with fast delivery, trusted products, and great deals.",
     url: "https://abduelectronics.com",
-    siteName: "Meqdii Electronics",
+    siteName: "PixelShop",
     locale: "en_ET",
     type: "website",
   },
