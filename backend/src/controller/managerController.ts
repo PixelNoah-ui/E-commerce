@@ -43,18 +43,30 @@ export const getManagers = catchAsync(async (req, res) => {
 
   const where: any = {};
 
-  // ✅ Role filter
   if (role === "manager") {
     where.role = "MANAGER";
   } else if (role === "admin") {
     where.role = "ADMIN";
+  } else {
+    where.role = {
+      in: ["ADMIN", "MANAGER"],
+    };
   }
 
-  // ✅ Search
   if (q) {
     where.OR = [
-      { fullName: { contains: q as string, mode: "insensitive" } },
-      { email: { contains: q as string, mode: "insensitive" } },
+      {
+        fullName: {
+          contains: q as string,
+          mode: "insensitive",
+        },
+      },
+      {
+        email: {
+          contains: q as string,
+          mode: "insensitive",
+        },
+      },
     ];
   }
 
@@ -63,7 +75,9 @@ export const getManagers = catchAsync(async (req, res) => {
       where,
       skip,
       take: limit,
-      orderBy: { createdAt: "desc" },
+      orderBy: {
+        createdAt: "desc",
+      },
       select: {
         id: true,
         fullName: true,

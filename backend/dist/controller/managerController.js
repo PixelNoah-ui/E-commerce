@@ -38,18 +38,31 @@ exports.getManagers = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * limit;
     const where = {};
-    // ✅ Role filter
     if (role === "manager") {
         where.role = "MANAGER";
     }
     else if (role === "admin") {
         where.role = "ADMIN";
     }
-    // ✅ Search
+    else {
+        where.role = {
+            in: ["ADMIN", "MANAGER"],
+        };
+    }
     if (q) {
         where.OR = [
-            { fullName: { contains: q, mode: "insensitive" } },
-            { email: { contains: q, mode: "insensitive" } },
+            {
+                fullName: {
+                    contains: q,
+                    mode: "insensitive",
+                },
+            },
+            {
+                email: {
+                    contains: q,
+                    mode: "insensitive",
+                },
+            },
         ];
     }
     const [staff, total] = await Promise.all([
@@ -57,7 +70,9 @@ exports.getManagers = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
             where,
             skip,
             take: limit,
-            orderBy: { createdAt: "desc" },
+            orderBy: {
+                createdAt: "desc",
+            },
             select: {
                 id: true,
                 fullName: true,

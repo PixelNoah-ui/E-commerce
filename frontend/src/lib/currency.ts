@@ -1,6 +1,13 @@
-export const CURRENCY_CODE = process.env.NEXT_PUBLIC_CURRENCY_CODE || "ETB";
+// Force ETB as the display currency. If an env var is present and set to AED,
+// prefer ETB instead so the UI doesn't show AED unexpectedly.
+export const CURRENCY_CODE =
+  (process.env.NEXT_PUBLIC_CURRENCY_CODE === "AED"
+    ? "ETB"
+    : process.env.NEXT_PUBLIC_CURRENCY_CODE) || "ETB";
+
+// Use the currency code (ETB) so it's explicit in the UI instead of a symbol.
 export const CURRENCY_DISPLAY: "symbol" | "code" | "name" =
-  (process.env.NEXT_PUBLIC_CURRENCY_DISPLAY as any) || "symbol";
+  (process.env.NEXT_PUBLIC_CURRENCY_DISPLAY as any) || "code";
 
 export function formatPrice(
   amount: number | string | undefined | null,

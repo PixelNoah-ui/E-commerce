@@ -148,7 +148,8 @@ export const getDashboardStats = catchAsync(async (req, res) => {
     managerUsers,
     availableProducts,
   ] = await prisma.$transaction([
-    prisma.user.count(),
+    // Count only users with role ADMIN or MANAGER
+    prisma.user.count({ where: { role: { in: ["ADMIN", "MANAGER"] } } }),
     prisma.product.count(),
     prisma.user.count({ where: { role: "ADMIN" } }),
     prisma.user.count({ where: { role: "MANAGER" } }),
@@ -157,9 +158,18 @@ export const getDashboardStats = catchAsync(async (req, res) => {
 
   const [currentUsers, prevUsers, currentProducts, prevProducts] =
     await prisma.$transaction([
-      prisma.user.count({ where: { createdAt: { gte: start } } }),
+      // Count only ADMIN and MANAGER users in trends
       prisma.user.count({
-        where: { createdAt: { gte: prevStart, lt: prevEnd } },
+        where: {
+          createdAt: { gte: start },
+          role: { in: ["ADMIN", "MANAGER"] },
+        },
+      }),
+      prisma.user.count({
+        where: {
+          createdAt: { gte: prevStart, lt: prevEnd },
+          role: { in: ["ADMIN", "MANAGER"] },
+        },
       }),
 
       prisma.product.count({ where: { createdAt: { gte: start } } }),

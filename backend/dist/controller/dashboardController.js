@@ -119,16 +119,26 @@ exports.getDashboardStats = (0, catchAsync__js_1.catchAsync)(async (req, res) =>
     const { start, prevStart, prevEnd } = getDateRange(period);
     // 🔥 TOTAL COUNTS
     const [totalUsers, totalProducts, adminUsers, managerUsers, availableProducts,] = await Prisma_js_1.prisma.$transaction([
-        Prisma_js_1.prisma.user.count(),
+        // Count only users with role ADMIN or MANAGER
+        Prisma_js_1.prisma.user.count({ where: { role: { in: ["ADMIN", "MANAGER"] } } }),
         Prisma_js_1.prisma.product.count(),
         Prisma_js_1.prisma.user.count({ where: { role: "ADMIN" } }),
         Prisma_js_1.prisma.user.count({ where: { role: "MANAGER" } }),
         Prisma_js_1.prisma.product.count({ where: { isActive: true } }),
     ]);
     const [currentUsers, prevUsers, currentProducts, prevProducts] = await Prisma_js_1.prisma.$transaction([
-        Prisma_js_1.prisma.user.count({ where: { createdAt: { gte: start } } }),
+        // Count only ADMIN and MANAGER users in trends
         Prisma_js_1.prisma.user.count({
-            where: { createdAt: { gte: prevStart, lt: prevEnd } },
+            where: {
+                createdAt: { gte: start },
+                role: { in: ["ADMIN", "MANAGER"] },
+            },
+        }),
+        Prisma_js_1.prisma.user.count({
+            where: {
+                createdAt: { gte: prevStart, lt: prevEnd },
+                role: { in: ["ADMIN", "MANAGER"] },
+            },
         }),
         Prisma_js_1.prisma.product.count({ where: { createdAt: { gte: start } } }),
         Prisma_js_1.prisma.product.count({

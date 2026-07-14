@@ -29,7 +29,7 @@ function parseJsonField(value) {
     return undefined;
 }
 exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) => {
-    const { name, description, price, imageUrl, categoryType, isFeatured } = req.body;
+    const { name, description, price, imageUrl, categoryType, isFeatured, quantity, sku, } = req.body;
     const specifications = parseJsonField(req.body.specifications);
     if (!name || !description || !price || !imageUrl || !categoryType) {
         return next(new AppError_js_1.AppError("Missing required fields: name, description, price, imageUrl, categoryType", 400));
@@ -37,12 +37,16 @@ exports.createProduct = (0, catchAsync__js_1.catchAsync)(async (req, res, next) 
     try {
         const product = await Prisma_js_1.prisma.product.create({
             data: {
-                name,
-                description,
-                price: price,
-                imageUrl,
+                name: String(name),
+                description: String(description),
+                // Prisma Decimal accepts a string representation
+                price: String(price),
+                imageUrl: String(imageUrl),
                 categoryType: normalizeCategory(categoryType),
                 isFeatured: isFeatured === "true" || isFeatured === true,
+                // optional fields
+                ...(quantity !== undefined ? { quantity: Number(quantity) } : {}),
+                ...(sku !== undefined ? { sku: String(sku) } : {}),
                 ...(specifications ? { specifications } : {}),
             },
         });
@@ -187,9 +191,16 @@ exports.updateProduct = (0, catchAsync__js_1.catchAsync)(async (req, res) => {
     if (description !== undefined)
         data.description = String(description);
     if (price !== undefined)
-        data.price = price;
+        data.price = String(price);
     if (specifications !== undefined)
         data.specifications = specifications;
+    // handle additional schema fields
+    if (req.body.quantity !== undefined)
+        data.quantity = Number(req.body.quantity);
+    if (req.body.sku !== undefined)
+        data.sku = String(req.body.sku);
+    if (req.body.isActive !== undefined)
+        data.isActive = Boolean(req.body.isActive === "true" || req.body.isActive === true);
     if (categoryType !== undefined)
         data.categoryType = normalizeCategory(categoryType);
     if (isFeatured !== undefined)

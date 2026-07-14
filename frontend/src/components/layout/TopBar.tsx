@@ -8,12 +8,10 @@ import { useAddress } from "@/hooks/useAddress";
 export default function TopBar() {
   const { data: address, isLoading } = useAddress();
 
-  const phone = address?.phone ?? "+971 55 153 2113";
-  const location = address?.location ?? "Dubai, UAE";
+  const phone = address?.phone ?? "+251911477218";
+  const location = address?.location ?? "Ethiopia, Addis Ababa";
   const tiktokHandle = "PixelShop TikTok";
   const tiktokUrl = "https://vt.tiktok.com/ZSQw1R4SV/";
-  const tiktokUrl2 = "https://vt.tiktok.com/ZSQw11VDu/";
-  const tiktokUrl3 = "https://vt.tiktok.com/ZSQTooR14/";
 
   return (
     <div className="w-full bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border-b border-primary/20 text-sm py-2.5">
@@ -72,39 +70,6 @@ export default function TopBar() {
                 {location}
               </span>
             )}
-          </div>
-
-          {/* Divider */}
-          <div className="h-4 w-px bg-primary/30 hidden sm:block" />
-
-          {/* Social Icons */}
-          <div className="flex items-center gap-2">
-            <Link
-              href={tiktokUrl2}
-              target="_blank"
-              className="p-1.5 rounded-full hover:bg-primary/10 transition-colors group"
-            >
-              <Image
-                src="/icons/tiktok.svg"
-                alt="TikTok2"
-                width={14}
-                height={14}
-                className="group-hover:scale-110 transition-transform"
-              />
-            </Link>
-            <Link
-              href={tiktokUrl3}
-              target="_blank"
-              className="p-1.5 rounded-full hover:bg-primary/10 transition-colors group"
-            >
-              <Image
-                src="/icons/tiktok.svg"
-                alt="TikTok3"
-                width={14}
-                height={14}
-                className="group-hover:scale-110 transition-transform"
-              />
-            </Link>
           </div>
         </div>
       </div>

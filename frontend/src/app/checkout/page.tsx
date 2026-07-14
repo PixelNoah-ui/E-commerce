@@ -225,7 +225,6 @@ export default function CheckoutPage() {
         );
       }
 
-      clear();
       if (data?.data?.checkoutUrl) {
         window.location.href = data.data.checkoutUrl;
         return;

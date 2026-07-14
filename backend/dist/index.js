@@ -40,6 +40,7 @@ app.use("/api", limiter);
 app.use((0, cors_1.default)({
     origin: [
         "http://localhost:3000",
+        "http://localhost:3001",
         "https://meqdiadmin.vercel.app",
         "https://meqdielectronics.vercel.app",
     ],
